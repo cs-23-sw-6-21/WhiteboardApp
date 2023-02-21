@@ -54,6 +54,7 @@ class MainActivity : AppCompatActivity() {
     // TEMPORARY HACK TO TEST
     override fun onUserInteraction() {
         super.onUserInteraction()
+        segmentationModel.Segment(previewView.bitmap!!)
     }
 
     private fun bindPreview(cameraProvider : ProcessCameraProvider) {
