@@ -1,12 +1,7 @@
 package dk.scuffed.whiteboardapp
 
-import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.DisplayMetrics
 import android.util.Log
-import android.view.Surface
-import android.view.TextureView
-import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -15,13 +10,10 @@ import androidx.camera.core.ImageCapture
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
-import com.google.android.material.snackbar.Snackbar
 import com.google.common.util.concurrent.ListenableFuture
-import java.util.jar.Manifest
-
+import dk.scuffed.whiteboardapp.segmentation.PPSegmentation
 
 class MainActivity : AppCompatActivity() {
     val requestCamera = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
@@ -39,6 +31,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var imageCapture: ImageCapture
     lateinit var cameraProviderFuture : ListenableFuture<ProcessCameraProvider>
 
+    private lateinit var segmentationModel : PPSegmentation
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,6 +48,12 @@ class MainActivity : AppCompatActivity() {
             bindPreview(cameraProvider)
         }, ContextCompat.getMainExecutor(this))
 
+        segmentationModel = PPSegmentation(this, PPSegmentation.Model.PORTRAIT)
+    }
+
+    // TEMPORARY HACK TO TEST
+    override fun onUserInteraction() {
+        super.onUserInteraction()
     }
 
     private fun bindPreview(cameraProvider : ProcessCameraProvider) {
