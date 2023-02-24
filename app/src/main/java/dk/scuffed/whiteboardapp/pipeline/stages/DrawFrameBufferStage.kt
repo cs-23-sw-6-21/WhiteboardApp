@@ -13,7 +13,7 @@ import dk.scuffed.whiteboardapp.pipeline.TextureUnitPair
 internal class DrawFramebufferStage(
     context: Context,
     private val inputFrameBufferInfo: FramebufferInfo,
-    pipeline: Pipeline) : GLOutputStage(context, R.raw.vertex_shader, R.raw.passthough_shader, pipeline)
+    pipeline: Pipeline) : GLOutputStage(context, R.raw.vertex_shader, R.raw.passthrough_shader, pipeline)
 {
 
     // TODO Get this from the view.
