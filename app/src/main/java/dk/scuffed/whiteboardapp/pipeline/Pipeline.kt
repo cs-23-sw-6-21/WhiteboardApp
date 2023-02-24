@@ -9,9 +9,7 @@ import dk.scuffed.whiteboardapp.pipeline.stages.DrawFramebufferStage
 
 class Pipeline(context: Context) {
 
-    private val cameraXStage: CameraXStage
-    private val drawFramebufferInfo: DrawFramebufferStage
-
+    private var stages = mutableListOf<Stage>()
     private var nextTextureUnit: Int = 0
 
     private val indexToTextureUnit = intArrayOf(
@@ -43,12 +41,12 @@ class Pipeline(context: Context) {
         glDisable(GLES20.GL_DEPTH_TEST)
         glClearColor(1.0f, 0.0f, 1.0f, 1.0f)
 
-        cameraXStage = CameraXStage(
+        var cameraXStage = CameraXStage(
             context,
             this
         )
 
-        drawFramebufferInfo = DrawFramebufferStage(
+        DrawFramebufferStage(
             context,
             cameraXStage.frameBufferInfo,
             this
@@ -56,8 +54,7 @@ class Pipeline(context: Context) {
     }
 
     fun draw() {
-        cameraXStage.update()
-        drawFramebufferInfo.update()
+        stages.forEach { stage -> stage.performUpdate() }
     }
 
     internal fun allocateFramebuffer(stage: GLOutputStage, textureFormat: Int, width: Int, height: Int): FramebufferInfo {
@@ -80,6 +77,10 @@ class Pipeline(context: Context) {
         glFramebufferTexture2D(GLES20.GL_COLOR_ATTACHMENT0, GLES20.GL_TEXTURE_2D, textureHandle)
 
         return FramebufferInfo(fboHandle, textureHandle, textureUnitPair, GLES20.GL_RGBA, Size(width, height))
+    }
+
+    internal fun addStage(stage: Stage){
+        stages.add(stage)
     }
 
     internal fun allocateTextureUnit(stage: GLOutputStage): TextureUnitPair {

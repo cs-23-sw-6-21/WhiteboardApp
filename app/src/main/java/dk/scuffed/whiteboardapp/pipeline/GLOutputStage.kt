@@ -16,7 +16,7 @@ internal abstract class GLOutputStage(
     private val context: Context,
     private val vertexShaderResource: Int,
     private val fragmentShaderResource: Int,
-    private val pipeline: Pipeline) : Stage
+    private val pipeline: Pipeline) : Stage(pipeline)
 {
     private var program: Int = 999
 

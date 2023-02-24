@@ -1,5 +1,27 @@
 package dk.scuffed.whiteboardapp.pipeline
 
-interface Stage {
-    fun update()
+import android.util.Log
+
+internal abstract class Stage(pipeline: Pipeline) {
+
+    private val name: String
+
+    init {
+        pipeline.addStage(this)
+        name = this.javaClass.name
+    }
+
+    protected abstract fun update()
+
+    fun performUpdate()
+    {
+        val startTime = System.nanoTime()
+        update()
+        val endTime = System.nanoTime()
+
+        //Calculate duration and convert to ms
+        val duration = (endTime - startTime) * 1000f
+
+        Log.d("Stages", "Stage: $name took $duration ms")
+    }
 }
