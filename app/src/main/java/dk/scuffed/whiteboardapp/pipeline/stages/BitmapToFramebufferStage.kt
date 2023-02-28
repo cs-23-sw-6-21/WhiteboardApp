@@ -2,7 +2,9 @@ package dk.scuffed.whiteboardapp.pipeline.stages
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.opengl.GLES20
+import android.opengl.GLUtils
 import android.util.Size
 import dk.scuffed.whiteboardapp.R
 import dk.scuffed.whiteboardapp.openGL.*
@@ -11,20 +13,32 @@ import dk.scuffed.whiteboardapp.pipeline.FramebufferInfo
 import dk.scuffed.whiteboardapp.pipeline.Stage
 import java.nio.ByteBuffer
 
-internal class BitmapToFramebufferStage(context: Context, private val inputBitmap: Bitmap, pipeline: Pipeline) : GLOU(pipeline) {
+internal class BitmapToFramebufferStage(private val inputBitmap: Bitmap, private val pipeline: Pipeline) : Stage(pipeline) {
+
+    var frameBufferInfo: FramebufferInfo
+
     init {
-        setup()
+        frameBufferInfo = allocateTexture()
     }
 
-    override fun setupFramebufferInfo() {
-        allocateFramebuffer(GLES20.GL_RGBA, Size(inputBitmap.width, inputBitmap.height) )
-    }
-
-    fun writeFrameBuffer(bitmap: Bitmap, framebuffer: FramebufferInfo) {
-        val buffer: ByteBuffer = ByteBuffer.allocate(bitmap.byteCount)
-        bitmap.copyPixelsToBuffer(buffer)
+    override fun update() {
         glActiveTexture(frameBufferInfo.textureUnitPair.textureUnit)
-        glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA, frameBufferInfo.textureSize.width, frameBufferInfo.textureSize.height, GLES20.GL_UNSIGNED_BYTE, buffer)
+        glBindTexture(GLES20.GL_TEXTURE_2D, frameBufferInfo.textureHandle)
+        GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, inputBitmap, 0)
     }
 
+    private fun allocateTexture() : FramebufferInfo{
+        val textureUnitPair = pipeline.allocateTextureUnit(this)
+        glActiveTexture(textureUnitPair.textureUnit)
+
+        val textureHandle = glGenTexture()
+        glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle)
+        glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR)
+        glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR)
+        glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE)
+        glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE)
+        GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, inputBitmap, 0)
+        glBindTexture(GLES20.GL_TEXTURE_2D, 0)
+        return FramebufferInfo(999, textureHandle, textureUnitPair, GLES20.GL_RGBA, Size(inputBitmap.width, inputBitmap.height))
+    }
 }

@@ -1,11 +1,15 @@
 package dk.scuffed.whiteboardapp.pipeline
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Color
 import android.opengl.GLES20
 import android.util.Size
 import dk.scuffed.whiteboardapp.openGL.*
+import dk.scuffed.whiteboardapp.pipeline.stages.BitmapToFramebufferStage
 import dk.scuffed.whiteboardapp.pipeline.stages.CameraXStage
 import dk.scuffed.whiteboardapp.pipeline.stages.DrawFramebufferStage
+import dk.scuffed.whiteboardapp.pipeline.stages.FramebufferToBitmapStage
 
 class Pipeline(context: Context) {
 
@@ -41,14 +45,31 @@ class Pipeline(context: Context) {
         glDisable(GLES20.GL_DEPTH_TEST)
         glClearColor(1.0f, 0.0f, 1.0f, 1.0f)
 
+
         var cameraXStage = CameraXStage(
             context,
             this
         )
 
-        DrawFramebufferStage(
+
+        var convertBitmap = FramebufferToBitmapStage(
             context,
             cameraXStage.frameBufferInfo,
+            Bitmap.Config.ARGB_8888,
+            this,
+
+        )
+
+        var convertFramebuffer = BitmapToFramebufferStage(
+            context,
+            convertBitmap.outputBitmap,
+            this,
+            )
+
+
+        DrawFramebufferStage(
+            context,
+            convertFramebuffer.frameBufferInfo,
             this
         )
     }
