@@ -21,7 +21,6 @@ class PPSegmentation (context : Context, private val model : Model) {
 
     fun segment(input : Bitmap) : Bitmap{
         // predict on the downscaled input
-        //segmentationModel.predict(input.scale(model.width, model.height), segmentationResult)
         segmentationModel.predict(input.scale(model.width, model.height), segmentationResult)
 
         // create and return a bitmap with result from prediction
