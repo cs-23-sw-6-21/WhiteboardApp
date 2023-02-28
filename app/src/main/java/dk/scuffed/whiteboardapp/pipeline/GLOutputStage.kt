@@ -75,7 +75,6 @@ internal abstract class GLOutputStage(
         glAttachShader(program, vertexShader)
         glAttachShader(program, fragmentShader)
         glLinkProgram(program)
-
     }
 
     protected abstract fun setupFramebufferInfo()
