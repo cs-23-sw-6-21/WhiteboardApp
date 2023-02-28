@@ -2,7 +2,6 @@ package dk.scuffed.whiteboardapp.segmentation
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.util.Log
 import androidx.core.graphics.scale
 import com.baidu.paddle.fastdeploy.LitePowerMode
 import com.baidu.paddle.fastdeploy.RuntimeOption
@@ -10,31 +9,32 @@ import com.baidu.paddle.fastdeploy.vision.SegmentationResult
 import com.baidu.paddle.fastdeploy.vision.Visualize
 import com.baidu.paddle.fastdeploy.vision.segmentation.PaddleSegModel
 
-class PPSegmentation (context : Context, model : Model) {
+class PPSegmentation (context : Context, private val model : Model) {
     enum class Model(val modelName : String, val width : Int, val height : Int) {
         PORTRAIT("humansegv2portrait", 256, 144),
         GENERALLITE("humansegv2generallite", 192, 192),
         GENERALMOBILE("humansegv2generalmobile", 192, 192)
     }
 
-    val chosenModel : Model
-    val segmentationModel : PaddleSegModel = PaddleSegModel()
-    val segmentationResult : SegmentationResult = SegmentationResult()
-    public fun Segment(input : Bitmap) : Bitmap{
+    private val segmentationModel : PaddleSegModel = PaddleSegModel()
+    private val segmentationResult : SegmentationResult = SegmentationResult()
+
+    fun segment(input : Bitmap) : Bitmap{
         // predict on the downscaled input
-        segmentationModel.predict(input.scale(chosenModel.width, chosenModel.height), segmentationResult)
+        //segmentationModel.predict(input.scale(model.width, model.height), segmentationResult)
+        segmentationModel.predict(input.scale(model.width, model.height), segmentationResult)
 
         // create and return a bitmap with result from prediction
-        var bitmapResult : Bitmap = Bitmap.createBitmap(chosenModel.width, chosenModel.height, Bitmap.Config.ARGB_8888)
-        Visualize.visSegmentation(bitmapResult, segmentationResult)
+        val bitmapResult : Bitmap = Bitmap.createBitmap(model.width, model.height, Bitmap.Config.ARGB_8888)
+
+        Visualize.visSegmentation(bitmapResult, segmentationResult, 0.5f)
         return bitmapResult
     }
 
     init {
-        chosenModel = model
         // get all path names
-        val modelDir = "models/${model.modelName}";
-        val modelCacheDir = context.cacheDir.toString() + "/" + modelDir;
+        val modelDir = "models/${model.modelName}"
+        val modelCacheDir = context.cacheDir.toString() + "/" + modelDir
         val modelFile = "$modelCacheDir/model.pdmodel"
         val paramsFile = "$modelCacheDir/model.pdiparams"
         val configFile = "$modelCacheDir/deploy.yaml"
