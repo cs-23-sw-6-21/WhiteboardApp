@@ -53,7 +53,6 @@ class Pipeline(context: Context) {
 
 
         var convertBitmap = FramebufferToBitmapStage(
-            context,
             cameraXStage.frameBufferInfo,
             Bitmap.Config.ARGB_8888,
             this,
@@ -61,7 +60,6 @@ class Pipeline(context: Context) {
         )
 
         var convertFramebuffer = BitmapToFramebufferStage(
-            context,
             convertBitmap.outputBitmap,
             this,
             )
@@ -78,7 +76,7 @@ class Pipeline(context: Context) {
         stages.forEach { stage -> stage.performUpdate() }
     }
 
-    internal fun allocateFramebuffer(stage: GLOutputStage, textureFormat: Int, width: Int, height: Int): FramebufferInfo {
+    internal fun allocateFramebuffer(stage: Stage, textureFormat: Int, width: Int, height: Int): FramebufferInfo {
         val fboHandle = glGenFramebuffer()
 
         val textureHandle = glGenTexture()
@@ -104,7 +102,7 @@ class Pipeline(context: Context) {
         stages.add(stage)
     }
 
-    internal fun allocateTextureUnit(stage: GLOutputStage): TextureUnitPair {
+    internal fun allocateTextureUnit(stage: Stage): TextureUnitPair {
         val textureUnitIndex = nextTextureUnit++;
         val textureUnit = indexToTextureUnit[textureUnitIndex]
         return TextureUnitPair(textureUnit, textureUnitIndex)

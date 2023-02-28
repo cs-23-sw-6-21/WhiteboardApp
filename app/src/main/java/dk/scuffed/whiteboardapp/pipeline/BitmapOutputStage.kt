@@ -14,7 +14,7 @@ import java.nio.FloatBuffer
 import java.nio.ShortBuffer
 
 internal abstract class BitmapOutputStage(
-    private val pipeline: Pipeline,
+    pipeline: Pipeline,
     resolution: Size,
     config: Bitmap.Config
     ) : Stage(pipeline)
