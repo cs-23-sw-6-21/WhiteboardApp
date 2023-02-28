@@ -6,10 +6,12 @@ import android.graphics.Color
 import android.opengl.GLES20
 import android.util.Size
 import dk.scuffed.whiteboardapp.openGL.*
+import dk.scuffed.whiteboardapp.pipeline.stages.*
 import dk.scuffed.whiteboardapp.pipeline.stages.BitmapToFramebufferStage
 import dk.scuffed.whiteboardapp.pipeline.stages.CameraXStage
 import dk.scuffed.whiteboardapp.pipeline.stages.DrawFramebufferStage
 import dk.scuffed.whiteboardapp.pipeline.stages.FramebufferToBitmapStage
+import dk.scuffed.whiteboardapp.segmentation.PPSegmentation
 
 class Pipeline(context: Context) {
 
@@ -56,13 +58,19 @@ class Pipeline(context: Context) {
             cameraXStage.frameBufferInfo,
             Bitmap.Config.ARGB_8888,
             this,
+        )
 
+        var segStage = SegmentationStage(
+            context,
+            PPSegmentation.Model.PORTRAIT,
+            convertBitmap.outputBitmap,
+            this
         )
 
         var convertFramebuffer = BitmapToFramebufferStage(
-            convertBitmap.outputBitmap,
+            segStage,
             this,
-            )
+        )
 
 
         DrawFramebufferStage(
