@@ -11,6 +11,9 @@ import dk.scuffed.whiteboardapp.pipeline.stages.BitmapToFramebufferStage
 import dk.scuffed.whiteboardapp.pipeline.stages.CameraXStage
 import dk.scuffed.whiteboardapp.pipeline.stages.DrawFramebufferStage
 import dk.scuffed.whiteboardapp.pipeline.stages.FramebufferToBitmapStage
+import dk.scuffed.whiteboardapp.pipeline.stages.openCVPlaceholders.OpenCVGaussianBlurStage
+import dk.scuffed.whiteboardapp.pipeline.stages.openCVPlaceholders.OpenCVGrayScaleStage
+import dk.scuffed.whiteboardapp.pipeline.stages.openCVPlaceholders.OpenCVSobelStage
 import dk.scuffed.whiteboardapp.segmentation.PPSegmentation
 
 class Pipeline(context: Context) {
@@ -47,34 +50,54 @@ class Pipeline(context: Context) {
         glDisable(GLES20.GL_DEPTH_TEST)
         glClearColor(1.0f, 0.0f, 1.0f, 1.0f)
 
+
+
         val cameraXStage = CameraXStage(
             context,
             this
         )
 
+        var grayscale = GrayscaleStage(
+            context,
+            cameraXStage.frameBufferInfo,
+            this,
+        )
 
-        var convertBitmap = FramebufferToBitmapStage(
+        var gaussianx = GaussianBlurStage(
+            context,
+            grayscale.frameBufferInfo,
+            true,
+            this,
+        )
+
+        var gaussiany = GaussianBlurStage(
+            context,
+            gaussianx.frameBufferInfo,
+            false,
+            this,
+        )
+
+        var sobelStage = SobelStage(
+            context,
+            gaussiany.frameBufferInfo,
+            this,
+        )
+
+        /*var convertBitmap = FramebufferToBitmapStage(
             cameraXStage.frameBufferInfo,
             Bitmap.Config.ARGB_8888,
             this,
         )
 
-        var segStage = SegmentationStage(
-            context,
-            PPSegmentation.Model.PORTRAIT,
-            convertBitmap.outputBitmap,
-            this
-        )
-
         var convertFramebuffer = BitmapToFramebufferStage(
-            segStage,
+            sobelCVStage,
             this,
         )
-
+        */
 
         DrawFramebufferStage(
             context,
-            convertFramebuffer.frameBufferInfo,
+            sobelStage.frameBufferInfo,
             this
         )
     }

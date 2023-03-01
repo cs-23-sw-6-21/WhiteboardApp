@@ -20,7 +20,7 @@ internal abstract class Stage(pipeline: Pipeline) {
         val endTime = System.nanoTime()
 
         //Calculate duration and convert to ms
-        val duration = (endTime - startTime) * 1000f
+        val duration = (endTime - startTime) / 1000000.0
 
         Log.d("Stages", "Stage: $name took $duration ms")
     }
