@@ -6,6 +6,10 @@ import android.opengl.GLES20
 import android.util.Size
 import dk.scuffed.whiteboardapp.opengl.*
 import dk.scuffed.whiteboardapp.pipeline.stages.*
+import dk.scuffed.whiteboardapp.pipeline.stages.openCVPlaceholders.OpenCVCannyStage
+import dk.scuffed.whiteboardapp.pipeline.stages.openCVPlaceholders.OpenCVGaussianBlurStage
+import dk.scuffed.whiteboardapp.pipeline.stages.openCVPlaceholders.OpenCVGrayScaleStage
+import dk.scuffed.whiteboardapp.pipeline.stages.openCVPlaceholders.OpenCVSobelStage
 import dk.scuffed.whiteboardapp.segmentation.PPSegmentation
 
 class Pipeline(context: Context) {
@@ -42,6 +46,8 @@ class Pipeline(context: Context) {
         glDisable(GLES20.GL_DEPTH_TEST)
         glClearColor(1.0f, 0.0f, 1.0f, 1.0f)
 
+
+
         val cameraXStage = CameraXStage(
             context,
             this
@@ -53,22 +59,67 @@ class Pipeline(context: Context) {
             this
         )
 
+        val grayscale = GrayscaleStage(
+            context,
+            cameraXStage.frameBufferInfo,
+            this,
+        )
 
+        val gaussianx = GaussianBlurStage(
+            context,
+            grayscale.frameBufferInfo,
+            true,
+            this,
+        )
+
+        val gaussiany = GaussianBlurStage(
+            context,
+            gaussianx.frameBufferInfo,
+            false,
+            this,
+        )
+
+        val sobelStage = SobelStage(
+            context,
+            gaussiany.frameBufferInfo,
+            this,
+        )
+
+        /*
+        val convertBitmap = FramebufferToBitmapStage(
+            cameraXStage.frameBufferInfo,
+            Bitmap.Config.ARGB_8888,
+            this,
+        )
+        
         var convertBitmap = FramebufferToBitmapStage(
             segPreProcess.frameBufferInfo,
             Bitmap.Config.ARGB_8888,
             this,
         )
 
-        val segStage = SegmentationStage(
+        
+       val segStage = SegmentationStage(
             context,
             PPSegmentation.Model.PORTRAIT,
+
+        val grayscaleCVStage = OpenCVGrayScaleStage(
             convertBitmap.outputBitmap,
-            this
+            this,
         )
 
-        val convertFramebuffer = BitmapToFramebufferStage(
-            segStage,
+        val gaussianBlurCVStage = OpenCVGaussianBlurStage(
+            grayscaleCVStage.outputBitmap,
+            this,
+        )
+
+        val sobelCVStage =  OpenCVSobelStage(
+            gaussianBlurCVStage.outputBitmap,
+            this,
+        )
+
+        val cannyCVStage = OpenCVCannyStage(
+            sobelCVStage.outputBitmap,
             this,
         )
 
@@ -83,6 +134,18 @@ class Pipeline(context: Context) {
         DrawFramebufferStage(
             context,
             segPostProcess.frameBufferInfo,
+            this
+        )
+
+        val convertFramebuffer = BitmapToFramebufferStage(
+            cannyCVStage,
+            this,
+        )
+        */
+
+        DrawFramebufferStage(
+            context,
+            sobelStage.frameBufferInfo,
             this
         )
     }
