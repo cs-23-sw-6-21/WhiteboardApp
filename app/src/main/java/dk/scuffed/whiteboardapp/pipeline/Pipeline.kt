@@ -6,10 +6,7 @@ import android.opengl.GLES20
 import android.util.Size
 import dk.scuffed.whiteboardapp.opengl.*
 import dk.scuffed.whiteboardapp.pipeline.stages.*
-import dk.scuffed.whiteboardapp.pipeline.stages.openCVPlaceholders.OpenCVCannyStage
-import dk.scuffed.whiteboardapp.pipeline.stages.openCVPlaceholders.OpenCVGaussianBlurStage
-import dk.scuffed.whiteboardapp.pipeline.stages.openCVPlaceholders.OpenCVGrayScaleStage
-import dk.scuffed.whiteboardapp.pipeline.stages.openCVPlaceholders.OpenCVSobelStage
+import dk.scuffed.whiteboardapp.pipeline.stages.openCVPlaceholders.OpenCVDilateStage
 import dk.scuffed.whiteboardapp.segmentation.PPSegmentation
 
 class Pipeline(context: Context) {
@@ -58,6 +55,37 @@ class Pipeline(context: Context) {
             Size(256, 144),
             this
         )
+        var convertBitmap = FramebufferToBitmapStage(
+            segPreProcess.frameBufferInfo,
+            Bitmap.Config.ARGB_8888,
+            this,
+        )
+
+        val segStage = SegmentationStage(
+            context,
+            PPSegmentation.Model.PORTRAIT,
+            convertBitmap.outputBitmap,
+            this,
+        )
+
+        val dilate = OpenCVDilateStage(
+            segStage,
+            this
+        )
+
+        val convertFramebuffer = BitmapToFramebufferStage(
+            dilate,
+            this,
+        )
+
+        var segPostProcess = SegmentationPostProcessingStage(
+            context,
+            convertFramebuffer.frameBufferInfo,
+            cameraXStage.frameBufferInfo.textureSize,
+            this
+        )
+
+
 
         val grayscale = GrayscaleStage(
             context,
@@ -123,12 +151,6 @@ class Pipeline(context: Context) {
             this,
         )
 
-        var segPostProcess = SegmentationPostProcessingStage(
-            context,
-            convertFramebuffer.frameBufferInfo,
-            cameraXStage.frameBufferInfo.textureSize,
-            this
-        )
 
 
         DrawFramebufferStage(
@@ -143,9 +165,37 @@ class Pipeline(context: Context) {
         )
         */
 
-        DrawFramebufferStage(
+        val storeStageFramebufferInfo : FramebufferInfo =
+            allocateFramebuffer(cameraXStage, GLES20.GL_RGBA,
+                cameraXStage.frameBufferInfo.textureSize.width,
+                cameraXStage.frameBufferInfo.textureSize.height
+            )
+
+        val maskStage = MaskingStage(
             context,
             sobelStage.frameBufferInfo,
+            storeStageFramebufferInfo,
+            segPostProcess.frameBufferInfo,
+            this
+        )
+
+        val storeStage = DelayStage(
+            context,
+            maskStage.frameBufferInfo,
+            storeStageFramebufferInfo,
+            this
+        )
+
+        val overlay = OverlayStage(
+            context,
+            maskStage.frameBufferInfo,
+            segPostProcess.frameBufferInfo,
+            this
+        )
+
+        DrawFramebufferStage(
+            context,
+            overlay.frameBufferInfo,
             this
         )
     }
