@@ -14,7 +14,7 @@ internal class SegmentationPostProcessingStage(
     private val inputFramebufferInfo: FramebufferInfo,
     private val outputResolution: Size,
     pipeline: Pipeline,
-) : GLOutputStage(context, R.raw.vertex_shader, R.raw.segment_postprocess, pipeline) {
+) : GLOutputStage(context, R.raw.vertex_shader, R.raw.segment_postprocess_shader, pipeline) {
     init {
         setup()
     }

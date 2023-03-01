@@ -14,7 +14,7 @@ internal class SegmentationPreProcessingStage(
     private val inputFramebufferInfo: FramebufferInfo,
     private val outputResolution: Size,
     pipeline: Pipeline,
-) : GLOutputStage(context, R.raw.vertex_shader, R.raw.segment_preprocess, pipeline) {
+) : GLOutputStage(context, R.raw.vertex_shader, R.raw.segment_preprocess_shader, pipeline) {
     init {
         setup()
     }
