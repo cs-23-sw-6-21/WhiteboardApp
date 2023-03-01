@@ -21,7 +21,7 @@ import java.nio.ShortBuffer
  * @property cornerPoints the array of coordinates for the different points that needs to be highlighted.
  */
 internal class DrawCornersStage(
-    val context: Context,
+    private val context: Context,
     pipeline: Pipeline,
     private vararg val cornerPoints: Vec2
 ) : Stage(pipeline) {

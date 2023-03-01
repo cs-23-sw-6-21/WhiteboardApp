@@ -12,7 +12,6 @@ import dk.scuffed.whiteboardapp.utils.Vec2
 import dk.scuffed.whiteboardapp.pipeline.stages.*
 import dk.scuffed.whiteboardapp.pipeline.stages.BitmapToFramebufferStage
 import dk.scuffed.whiteboardapp.pipeline.stages.CameraXStage
-import dk.scuffed.whiteboardapp.pipeline.stages.DrawFramebufferStage
 import dk.scuffed.whiteboardapp.pipeline.stages.FramebufferToBitmapStage
 import dk.scuffed.whiteboardapp.segmentation.PPSegmentation
 
