@@ -5,8 +5,9 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import dk.scuffed.whiteboardapp.openGL.OpenGLView
+import dk.scuffed.whiteboardapp.opengl.OpenGLView
 import org.opencv.android.OpenCVLoader
+
 
 class MainActivity : AppCompatActivity() {
     private val CAMERA_PERMISSION_REQUEST_CODE = 100

@@ -2,15 +2,10 @@ package dk.scuffed.whiteboardapp.pipeline
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.Color
 import android.opengl.GLES20
 import android.util.Size
-import dk.scuffed.whiteboardapp.openGL.*
+import dk.scuffed.whiteboardapp.opengl.*
 import dk.scuffed.whiteboardapp.pipeline.stages.*
-import dk.scuffed.whiteboardapp.pipeline.stages.BitmapToFramebufferStage
-import dk.scuffed.whiteboardapp.pipeline.stages.CameraXStage
-import dk.scuffed.whiteboardapp.pipeline.stages.DrawFramebufferStage
-import dk.scuffed.whiteboardapp.pipeline.stages.FramebufferToBitmapStage
 import dk.scuffed.whiteboardapp.pipeline.stages.openCVPlaceholders.OpenCVCannyStage
 import dk.scuffed.whiteboardapp.pipeline.stages.openCVPlaceholders.OpenCVGaussianBlurStage
 import dk.scuffed.whiteboardapp.pipeline.stages.openCVPlaceholders.OpenCVGrayScaleStage
@@ -90,6 +85,10 @@ class Pipeline(context: Context) {
             Bitmap.Config.ARGB_8888,
             this,
         )
+        
+       val segStage = SegmentationStage(
+            context,
+            PPSegmentation.Model.PORTRAIT,
 
         val grayscaleCVStage = OpenCVGrayScaleStage(
             convertBitmap.outputBitmap,
@@ -116,7 +115,6 @@ class Pipeline(context: Context) {
             this,
         )
         */
-
 
         DrawFramebufferStage(
             context,
