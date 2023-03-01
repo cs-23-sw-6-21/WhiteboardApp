@@ -12,7 +12,7 @@ void main() {
    vec2 uv = (gl_FragCoord.xy - offset-(resolution/2.0))/(resolution);
    float distance = uv.x*uv.x+uv.y*uv.y;
 
-   if((distance)>beginFadeOutRadius){
+   if(distance>beginFadeOutRadius){
       if (distance <= 0.25) {
          float alpha = map(distance, beginFadeOutRadius, 0.25, 1.0, 0.0);
          gl_FragColor = vec4(0.0, alpha, 0.0, 1.0);
