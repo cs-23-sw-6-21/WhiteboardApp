@@ -1,11 +1,17 @@
 package dk.scuffed.whiteboardapp.pipeline
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Color
 import android.opengl.GLES20
 import android.util.Size
 import dk.scuffed.whiteboardapp.openGL.*
+import dk.scuffed.whiteboardapp.pipeline.stages.*
+import dk.scuffed.whiteboardapp.pipeline.stages.BitmapToFramebufferStage
 import dk.scuffed.whiteboardapp.pipeline.stages.CameraXStage
 import dk.scuffed.whiteboardapp.pipeline.stages.DrawFramebufferStage
+import dk.scuffed.whiteboardapp.pipeline.stages.FramebufferToBitmapStage
+import dk.scuffed.whiteboardapp.segmentation.PPSegmentation
 
 class Pipeline(context: Context) {
 
@@ -46,9 +52,29 @@ class Pipeline(context: Context) {
             this
         )
 
+
+        var convertBitmap = FramebufferToBitmapStage(
+            cameraXStage.frameBufferInfo,
+            Bitmap.Config.ARGB_8888,
+            this,
+        )
+
+        var segStage = SegmentationStage(
+            context,
+            PPSegmentation.Model.PORTRAIT,
+            convertBitmap.outputBitmap,
+            this
+        )
+
+        var convertFramebuffer = BitmapToFramebufferStage(
+            segStage,
+            this,
+        )
+
+
         DrawFramebufferStage(
             context,
-            cameraXStage.frameBufferInfo,
+            convertFramebuffer.frameBufferInfo,
             this
         )
     }
@@ -57,7 +83,7 @@ class Pipeline(context: Context) {
         stages.forEach { stage -> stage.performUpdate() }
     }
 
-    internal fun allocateFramebuffer(stage: GLOutputStage, textureFormat: Int, width: Int, height: Int): FramebufferInfo {
+    internal fun allocateFramebuffer(stage: Stage, textureFormat: Int, width: Int, height: Int): FramebufferInfo {
         val fboHandle = glGenFramebuffer()
 
         val textureHandle = glGenTexture()
@@ -83,8 +109,8 @@ class Pipeline(context: Context) {
         stages.add(stage)
     }
 
-    internal fun allocateTextureUnit(stage: GLOutputStage): TextureUnitPair {
-        val textureUnitIndex = nextTextureUnit++
+    internal fun allocateTextureUnit(stage: Stage): TextureUnitPair {
+        val textureUnitIndex = nextTextureUnit++;
         val textureUnit = indexToTextureUnit[textureUnitIndex]
         return TextureUnitPair(textureUnit, textureUnitIndex)
     }
