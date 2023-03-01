@@ -2,29 +2,32 @@ package dk.scuffed.whiteboardapp.pipeline.stages
 
 import android.content.Context
 import android.opengl.GLES20
-import android.opengl.GLES20.*
 import dk.scuffed.whiteboardapp.R
-import dk.scuffed.whiteboardapp.openGL.glBindFramebuffer
-import dk.scuffed.whiteboardapp.openGL.loadShader
+import dk.scuffed.whiteboardapp.openGL.*
 import dk.scuffed.whiteboardapp.pipeline.FramebufferInfo
 import dk.scuffed.whiteboardapp.pipeline.Pipeline
 import dk.scuffed.whiteboardapp.pipeline.Stage
 import dk.scuffed.whiteboardapp.pipeline.readRawResource
+import dk.scuffed.whiteboardapp.utils.Vec2
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.FloatBuffer
 import java.nio.ShortBuffer
 
-
-class Vec2(val x: Int, val y: Int)
-
-
-internal class DrawCorners(
+/**
+ * This class is used to highlight different coordinates on the smartphone screen.
+ * @property context the app.
+ * @param pipeline the pipeline for analyses.
+ * @property cornerPoints the array of coordinates for the different points that needs to be highlighted.
+ */
+internal class DrawCornersStage(
     val context: Context,
     pipeline: Pipeline,
     private vararg val cornerPoints: Vec2
 ) : Stage(pipeline) {
-    private val pointSize: Int = 25
+    //The radius of the circle
+    private val circleRadius: Int = 25
+
     private var program: Int = 999
 
     private val cordsPerVertex = 3
@@ -72,16 +75,19 @@ internal class DrawCorners(
         setupGlProgram()
     }
 
+    /**
+     * This function loads our shaders based from the res/raw
+     */
     private fun setupGlProgram() {
         val vertexShaderCode = readRawResource(context, R.raw.vertex_shader)
         val fragmentShaderCode = readRawResource(context, R.raw.corner_shader)
 
-        val vertexShader = loadShader(GL_VERTEX_SHADER, vertexShaderCode)
-        val fragmentShader = loadShader(GL_FRAGMENT_SHADER, fragmentShaderCode)
-        program = dk.scuffed.whiteboardapp.openGL.glCreateProgram()
-        dk.scuffed.whiteboardapp.openGL.glAttachShader(program, vertexShader)
-        dk.scuffed.whiteboardapp.openGL.glAttachShader(program, fragmentShader)
-        dk.scuffed.whiteboardapp.openGL.glLinkProgram(program)
+        val vertexShader = loadShader(GLES20.GL_VERTEX_SHADER, vertexShaderCode)
+        val fragmentShader = loadShader(GLES20.GL_FRAGMENT_SHADER, fragmentShaderCode)
+        program = glCreateProgram()
+        glAttachShader(program, vertexShader)
+        glAttachShader(program, fragmentShader)
+        glLinkProgram(program)
 
     }
 
@@ -91,12 +97,16 @@ internal class DrawCorners(
         }
     }
 
-
+    /**
+     * This function draws a circle based on a point.
+     * @param point is a Vec2 which stores the x and y coordinate.
+     */
     private fun drawPoint(point: Vec2) {
-        val bottomLeftCorner = Vec2(point.x - pointSize, point.y - pointSize)
-        val topRightCorner = Vec2(point.x + pointSize, point.y + pointSize)
+        // Calculates the bottom left corner for the viewport
+        val bottomLeftCorner = Vec2(point.x - circleRadius, point.y - circleRadius)
+        // Calculates the top right corner for the viewport
+        val topRightCorner = Vec2(point.x + circleRadius, point.y + circleRadius)
 
-        val size = frameBufferInfo.textureSize
         glViewport(bottomLeftCorner.x, bottomLeftCorner.y, topRightCorner.x-bottomLeftCorner.x, topRightCorner.y-bottomLeftCorner.y)
 
         // Render to our framebuffer
@@ -110,7 +120,7 @@ internal class DrawCorners(
         glVertexAttribPointer(
             positionHandle,
             cordsPerVertex,
-            GL_FLOAT,
+            GLES20.GL_FLOAT,
             false,
             vertexStride,
             vertexBuffer
@@ -120,9 +130,10 @@ internal class DrawCorners(
         val resolutionHandle = glGetUniformLocation(program, "resolution")
         glUniform2f(
             resolutionHandle,
-            pointSize*2.toFloat(),
-            pointSize*2.toFloat()
+            circleRadius*2.toFloat(),
+            circleRadius*2.toFloat()
         )
+        // To know the viewport's start point is placed
         val offsetHandle = glGetUniformLocation(program, "offset")
         glUniform2f(
             offsetHandle,
@@ -130,9 +141,9 @@ internal class DrawCorners(
             bottomLeftCorner.y.toFloat()
         )
         glDrawElements(
-            GL_TRIANGLES,
+            GLES20.GL_TRIANGLES,
             drawOrder.size,
-            GL_UNSIGNED_SHORT,
+            GLES20.GL_UNSIGNED_SHORT,
             drawListBuffer
         )
         glDisableVertexAttribArray(positionHandle)

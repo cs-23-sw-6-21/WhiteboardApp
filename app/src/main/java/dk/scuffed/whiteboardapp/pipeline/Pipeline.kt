@@ -4,9 +4,9 @@ import android.content.Context
 import android.opengl.GLES20
 import android.util.Size
 import dk.scuffed.whiteboardapp.openGL.*
-import dk.scuffed.whiteboardapp.pipeline.stages.DrawCorners
+import dk.scuffed.whiteboardapp.pipeline.stages.DrawCornersStage
 import dk.scuffed.whiteboardapp.pipeline.stages.DrawFramebufferStage
-import dk.scuffed.whiteboardapp.pipeline.stages.Vec2
+import dk.scuffed.whiteboardapp.utils.Vec2
 
 class Pipeline(context: Context) {
 
@@ -47,7 +47,7 @@ class Pipeline(context: Context) {
             this
         )
 */
-        val cornerStage = DrawCorners(context, this, Vec2(500, 500), Vec2(100, 100))
+        val cornerStage = DrawCornersStage(context, this, Vec2(500, 500), Vec2(100, 100))
         DrawFramebufferStage(
             context,
             cornerStage.frameBufferInfo,
