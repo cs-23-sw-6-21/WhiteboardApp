@@ -3,6 +3,7 @@ package dk.scuffed.whiteboardapp.pipeline.stages.openCVPlaceholders
 import android.graphics.Bitmap
 import android.util.Size
 import dk.scuffed.whiteboardapp.pipeline.*
+import dk.scuffed.whiteboardapp.pipeline.stages.BitmapOutputStage
 import org.opencv.android.Utils
 import org.opencv.core.CvType
 import org.opencv.core.Mat

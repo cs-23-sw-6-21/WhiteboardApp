@@ -10,6 +10,7 @@ import android.util.Log
 import android.util.Size
 import dk.scuffed.whiteboardapp.R
 import dk.scuffed.whiteboardapp.pipeline.*
+import dk.scuffed.whiteboardapp.pipeline.stages.BitmapOutputStage
 import org.opencv.android.OpenCVLoader
 import org.opencv.android.Utils
 import org.opencv.core.Core
