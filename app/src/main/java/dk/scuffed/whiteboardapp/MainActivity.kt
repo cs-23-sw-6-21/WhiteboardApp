@@ -4,7 +4,7 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import dk.scuffed.whiteboardapp.openGL.OpenGLView
+import dk.scuffed.whiteboardapp.opengl.OpenGLView
 
 class MainActivity : AppCompatActivity() {
     private val CAMERA_PERMISSION_REQUEST_CODE = 100

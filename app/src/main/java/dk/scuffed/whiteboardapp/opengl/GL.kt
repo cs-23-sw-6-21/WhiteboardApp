@@ -1,4 +1,4 @@
-package dk.scuffed.whiteboardapp.openGL
+package dk.scuffed.whiteboardapp.opengl
 
 import android.opengl.GLES20
 import android.util.Log
@@ -202,19 +202,19 @@ fun glTexImage2D(target: Int, level: Int, format: Int, width: Int, height: Int, 
     logErrorIfAny("glTexImage2D")
 }
 
-fun glReadPixels(x: Int, y: Int, width: Int, height: Int, format: Int): ByteBuffer {
-    val bytesPerPixel = when (format) {
+fun glReadPixels(x: Int, y: Int, width: Int, height: Int, format: Int, byteBuffer: ByteBuffer){
+    assert(width * height * bytesPerPixel(format) <= byteBuffer.capacity())
+    GLES20.glReadPixels(x, y, width, height, format, GLES20.GL_UNSIGNED_BYTE, byteBuffer)
+    logErrorIfAny("glReadPixels")
+}
+
+fun bytesPerPixel(textureFormat: Int): Int {
+    return when (textureFormat) {
         GLES20.GL_RGBA -> 4
         GLES20.GL_RGB -> 3
         GLES20.GL_ALPHA -> 1
         else -> throw InvalidParameterException("format")
     }
-
-    val byteBuffer = ByteBuffer.allocateDirect((width - x) * (height - y) * bytesPerPixel)
-    GLES20.glReadPixels(x, y, width, height, format, GLES20.GL_UNSIGNED_BYTE, byteBuffer)
-    logErrorIfAny("glReadPixels")
-
-    return byteBuffer
 }
 
 fun glGenFramebuffers(count: Int, array: IntArray, offset: Int) {
