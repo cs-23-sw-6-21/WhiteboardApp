@@ -2,14 +2,23 @@ package dk.scuffed.whiteboardapp
 
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import dk.scuffed.whiteboardapp.opengl.OpenGLView
+import org.opencv.android.OpenCVLoader
+
 
 class MainActivity : AppCompatActivity() {
     private val CAMERA_PERMISSION_REQUEST_CODE = 100
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        if(!OpenCVLoader.initDebug()) {
+            Log.d("Whiteboard App", "Unable to load OpenCV");
+        } else {
+            Log.d("Whiteboard App", "OpenCV loaded");
+        }
 
         // Check and request camera permissions
         if (checkSelfPermission(android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
