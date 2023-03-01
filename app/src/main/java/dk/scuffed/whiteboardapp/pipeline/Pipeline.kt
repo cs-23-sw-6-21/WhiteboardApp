@@ -62,10 +62,16 @@ class Pipeline(context: Context) {
             context,
             this
         )
+        var segPreProcess = SegmentationPreProcessingStage(
+            context,
+            cameraXStage.frameBufferInfo,
+            Size(256, 144),
+            this
+        )
 
 
         var convertBitmap = FramebufferToBitmapStage(
-            cameraXStage.frameBufferInfo,
+            segPreProcess.frameBufferInfo,
             Bitmap.Config.ARGB_8888,
             this,
         )
@@ -82,10 +88,17 @@ class Pipeline(context: Context) {
             this,
         )
 
+        var segPostProcess = SegmentationPostProcessingStage(
+            context,
+            convertFramebuffer.frameBufferInfo,
+            cameraXStage.frameBufferInfo.textureSize,
+            this
+        )
+
 
         DrawFramebufferStage(
             context,
-            convertFramebuffer.frameBufferInfo,
+            segPostProcess.frameBufferInfo,
             this
         )
     }
