@@ -52,12 +52,11 @@ class PPSegmentation (context : Context, private val model : Model) {
         option.enableLiteInt8()
 
         // configure and initialize the model
-        segmentationModel.setVerticalScreenFlag(false)
+        segmentationModel.setVerticalScreenFlag(true)
         segmentationModel.init(modelFile, paramsFile, configFile, option)
 
         // set up segmentation result to use as buffer
-        segmentationResult.mEnableCxxBuffer = true
-
+        segmentationResult.setCxxBufferFlag(true)
     }
 
 }
