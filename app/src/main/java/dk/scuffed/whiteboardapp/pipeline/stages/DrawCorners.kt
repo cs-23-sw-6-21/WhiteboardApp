@@ -30,7 +30,7 @@ internal class DrawCorners(
     private val cordsPerVertex = 3
 
     //XYZ Coordinates for the square we are drawing on.
-    private val squareCords = floatArrayOf(
+    private val squareCoords = floatArrayOf(
         -1.0f, 1.0f, 0.0f,
         -1.0f, -1.0f, 0.0f,
         1.0f, -1.0f, 0.0f,
@@ -46,10 +46,10 @@ internal class DrawCorners(
     // initialize vertex byte buffer for shape coordinates
     private val vertexBuffer: FloatBuffer =
         // (# of coordinate values * 4 bytes per float)
-        ByteBuffer.allocateDirect(squareCords.size * 4).run {
+        ByteBuffer.allocateDirect(squareCoords.size * 4).run {
             order(ByteOrder.nativeOrder())
             asFloatBuffer().apply {
-                put(squareCords)
+                put(squareCoords)
                 position(0)
             }
         }
@@ -72,7 +72,7 @@ internal class DrawCorners(
         setupGlProgram()
     }
 
-    protected fun setupGlProgram() {
+    private fun setupGlProgram() {
         val vertexShaderCode = readRawResource(context, R.raw.vertex_shader)
         val fragmentShaderCode = readRawResource(context, R.raw.corner_shader)
 
@@ -92,7 +92,7 @@ internal class DrawCorners(
     }
 
 
-    fun drawPoint(point: Vec2) {
+    private fun drawPoint(point: Vec2) {
         val bottomLeftCorner = Vec2(point.x - pointSize, point.y - pointSize)
         val topRightCorner = Vec2(point.x + pointSize, point.y + pointSize)
 
@@ -129,8 +129,6 @@ internal class DrawCorners(
             bottomLeftCorner.x.toFloat(),
             bottomLeftCorner.y.toFloat()
         )
-
-
         glDrawElements(
             GL_TRIANGLES,
             drawOrder.size,
@@ -138,11 +136,5 @@ internal class DrawCorners(
             drawListBuffer
         )
         glDisableVertexAttribArray(positionHandle)
-    }
-
-    private fun cornerCoordinatesForASquare(point: Vec2): FloatArray {
-        return floatArrayOf(
-
-        )
     }
 }
