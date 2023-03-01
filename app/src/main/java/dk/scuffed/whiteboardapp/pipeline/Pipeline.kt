@@ -4,8 +4,9 @@ import android.content.Context
 import android.opengl.GLES20
 import android.util.Size
 import dk.scuffed.whiteboardapp.openGL.*
-import dk.scuffed.whiteboardapp.pipeline.stages.CameraXStage
+import dk.scuffed.whiteboardapp.pipeline.stages.DrawCorners
 import dk.scuffed.whiteboardapp.pipeline.stages.DrawFramebufferStage
+import dk.scuffed.whiteboardapp.pipeline.stages.Vec2
 
 class Pipeline(context: Context) {
 
@@ -40,15 +41,16 @@ class Pipeline(context: Context) {
         glDisable(GLES20.GL_CULL_FACE)
         glDisable(GLES20.GL_DEPTH_TEST)
         glClearColor(1.0f, 0.0f, 1.0f, 1.0f)
-
+/*
         var cameraXStage = CameraXStage(
             context,
             this
         )
-
+*/
+        val cornerStage = DrawCorners(context, this, Vec2(500, 500), Vec2(100, 100))
         DrawFramebufferStage(
             context,
-            cameraXStage.frameBufferInfo,
+            cornerStage.frameBufferInfo,
             this
         )
     }
@@ -57,7 +59,7 @@ class Pipeline(context: Context) {
         stages.forEach { stage -> stage.performUpdate() }
     }
 
-    internal fun allocateFramebuffer(stage: GLOutputStage, textureFormat: Int, width: Int, height: Int): FramebufferInfo {
+    internal fun allocateFramebuffer(stage: Stage, textureFormat: Int, width: Int, height: Int): FramebufferInfo {
         val fboHandle = glGenFramebuffer()
 
         val textureHandle = glGenTexture()
@@ -83,7 +85,7 @@ class Pipeline(context: Context) {
         stages.add(stage)
     }
 
-    internal fun allocateTextureUnit(stage: GLOutputStage): TextureUnitPair {
+    internal fun allocateTextureUnit(stage: Stage): TextureUnitPair {
         val textureUnitIndex = nextTextureUnit++;
         val textureUnit = indexToTextureUnit[textureUnitIndex]
         return TextureUnitPair(textureUnit, textureUnitIndex)
