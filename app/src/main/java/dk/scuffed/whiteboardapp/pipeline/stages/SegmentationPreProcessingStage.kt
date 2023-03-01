@@ -4,10 +4,7 @@ import android.content.Context
 import android.opengl.GLES20
 import android.util.Size
 import dk.scuffed.whiteboardapp.R
-import dk.scuffed.whiteboardapp.openGL.glActiveTexture
-import dk.scuffed.whiteboardapp.openGL.glBindTexture
-import dk.scuffed.whiteboardapp.openGL.glGetUniformLocation
-import dk.scuffed.whiteboardapp.openGL.glUniform1i
+import dk.scuffed.whiteboardapp.opengl.*
 import dk.scuffed.whiteboardapp.pipeline.FramebufferInfo
 import dk.scuffed.whiteboardapp.pipeline.GLOutputStage
 import dk.scuffed.whiteboardapp.pipeline.Pipeline
