@@ -2,17 +2,10 @@ package dk.scuffed.whiteboardapp.pipeline
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.Color
 import android.opengl.GLES20
 import android.util.Size
-import dk.scuffed.whiteboardapp.openGL.*
-import dk.scuffed.whiteboardapp.pipeline.stages.DrawCornersStage
-import dk.scuffed.whiteboardapp.pipeline.stages.DrawFramebufferStage
-import dk.scuffed.whiteboardapp.utils.Vec2
+import dk.scuffed.whiteboardapp.opengl.*
 import dk.scuffed.whiteboardapp.pipeline.stages.*
-import dk.scuffed.whiteboardapp.pipeline.stages.BitmapToFramebufferStage
-import dk.scuffed.whiteboardapp.pipeline.stages.CameraXStage
-import dk.scuffed.whiteboardapp.pipeline.stages.FramebufferToBitmapStage
 import dk.scuffed.whiteboardapp.segmentation.PPSegmentation
 
 class Pipeline(context: Context) {
@@ -48,15 +41,6 @@ class Pipeline(context: Context) {
         glDisable(GLES20.GL_CULL_FACE)
         glDisable(GLES20.GL_DEPTH_TEST)
         glClearColor(1.0f, 0.0f, 1.0f, 1.0f)
-/*
-        val cornerStage = DrawCornersStage(context, this, Vec2(500, 500), Vec2(100, 100))
-        DrawFramebufferStage(
-            context,
-            cornerStage.frameBufferInfo,
-            this
-            )
-            
-*/
 
         val cameraXStage = CameraXStage(
             context,
@@ -64,20 +48,20 @@ class Pipeline(context: Context) {
         )
 
 
-        var convertBitmap = FramebufferToBitmapStage(
+        val convertBitmap = FramebufferToBitmapStage(
             cameraXStage.frameBufferInfo,
             Bitmap.Config.ARGB_8888,
             this,
         )
 
-        var segStage = SegmentationStage(
+        val segStage = SegmentationStage(
             context,
             PPSegmentation.Model.PORTRAIT,
             convertBitmap.outputBitmap,
             this
         )
 
-        var convertFramebuffer = BitmapToFramebufferStage(
+        val convertFramebuffer = BitmapToFramebufferStage(
             segStage,
             this,
         )
