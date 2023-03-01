@@ -52,6 +52,12 @@ class Pipeline(context: Context) {
             context,
             this
         )
+        var segPreProcess = SegmentationPreProcessingStage(
+            context,
+            cameraXStage.frameBufferInfo,
+            Size(256, 144),
+            this
+        )
 
         val grayscale = GrayscaleStage(
             context,
@@ -86,6 +92,13 @@ class Pipeline(context: Context) {
             this,
         )
         
+        var convertBitmap = FramebufferToBitmapStage(
+            segPreProcess.frameBufferInfo,
+            Bitmap.Config.ARGB_8888,
+            this,
+        )
+
+        
        val segStage = SegmentationStage(
             context,
             PPSegmentation.Model.PORTRAIT,
@@ -108,6 +121,20 @@ class Pipeline(context: Context) {
         val cannyCVStage = OpenCVCannyStage(
             sobelCVStage.outputBitmap,
             this,
+        )
+
+        var segPostProcess = SegmentationPostProcessingStage(
+            context,
+            convertFramebuffer.frameBufferInfo,
+            cameraXStage.frameBufferInfo.textureSize,
+            this
+        )
+
+
+        DrawFramebufferStage(
+            context,
+            segPostProcess.frameBufferInfo,
+            this
         )
 
         val convertFramebuffer = BitmapToFramebufferStage(

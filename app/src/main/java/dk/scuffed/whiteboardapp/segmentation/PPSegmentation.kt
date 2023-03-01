@@ -20,8 +20,11 @@ class PPSegmentation (context : Context, private val model : Model) {
     private val segmentationResult : SegmentationResult = SegmentationResult()
 
     fun segment(input : Bitmap) : Bitmap{
-        // predict on the downscaled input
-        segmentationModel.predict(input.scale(model.width, model.height), segmentationResult)
+        if (input.width !=  model.width || input.height !=  model.height){
+            throw Exception("Resolution of input bitmap to segmentor ("+input.width + "," + input.height +") doesnt match required resolution of("+model.width + "," + model.height +")");
+        }
+
+        segmentationModel.predict(input, segmentationResult)
 
         // create and return a bitmap with result from prediction
         val bitmapResult : Bitmap = Bitmap.createBitmap(model.width, model.height, Bitmap.Config.ARGB_8888)
@@ -43,17 +46,17 @@ class PPSegmentation (context : Context, private val model : Model) {
 
         // configure how the model is run
         val option = RuntimeOption()
-        option.mCpuThreadNum = 1
-        option.mLitePowerMode = LitePowerMode.LITE_POWER_HIGH
-        option.mEnableLiteFp16 = true
+        option.setCpuThreadNum(4)
+        option.setLitePowerMode(LitePowerMode.LITE_POWER_HIGH)
+        option.enableLiteFp16()
+        option.enableLiteInt8()
 
         // configure and initialize the model
         segmentationModel.setVerticalScreenFlag(true)
         segmentationModel.init(modelFile, paramsFile, configFile, option)
 
         // set up segmentation result to use as buffer
-        segmentationResult.mEnableCxxBuffer = true
-
+        segmentationResult.setCxxBufferFlag(true)
     }
 
 }
