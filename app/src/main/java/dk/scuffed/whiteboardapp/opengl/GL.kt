@@ -1,4 +1,4 @@
-package dk.scuffed.whiteboardapp.openGL
+package dk.scuffed.whiteboardapp.opengl
 
 import android.opengl.GLES20
 import android.util.Log

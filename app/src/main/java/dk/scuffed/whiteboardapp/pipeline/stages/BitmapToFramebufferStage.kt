@@ -1,17 +1,12 @@
 package dk.scuffed.whiteboardapp.pipeline.stages
 
-import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.Color
 import android.opengl.GLES20
 import android.opengl.GLUtils
 import android.util.Size
-import dk.scuffed.whiteboardapp.R
-import dk.scuffed.whiteboardapp.openGL.*
+import dk.scuffed.whiteboardapp.opengl.*
 import dk.scuffed.whiteboardapp.pipeline.*
 import dk.scuffed.whiteboardapp.pipeline.FramebufferInfo
 import dk.scuffed.whiteboardapp.pipeline.Stage
-import java.nio.ByteBuffer
 
 internal class BitmapToFramebufferStage(private val inputBitmap: BitmapOutputStage, private val pipeline: Pipeline) : Stage(pipeline) {
 

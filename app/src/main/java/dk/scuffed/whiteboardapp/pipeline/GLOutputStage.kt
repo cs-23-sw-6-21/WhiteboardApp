@@ -2,11 +2,8 @@ package dk.scuffed.whiteboardapp.pipeline
 
 import android.content.Context
 import android.opengl.GLES20
-import android.util.Log
 import android.util.Size
-import dk.scuffed.whiteboardapp.R
-import dk.scuffed.whiteboardapp.openGL.*
-import dk.scuffed.whiteboardapp.pipeline.readRawResource
+import dk.scuffed.whiteboardapp.opengl.*
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.FloatBuffer
