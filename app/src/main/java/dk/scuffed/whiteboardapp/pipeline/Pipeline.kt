@@ -47,8 +47,7 @@ class Pipeline(context: Context) {
         glDisable(GLES20.GL_DEPTH_TEST)
         glClearColor(1.0f, 0.0f, 1.0f, 1.0f)
 
-
-        var cameraXStage = CameraXStage(
+        val cameraXStage = CameraXStage(
             context,
             this
         )
