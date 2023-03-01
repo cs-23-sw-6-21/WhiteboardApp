@@ -20,7 +20,7 @@ internal class OpenCVCannyStage(
 
         var edges = Mat(img.size(), CvType.CV_8UC1)
 
-        Imgproc.Canny(edges, edges, 80.0, 130.0)
+        Imgproc.Canny(img, edges, 80.0, 130.0)
 
         Utils.matToBitmap(edges, outputBitmap)
     }

@@ -11,6 +11,7 @@ import dk.scuffed.whiteboardapp.pipeline.stages.BitmapToFramebufferStage
 import dk.scuffed.whiteboardapp.pipeline.stages.CameraXStage
 import dk.scuffed.whiteboardapp.pipeline.stages.DrawFramebufferStage
 import dk.scuffed.whiteboardapp.pipeline.stages.FramebufferToBitmapStage
+import dk.scuffed.whiteboardapp.pipeline.stages.openCVPlaceholders.OpenCVCannyStage
 import dk.scuffed.whiteboardapp.pipeline.stages.openCVPlaceholders.OpenCVGaussianBlurStage
 import dk.scuffed.whiteboardapp.pipeline.stages.openCVPlaceholders.OpenCVGrayScaleStage
 import dk.scuffed.whiteboardapp.pipeline.stages.openCVPlaceholders.OpenCVSobelStage
@@ -57,43 +58,65 @@ class Pipeline(context: Context) {
             this
         )
 
-        var grayscale = GrayscaleStage(
+        val grayscale = GrayscaleStage(
             context,
             cameraXStage.frameBufferInfo,
             this,
         )
 
-        var gaussianx = GaussianBlurStage(
+        val gaussianx = GaussianBlurStage(
             context,
             grayscale.frameBufferInfo,
             true,
             this,
         )
 
-        var gaussiany = GaussianBlurStage(
+        val gaussiany = GaussianBlurStage(
             context,
             gaussianx.frameBufferInfo,
             false,
             this,
         )
 
-        var sobelStage = SobelStage(
+        val sobelStage = SobelStage(
             context,
             gaussiany.frameBufferInfo,
             this,
         )
 
-        /*var convertBitmap = FramebufferToBitmapStage(
+        /*
+        val convertBitmap = FramebufferToBitmapStage(
             cameraXStage.frameBufferInfo,
             Bitmap.Config.ARGB_8888,
             this,
         )
 
-        var convertFramebuffer = BitmapToFramebufferStage(
-            sobelCVStage,
+        val grayscaleCVStage = OpenCVGrayScaleStage(
+            convertBitmap.outputBitmap,
+            this,
+        )
+
+        val gaussianBlurCVStage = OpenCVGaussianBlurStage(
+            grayscaleCVStage.outputBitmap,
+            this,
+        )
+
+        val sobelCVStage =  OpenCVSobelStage(
+            gaussianBlurCVStage.outputBitmap,
+            this,
+        )
+
+        val cannyCVStage = OpenCVCannyStage(
+            sobelCVStage.outputBitmap,
+            this,
+        )
+
+        val convertFramebuffer = BitmapToFramebufferStage(
+            cannyCVStage,
             this,
         )
         */
+
 
         DrawFramebufferStage(
             context,
