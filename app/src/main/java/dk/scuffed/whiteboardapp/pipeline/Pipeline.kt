@@ -49,13 +49,15 @@ class Pipeline(context: Context) {
             context,
             this
         )
-        var segPreProcess = SegmentationPreProcessingStage(
+
+        val segPreProcess = SegmentationPreProcessingStage(
             context,
             cameraXStage.frameBufferInfo,
             Size(256, 144),
             this
         )
-        var convertBitmap = FramebufferToBitmapStage(
+
+        val convertBitmap = FramebufferToBitmapStage(
             segPreProcess.frameBufferInfo,
             Bitmap.Config.ARGB_8888,
             this,
@@ -70,6 +72,7 @@ class Pipeline(context: Context) {
 
         val dilate = OpenCVDilateStage(
             segStage,
+            1.0,
             this
         )
 
@@ -78,7 +81,7 @@ class Pipeline(context: Context) {
             this,
         )
 
-        var segPostProcess = SegmentationPostProcessingStage(
+        val segPostProcess = SegmentationPostProcessingStage(
             context,
             convertFramebuffer.frameBufferInfo,
             cameraXStage.frameBufferInfo.textureSize,
