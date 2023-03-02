@@ -22,7 +22,7 @@ internal class OpenCVDilateStage(
         Utils.bitmapToMat(bitmap.outputBitmap, img)
 
         var dilated = Mat(img.size(), CvType.CV_8UC1)
-        val kernelSize = 4.0
+        val kernelSize = 1.0
         val elementType = Imgproc.CV_SHAPE_RECT;
         val element = Imgproc.getStructuringElement(
             elementType, org.opencv.core.Size(2 * kernelSize + 1, 2 * kernelSize + 1),
