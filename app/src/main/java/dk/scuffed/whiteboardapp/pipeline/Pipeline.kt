@@ -8,12 +8,12 @@ import android.util.Size
 import dk.scuffed.whiteboardapp.openGL.*
 import dk.scuffed.whiteboardapp.pipeline.stages.DrawCornersStage
 import dk.scuffed.whiteboardapp.pipeline.stages.DrawFramebufferStage
-import dk.scuffed.whiteboardapp.utils.Vec2
 import dk.scuffed.whiteboardapp.pipeline.stages.*
 import dk.scuffed.whiteboardapp.pipeline.stages.BitmapToFramebufferStage
 import dk.scuffed.whiteboardapp.pipeline.stages.CameraXStage
 import dk.scuffed.whiteboardapp.pipeline.stages.FramebufferToBitmapStage
 import dk.scuffed.whiteboardapp.segmentation.PPSegmentation
+import dk.scuffed.whiteboardapp.utils.Vec2Int
 
 class Pipeline(context: Context) {
 
@@ -48,44 +48,18 @@ class Pipeline(context: Context) {
         glDisable(GLES20.GL_CULL_FACE)
         glDisable(GLES20.GL_DEPTH_TEST)
         glClearColor(1.0f, 0.0f, 1.0f, 1.0f)
-/*
-        val cornerStage = DrawCornersStage(context, this, Vec2(500, 500), Vec2(100, 100))
+
+
+        val cornerStage = DrawCornersStage(context, this, Vec2Int(250, 250), Vec2Int(500, 350), Vec2Int(550, 1500), Vec2Int(250, 1000))
         DrawFramebufferStage(
             context,
             cornerStage.frameBufferInfo,
             this
-            )
-            
-*/
-
-        val cameraXStage = CameraXStage(
-            context,
-            this
         )
-
-
-        var convertBitmap = FramebufferToBitmapStage(
-            cameraXStage.frameBufferInfo,
-            Bitmap.Config.ARGB_8888,
-            this,
-        )
-
-        var segStage = SegmentationStage(
-            context,
-            PPSegmentation.Model.PORTRAIT,
-            convertBitmap.outputBitmap,
-            this
-        )
-
-        var convertFramebuffer = BitmapToFramebufferStage(
-            segStage,
-            this,
-        )
-
-
+        val lines: DrawLinesStage = DrawLinesStage(context, this, Vec2Int(250, 250), Vec2Int(500, 350), Vec2Int(550, 1500), Vec2Int(250, 1000))
         DrawFramebufferStage(
             context,
-            convertFramebuffer.frameBufferInfo,
+            lines.frameBufferInfo,
             this
         )
     }

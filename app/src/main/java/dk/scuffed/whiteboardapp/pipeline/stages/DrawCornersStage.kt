@@ -8,7 +8,7 @@ import dk.scuffed.whiteboardapp.pipeline.FramebufferInfo
 import dk.scuffed.whiteboardapp.pipeline.Pipeline
 import dk.scuffed.whiteboardapp.pipeline.Stage
 import dk.scuffed.whiteboardapp.pipeline.readRawResource
-import dk.scuffed.whiteboardapp.utils.Vec2
+import dk.scuffed.whiteboardapp.utils.Vec2Int
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.FloatBuffer
@@ -23,7 +23,7 @@ import java.nio.ShortBuffer
 internal class DrawCornersStage(
     private val context: Context,
     pipeline: Pipeline,
-    private vararg val cornerPoints: Vec2
+    private vararg val cornerPoints: Vec2Int
 ) : Stage(pipeline) {
     //The radius of the circle
     private val circleRadius: Int = 25
@@ -33,12 +33,7 @@ internal class DrawCornersStage(
     private val cordsPerVertex = 3
 
     //XYZ Coordinates for the square we are drawing on.
-    private val squareCoords = floatArrayOf(
-        -1.0f, 1.0f, 0.0f,
-        -1.0f, -1.0f, 0.0f,
-        1.0f, -1.0f, 0.0f,
-        1.0f, 1.0f,0.0f
-    )
+    private val squareCoords = floatArrayOf()
 
     // order to draw vertices
     private val drawOrder = shortArrayOf(0, 1, 2, 0, 2, 3)
@@ -88,7 +83,6 @@ internal class DrawCornersStage(
         glAttachShader(program, vertexShader)
         glAttachShader(program, fragmentShader)
         glLinkProgram(program)
-
     }
 
     override fun update() {
@@ -101,11 +95,11 @@ internal class DrawCornersStage(
      * This function draws a circle based on a point.
      * @param point is a Vec2 which stores the x and y coordinate.
      */
-    private fun drawPoint(point: Vec2) {
+    private fun drawPoint(point: Vec2Int) {
         // Calculates the bottom left corner for the viewport
-        val bottomLeftCorner = Vec2(point.x - circleRadius, point.y - circleRadius)
+        val bottomLeftCorner = Vec2Int(point.x - circleRadius, point.y - circleRadius)
         // Calculates the top right corner for the viewport
-        val topRightCorner = Vec2(point.x + circleRadius, point.y + circleRadius)
+        val topRightCorner = Vec2Int(point.x + circleRadius, point.y + circleRadius)
 
         glViewport(bottomLeftCorner.x, bottomLeftCorner.y, topRightCorner.x-bottomLeftCorner.x, topRightCorner.y-bottomLeftCorner.y)
 
