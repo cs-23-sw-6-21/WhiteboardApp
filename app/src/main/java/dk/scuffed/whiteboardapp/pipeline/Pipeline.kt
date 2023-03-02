@@ -179,7 +179,7 @@ class Pipeline(context: Context) {
             this
         )
 
-        val storeStage = DelayStage(
+        val storeStage = StoreStage(
             context,
             maskStage.frameBufferInfo,
             storeStageFramebufferInfo,
