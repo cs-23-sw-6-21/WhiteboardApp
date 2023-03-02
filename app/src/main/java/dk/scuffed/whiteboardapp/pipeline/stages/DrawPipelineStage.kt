@@ -46,7 +46,7 @@ internal class DrawPipelineStage(
     init {
         SetStage(this)
         setup()
-        currentStageIndex = stages.lastIndex
+        currentStageIndex = stages.lastIndex - 1
         bitmapFramebuffer = allocateBitmapTexture()
     }
 
