@@ -143,9 +143,9 @@ class Pipeline(context: Context) {
         )
         */
 
-        DrawFramebufferStage(
+        DrawPipelineStage(
             context,
-            sobelStage.frameBufferInfo,
+            stages,
             this
         )
     }

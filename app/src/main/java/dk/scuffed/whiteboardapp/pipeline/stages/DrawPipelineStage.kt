@@ -5,6 +5,8 @@ import android.opengl.GLES20
 import android.opengl.GLUtils
 import android.util.Log
 import android.util.Size
+import android.view.View.OnTouchListener
+import android.view.ViewTreeObserver.OnTouchModeChangeListener
 import androidx.fragment.app.FragmentManager
 import dk.scuffed.whiteboardapp.R
 import dk.scuffed.whiteboardapp.opengl.*
@@ -19,6 +21,20 @@ internal class DrawPipelineStage(
     private val pipeline: Pipeline) : GLOutputStage(context, R.raw.vertex_shader, R.raw.passthrough_shader, pipeline)
 {
 
+    companion object {
+        private var pipelinestage: DrawPipelineStage? = null
+
+        private fun SetStage(stage: DrawPipelineStage){
+            pipelinestage = stage
+        }
+        fun next(){
+            pipelinestage?.nextStage()
+        }
+        fun prev(){
+            pipelinestage?.prevStage()
+        }
+    }
+
     // TODO Get this from the view.
     private val resolution: Size = Size(1080, 1920)
 
@@ -28,6 +44,7 @@ internal class DrawPipelineStage(
     private var bitmapFramebuffer: FramebufferInfo
 
     init {
+        SetStage(this)
         setup()
         currentStageIndex = stages.lastIndex
         bitmapFramebuffer = allocateBitmapTexture()
