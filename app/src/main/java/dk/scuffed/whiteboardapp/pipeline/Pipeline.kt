@@ -212,9 +212,9 @@ class Pipeline(context: Context) {
             this
         )
 
-        DrawFramebufferStage(
+        DrawPipelineStage(
             context,
-            overlay.frameBufferInfo,
+            stages,
             this
         )
     }
