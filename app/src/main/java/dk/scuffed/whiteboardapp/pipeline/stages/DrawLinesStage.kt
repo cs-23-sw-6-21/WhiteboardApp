@@ -3,7 +3,7 @@ package dk.scuffed.whiteboardapp.pipeline.stages
 import android.content.Context
 import android.opengl.GLES20
 import dk.scuffed.whiteboardapp.R
-import dk.scuffed.whiteboardapp.openGL.*
+import dk.scuffed.whiteboardapp.opengl.*
 import dk.scuffed.whiteboardapp.pipeline.FramebufferInfo
 import dk.scuffed.whiteboardapp.pipeline.Pipeline
 import dk.scuffed.whiteboardapp.pipeline.Stage
@@ -34,8 +34,7 @@ internal class DrawLinesStage(
     private var squareCoords = FloatArray(cornerPoints.size*3)
 
     // order to draw vertices
-    //private val drawOrder = shortArrayOf(0, 1, 2, 0, 2, 3)
-    private val drawOrder = shortArrayOf(0, 1, 2, 0, 2, 3, 4, 5, 6, 4, 6, 7, 8, 9, 10, 8, 10, 11, 12, 13, 14, 12, 14, 15)
+    private val drawOrder = genericDrawOrder(cornerPoints.size)
 
     // 4 bytes per vertex
     private val vertexStride: Int = cordsPerVertex * 4
@@ -185,5 +184,22 @@ internal class DrawLinesStage(
             drawListBuffer
         )
         glDisableVertexAttribArray(positionHandle)
+    }
+
+    /**
+     * Returns the draw order for the squares in a ShortArray
+     */
+    private fun genericDrawOrder(numbersOfSquares: Int): ShortArray {
+        var drawOrder: ShortArray = ShortArray(numbersOfSquares*6)
+        //The specific draw order is set in the for loop
+        for (i: Int in 0 until numbersOfSquares){
+            drawOrder[i*6] = (i*4).toShort()
+            drawOrder[i*6+1] = (i*4+1).toShort()
+            drawOrder[i*6+2] = (i*4+2).toShort()
+            drawOrder[i*6+3] = (i*4).toShort()
+            drawOrder[i*6+4] = (i*4+2).toShort()
+            drawOrder[i*6+5] = (i*4+3).toShort()
+        }
+        return drawOrder
     }
 }
