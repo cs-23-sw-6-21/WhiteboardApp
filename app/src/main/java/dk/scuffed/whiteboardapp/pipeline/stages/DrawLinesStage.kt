@@ -22,7 +22,10 @@ internal class DrawLinesStage(
     private vararg val cornerPoints: Vec2Int
 ) : Stage(pipeline) {
     private var program: Int = 999
+
+    //Half the line width
     private val lineWidth: Float = 5.0f
+    //Number of vertexes
     private val cordsPerVertex = 3
 
     // The width of the smartphone's resolution
@@ -78,7 +81,7 @@ internal class DrawLinesStage(
 
     /**
      * Returns the angle between two vectors based on the x axe.
-        */
+     */
     private fun angleBetweenTwoVec(vec1: Vec2Int, vec2: Vec2Int): Float{
         val vec = vec2.subtact(vec1)
         return (atan2(vec.y.toFloat(), vec.x.toFloat())+(PI/2.0f)).toFloat()
@@ -136,6 +139,7 @@ internal class DrawLinesStage(
      */
     private fun drawLines() {
         val array: ArrayList<Float> = ArrayList()
+        //The array of corners for the vertexBuffer
         for (i in cornerPoints.indices){
             if(i == cornerPoints.lastIndex){
                 array.addAll(arrayOfCorners(cornerPoints[i], cornerPoints[0]))
@@ -143,7 +147,9 @@ internal class DrawLinesStage(
             }
             array.addAll(arrayOfCorners(cornerPoints[i], cornerPoints[i+1]))
         }
+        //Convert the array of corners for all the squares to a FloatArray
         squareCoords = array.toFloatArray()
+
         val vertexBuffer: FloatBuffer =
             // (# of coordinate values * 4 bytes per float)
             ByteBuffer.allocateDirect(squareCoords.size * 4).run {
@@ -188,11 +194,12 @@ internal class DrawLinesStage(
 
     /**
      * Returns the draw order for the squares in a ShortArray
+     * @param numbers The numbers of squares
      */
-    private fun genericDrawOrder(numbersOfSquares: Int): ShortArray {
-        var drawOrder: ShortArray = ShortArray(numbersOfSquares*6)
+    private fun genericDrawOrder(numbers: Int): ShortArray {
+        var drawOrder: ShortArray = ShortArray(numbers*6)
         //The specific draw order is set in the for loop
-        for (i: Int in 0 until numbersOfSquares){
+        for (i: Int in 0 until numbers){
             drawOrder[i*6] = (i*4).toShort()
             drawOrder[i*6+1] = (i*4+1).toShort()
             drawOrder[i*6+2] = (i*4+2).toShort()
