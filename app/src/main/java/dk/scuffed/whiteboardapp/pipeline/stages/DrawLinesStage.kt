@@ -37,7 +37,7 @@ internal class DrawLinesStage(
     private var squareCoords = FloatArray(cornerPoints.size*3)
 
     // order to draw vertices
-    private val drawOrder = genericDrawOrder(cornerPoints.size)
+    private val drawOrder = createDrawOrder(cornerPoints.size)
 
     // 4 bytes per vertex
     private val vertexStride: Int = cordsPerVertex * 4
@@ -138,17 +138,8 @@ internal class DrawLinesStage(
      * Draws the line between the coordinates
      */
     private fun drawLines() {
-        val array: ArrayList<Float> = ArrayList()
-        //The array of corners for the vertexBuffer
-        for (i in cornerPoints.indices){
-            if(i == cornerPoints.lastIndex){
-                array.addAll(arrayOfCorners(cornerPoints[i], cornerPoints[0]))
-                break
-            }
-            array.addAll(arrayOfCorners(cornerPoints[i], cornerPoints[i+1]))
-        }
-        //Convert the array of corners for all the squares to a FloatArray
-        squareCoords = array.toFloatArray()
+        //Sets the coordinates for the squares
+        squareCoords = createArrayOfCorners()
 
         val vertexBuffer: FloatBuffer =
             // (# of coordinate values * 4 bytes per float)
@@ -194,12 +185,12 @@ internal class DrawLinesStage(
 
     /**
      * Returns the draw order for the squares in a ShortArray
-     * @param numbers The numbers of squares
+     * @param squares The numbers of squares
      */
-    private fun genericDrawOrder(numbers: Int): ShortArray {
-        var drawOrder: ShortArray = ShortArray(numbers*6)
+    private fun createDrawOrder(squares: Int): ShortArray {
+        var drawOrder: ShortArray = ShortArray(squares*6)
         //The specific draw order is set in the for loop
-        for (i: Int in 0 until numbers){
+        for (i: Int in 0 until squares){
             drawOrder[i*6] = (i*4).toShort()
             drawOrder[i*6+1] = (i*4+1).toShort()
             drawOrder[i*6+2] = (i*4+2).toShort()
@@ -208,5 +199,25 @@ internal class DrawLinesStage(
             drawOrder[i*6+5] = (i*4+3).toShort()
         }
         return drawOrder
+    }
+    
+    /**
+     * This function returns the full array of coordinates for every square based on the cornerPoints
+     */
+    private fun createArrayOfCorners(): FloatArray{
+        val array: ArrayList<Float> = ArrayList()
+        //The array of corners for the vertexBuffer
+        for (i in cornerPoints.indices){
+            //The special case is used to connect the last point to the first point in the cornerPoints array
+            if(i == cornerPoints.lastIndex){
+                //Appends all calculated coordinates based on the two points to the array and breaks the for loop
+                array.addAll(arrayOfCorners(cornerPoints[i], cornerPoints[0]))
+                break
+            }
+            //Appends all calculated coordinates based on the two points to the array
+            array.addAll(arrayOfCorners(cornerPoints[i], cornerPoints[i+1]))
+        }
+        //Returns the array as a FloatArray
+        return array.toFloatArray()
     }
 }
