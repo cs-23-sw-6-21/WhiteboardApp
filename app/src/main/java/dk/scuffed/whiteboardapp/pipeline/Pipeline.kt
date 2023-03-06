@@ -8,6 +8,7 @@ import dk.scuffed.whiteboardapp.opengl.*
 import dk.scuffed.whiteboardapp.pipeline.stages.*
 import dk.scuffed.whiteboardapp.pipeline.stages.openCVPlaceholders.OpenCVDilateStage
 import dk.scuffed.whiteboardapp.segmentation.PPSegmentation
+import dk.scuffed.whiteboardapp.utils.Vec2Int
 
 class Pipeline(context: Context) {
 
@@ -44,7 +45,6 @@ class Pipeline(context: Context) {
         glClearColor(1.0f, 0.0f, 1.0f, 1.0f)
 
 
-
         val cameraXStage = CameraXStage(
             context,
             this
@@ -57,6 +57,7 @@ class Pipeline(context: Context) {
             this
         )
 
+
         val convertBitmap = FramebufferToBitmapStage(
             segPreProcess.frameBufferInfo,
             Bitmap.Config.ARGB_8888,
@@ -68,6 +69,20 @@ class Pipeline(context: Context) {
             PPSegmentation.Model.PORTRAIT,
             convertBitmap.outputBitmap,
             this,
+        )
+
+
+        val cornerStage = DrawCornersStage(context, this, Vec2Int(250, 250), Vec2Int(500, 350), Vec2Int(550, 1500), Vec2Int(250, 1000))
+        DrawFramebufferStage(
+            context,
+            cornerStage.frameBufferInfo,
+            this
+        )
+        val lines: DrawLinesStage = DrawLinesStage(context, this, Vec2Int(250, 250), Vec2Int(500, 350), Vec2Int(550, 1500), Vec2Int(250, 1000))
+        DrawFramebufferStage(
+            context,
+            lines.frameBufferInfo,
+            this
         )
 
         val dilate = OpenCVDilateStage(
@@ -87,7 +102,6 @@ class Pipeline(context: Context) {
             cameraXStage.frameBufferInfo.textureSize,
             this
         )
-
 
 
         val grayscale = GrayscaleStage(
@@ -128,11 +142,12 @@ class Pipeline(context: Context) {
             Bitmap.Config.ARGB_8888,
             this,
         )
-
         
-       val segStage = SegmentationStage(
+        val segStage = SegmentationStage(
             context,
             PPSegmentation.Model.PORTRAIT,
+            this
+        )
 
         val grayscaleCVStage = OpenCVGrayScaleStage(
             convertBitmap.outputBitmap,
@@ -167,6 +182,7 @@ class Pipeline(context: Context) {
             this,
         )
         */
+       
 
         val storeStageFramebufferInfo : FramebufferInfo =
             allocateFramebuffer(cameraXStage, GLES20.GL_RGBA,
