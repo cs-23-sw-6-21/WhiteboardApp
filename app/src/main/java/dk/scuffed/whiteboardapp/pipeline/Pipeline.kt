@@ -44,12 +44,24 @@ class Pipeline(context: Context) {
         glClearColor(1.0f, 0.0f, 1.0f, 1.0f)
 
 
-
         val cameraXStage = CameraXStage(
             context,
             this
         )
 
+        val grayscale = GrayscaleStage(
+            context,
+            cameraXStage.frameBufferInfo,
+            this,
+        )
+
+        val binarize = BinarizationStage(
+            context,
+            grayscale.frameBufferInfo,
+            this
+        )
+
+        /*
         val segPreProcess = SegmentationPreProcessingStage(
             context,
             cameraXStage.frameBufferInfo,
@@ -114,7 +126,7 @@ class Pipeline(context: Context) {
             context,
             gaussiany.frameBufferInfo,
             this,
-        )
+        ) */
 
         /*
         val convertBitmap = FramebufferToBitmapStage(
@@ -166,7 +178,6 @@ class Pipeline(context: Context) {
             cannyCVStage,
             this,
         )
-        */
 
         val storeStageFramebufferInfo : FramebufferInfo =
             allocateFramebuffer(cameraXStage, GLES20.GL_RGBA,
@@ -195,10 +206,11 @@ class Pipeline(context: Context) {
             segPostProcess.frameBufferInfo,
             this
         )
+        */
 
         DrawFramebufferStage(
             context,
-            overlay.frameBufferInfo,
+            binarize.frameBufferInfo,
             this
         )
     }
