@@ -130,7 +130,7 @@ class Pipeline(context: Context) {
             this,
         )
 
-        
+        /*
         val convertBitmap = FramebufferToBitmapStage(
             cameraXStage.frameBufferInfo,
             Bitmap.Config.ARGB_8888,
@@ -181,6 +181,7 @@ class Pipeline(context: Context) {
             cannyCVStage,
             this,
         )
+        */
        
 
         val storeStageFramebufferInfo : FramebufferInfo =
