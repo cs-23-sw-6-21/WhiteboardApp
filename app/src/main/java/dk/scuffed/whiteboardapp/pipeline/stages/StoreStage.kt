@@ -8,13 +8,13 @@ import dk.scuffed.whiteboardapp.pipeline.FramebufferInfo
 import dk.scuffed.whiteboardapp.pipeline.GLOutputStage
 import dk.scuffed.whiteboardapp.pipeline.Pipeline
 
-internal class GrayscaleStage(context: Context, private val inputFramebufferInfo: FramebufferInfo, pipeline: Pipeline) : GLOutputStage(context, R.raw.vertex_shader, R.raw.grayscale_shader, pipeline) {
+internal class StoreStage(context: Context, private val inputFramebufferInfo: FramebufferInfo, private val outputFramebufferInfo: FramebufferInfo, pipeline: Pipeline) : GLOutputStage(context, R.raw.vertex_shader, R.raw.texture, pipeline) {
     init {
         setup()
     }
 
     override fun setupFramebufferInfo() {
-        allocateFramebuffer(GLES20.GL_RGBA, inputFramebufferInfo.textureSize)
+        frameBufferInfo = outputFramebufferInfo
     }
 
     override fun setupUniforms(program: Int) {
@@ -23,7 +23,7 @@ internal class GrayscaleStage(context: Context, private val inputFramebufferInfo
         // We don't need the framebuffer resolution as it is the same as resolution :^)
 
         // Input framebuffer
-        val framebufferTextureHandle = glGetUniformLocation(program, "framebuffer")
+        val framebufferTextureHandle = glGetUniformLocation(program, "source_texture")
         glUniform1i(framebufferTextureHandle, inputFramebufferInfo.textureUnitPair.textureUnitIndex)
         glActiveTexture(inputFramebufferInfo.textureUnitPair.textureUnit)
         glBindTexture(GLES20.GL_TEXTURE_2D, inputFramebufferInfo.textureHandle)

@@ -2,19 +2,25 @@ package dk.scuffed.whiteboardapp.pipeline.stages
 
 import android.content.Context
 import android.opengl.GLES20
+import android.util.Size
 import dk.scuffed.whiteboardapp.R
 import dk.scuffed.whiteboardapp.opengl.*
 import dk.scuffed.whiteboardapp.pipeline.FramebufferInfo
 import dk.scuffed.whiteboardapp.pipeline.GLOutputStage
 import dk.scuffed.whiteboardapp.pipeline.Pipeline
 
-internal class GrayscaleStage(context: Context, private val inputFramebufferInfo: FramebufferInfo, pipeline: Pipeline) : GLOutputStage(context, R.raw.vertex_shader, R.raw.grayscale_shader, pipeline) {
+internal class SegmentationPreProcessingStage(
+    context: Context,
+    private val inputFramebufferInfo: FramebufferInfo,
+    private val outputResolution: Size,
+    pipeline: Pipeline,
+) : GLOutputStage(context, R.raw.vertex_shader, R.raw.segment_preprocess_shader, pipeline) {
     init {
         setup()
     }
 
     override fun setupFramebufferInfo() {
-        allocateFramebuffer(GLES20.GL_RGBA, inputFramebufferInfo.textureSize)
+        allocateFramebuffer(GLES20.GL_RGBA, outputResolution)
     }
 
     override fun setupUniforms(program: Int) {
