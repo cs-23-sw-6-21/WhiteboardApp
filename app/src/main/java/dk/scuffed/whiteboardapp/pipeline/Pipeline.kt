@@ -1,10 +1,13 @@
 package dk.scuffed.whiteboardapp.pipeline
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.opengl.GLES20
 import android.util.Size
 import dk.scuffed.whiteboardapp.opengl.*
 import dk.scuffed.whiteboardapp.pipeline.stages.*
+import dk.scuffed.whiteboardapp.pipeline.stages.openCVPlaceholders.OpenCVCornerDetectionStage
+import dk.scuffed.whiteboardapp.pipeline.stages.openCVPlaceholders.OpenCVDilateStage
 
 class Pipeline(context: Context) {
 
@@ -53,6 +56,28 @@ class Pipeline(context: Context) {
             this,
         )
 
+        val bitmap = FramebufferToBitmapStage(
+            grayscale.frameBufferInfo,
+            Bitmap.Config.ARGB_8888,
+            this
+        )
+
+        val corners = OpenCVCornerDetectionStage(
+            bitmap.outputBitmap,
+            this
+        )
+
+        val dil = OpenCVDilateStage(
+            corners,
+            4.0,
+            this
+        )
+
+        val out = BitmapToFramebufferStage(
+            dil,
+            this
+        )
+
         val gaussianx = GaussianBlurStage(
             context,
             grayscale.frameBufferInfo,
@@ -83,7 +108,7 @@ class Pipeline(context: Context) {
 
         DrawFramebufferStage(
             context,
-            cannyStage.frameBufferInfo,
+            out.frameBufferInfo,
             this
         )
     }
