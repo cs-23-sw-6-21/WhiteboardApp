@@ -1,10 +1,13 @@
 package dk.scuffed.whiteboardapp.pipeline
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.opengl.GLES20
 import android.util.Size
 import dk.scuffed.whiteboardapp.opengl.*
 import dk.scuffed.whiteboardapp.pipeline.stages.*
+import dk.scuffed.whiteboardapp.pipeline.stages.openCVPlaceholders.OpenCVDilateStage
+import dk.scuffed.whiteboardapp.segmentation.PPSegmentation
 
 class Pipeline(context: Context) {
 
@@ -71,6 +74,44 @@ class Pipeline(context: Context) {
             gaussianx.frameBufferInfo,
             false,
             this,
+        )
+
+        val segPreProcess = SegmentationPreProcessingStage(
+            context,
+            cameraXStage.frameBufferInfo,
+            Size(256, 144),
+            this
+        )
+
+        val convertBitmap = FramebufferToBitmapStage(
+            segPreProcess.frameBufferInfo,
+            Bitmap.Config.ARGB_8888,
+            this,
+        )
+
+        val segStage = SegmentationStage(
+            context,
+            PPSegmentation.Model.PORTRAIT,
+            convertBitmap.outputBitmap,
+            this,
+        )
+
+        val dilate = OpenCVDilateStage(
+            segStage,
+            1.0,
+            this
+        )
+
+        val convertFramebuffer = BitmapToFramebufferStage(
+            dilate,
+            this,
+        )
+
+        val segPostProcess = SegmentationPostProcessingStage(
+            context,
+            convertFramebuffer.frameBufferInfo,
+            cameraXStage.frameBufferInfo.textureSize,
+            this
         )
 
         /*
@@ -155,7 +196,7 @@ class Pipeline(context: Context) {
 
         DrawFramebufferStage(
             context,
-            cannyStage.frameBufferInfo,
+            overlay.frameBufferInfo,
             this
         )
     }
