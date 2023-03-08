@@ -17,9 +17,8 @@ internal class TestDynamicPointsStage(
 
 
     override fun update() {
-        for (v in points) {
-            v.x++
-            v.y++
+        for (i in 0..points.size-1) {
+            points[i] = Vec2Int(points[i].x + 1, points[i].y + 1)
         }
     }
 }

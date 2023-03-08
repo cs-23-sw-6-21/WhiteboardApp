@@ -37,7 +37,6 @@ class Pipeline(context: Context) {
         GLES20.GL_TEXTURE18,
         GLES20.GL_TEXTURE19,
     )
-    private val drawCorners: DrawLinesStage
 
     init {
         glDisable(GLES20.GL_BLEND)
@@ -205,7 +204,7 @@ class Pipeline(context: Context) {
             Vec2Int(100,500),
         )
 
-        drawCorners = DrawLinesStage(
+        val drawCorners = DrawLinesStage(
             context,
             this,
             dynamicCorners

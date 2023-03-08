@@ -9,9 +9,9 @@ internal abstract class PointsOutputStage(
     vararg initialPoints: Vec2Int
     ) : Stage(pipeline)
 {
-    var points: Array<out Vec2Int>
+    var points: Array<Vec2Int>
 
     init {
-        points = initialPoints
+        points = initialPoints as Array<Vec2Int>
     }
 }
