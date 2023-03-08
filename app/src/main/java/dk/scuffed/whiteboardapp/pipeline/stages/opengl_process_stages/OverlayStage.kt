@@ -11,6 +11,10 @@ import dk.scuffed.whiteboardapp.pipeline.FramebufferInfo
 import dk.scuffed.whiteboardapp.pipeline.GLOutputStage
 import dk.scuffed.whiteboardapp.pipeline.Pipeline
 
+/**
+ * Overlays the foreground onto the background.
+ * Alpha of the background is not preserved.
+ */
 internal class OverlayStage(
     context: Context,
     private val backgroundFramebufferInfo: FramebufferInfo,

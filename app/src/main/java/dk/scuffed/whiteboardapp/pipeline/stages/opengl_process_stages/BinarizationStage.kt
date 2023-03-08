@@ -2,25 +2,23 @@ package dk.scuffed.whiteboardapp.pipeline.stages
 
 import android.content.Context
 import android.opengl.GLES20
-import android.util.Size
 import dk.scuffed.whiteboardapp.R
 import dk.scuffed.whiteboardapp.opengl.*
 import dk.scuffed.whiteboardapp.pipeline.FramebufferInfo
 import dk.scuffed.whiteboardapp.pipeline.GLOutputStage
 import dk.scuffed.whiteboardapp.pipeline.Pipeline
 
-internal class SegmentationPreProcessingStage(
-    context: Context,
-    private val inputFramebufferInfo: FramebufferInfo,
-    private val outputResolution: Size,
-    pipeline: Pipeline,
-) : GLOutputStage(context, R.raw.vertex_shader, R.raw.segment_preprocess_shader, pipeline) {
+/**
+ * Does simple binarization using a global threshold with a shader.
+ */
+internal class BinarizationStage(context: Context, private val inputFramebufferInfo: FramebufferInfo, pipeline: Pipeline) : GLOutputStage(context, R.raw.vertex_shader, R.raw.binarization_shader, pipeline) {
+
     init {
         setup()
     }
 
     override fun setupFramebufferInfo() {
-        allocateFramebuffer(GLES20.GL_RGBA, outputResolution)
+        allocateFramebuffer(GLES20.GL_RGBA, inputFramebufferInfo.textureSize)
     }
 
     override fun setupUniforms(program: Int) {

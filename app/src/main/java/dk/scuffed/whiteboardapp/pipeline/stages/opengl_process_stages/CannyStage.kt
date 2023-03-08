@@ -8,6 +8,10 @@ import dk.scuffed.whiteboardapp.pipeline.FramebufferInfo
 import dk.scuffed.whiteboardapp.pipeline.GLOutputStage
 import dk.scuffed.whiteboardapp.pipeline.Pipeline
 
+/**
+ * Runs canny edge detection.
+ * Input should be sobel.
+ */
 internal class CannyStage(
     context: Context,
     private val inputSobelFramebufferInfo: FramebufferInfo,

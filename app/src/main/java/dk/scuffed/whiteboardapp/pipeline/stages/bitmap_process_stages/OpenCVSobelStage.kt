@@ -13,13 +13,16 @@ import dk.scuffed.whiteboardapp.pipeline.*
 import dk.scuffed.whiteboardapp.pipeline.stages.BitmapOutputStage
 import org.opencv.android.OpenCVLoader
 import org.opencv.android.Utils
+import org.opencv.core.Core
 import org.opencv.core.CvType
 import org.opencv.core.CvType.CV_8UC3
 import org.opencv.core.Mat
 import org.opencv.imgproc.Imgproc
 
-
-internal class OpenCVGaussianBlurStage(
+/**
+ * Runs OpenCVs sobel edge detection on bitmap.
+ */
+internal class OpenCVSobelStage(
     private val bitmap: Bitmap,
     pipeline: Pipeline) : BitmapOutputStage(pipeline, Size(bitmap.width, bitmap.height), bitmap.config)
 {
@@ -28,11 +31,16 @@ internal class OpenCVGaussianBlurStage(
     override fun update() {
         Utils.bitmapToMat(bitmap, img)
 
-        var blurredImg = Mat(img.size(), CvType.CV_8UC1)
+        var sobelEdgesX = Mat(img.size(), CvType.CV_8UC1)
+        var sobelEdgesY = Mat(img.size(), CvType.CV_8UC1)
+        var edges = Mat(img.size(), CvType.CV_8UC1)
 
-        Imgproc.GaussianBlur(img, blurredImg, org.opencv.core.Size(5.0,5.0), 1.0, 1.0)
+        Imgproc.Sobel(img, sobelEdgesX, CvType.CV_8UC1,1, 0, 3)
+        Imgproc.Sobel(img, sobelEdgesY, CvType.CV_8UC1,0, 1, 3)
 
-        Utils.matToBitmap(blurredImg, outputBitmap)
+        Core.addWeighted(sobelEdgesX, 0.5, sobelEdgesY, 0.5, 0.0, edges)
+
+        Utils.matToBitmap(edges, outputBitmap)
     }
 
 }

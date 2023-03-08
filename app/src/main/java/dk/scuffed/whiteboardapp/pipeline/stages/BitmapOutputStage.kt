@@ -5,6 +5,10 @@ import android.util.Size
 import dk.scuffed.whiteboardapp.pipeline.Pipeline
 import dk.scuffed.whiteboardapp.pipeline.Stage
 
+/**
+ * Baseclass for stages that output bitmaps.
+ * @property outputBitmap allows to read and write this bitmap.
+ */
 internal abstract class BitmapOutputStage(
     pipeline: Pipeline,
     resolution: Size,

@@ -4,19 +4,19 @@ import dk.scuffed.whiteboardapp.pipeline.Pipeline
 import dk.scuffed.whiteboardapp.utils.Vec2Int
 import kotlin.math.pow
 
+/**
+ * Creates and outputs 4 points that you can drag using dragPoint.
+ */
 internal class DraggablePointsStage(
     pipeline: Pipeline
     ) : PointsOutputStage(pipeline)
 {
-
     companion object {
         private var instance: DraggablePointsStage? = null
 
         fun dragPoint(screenPosition: Vec2Int) {
             instance?.dragPoint(screenPosition)
         }
-
-
     }
 
     fun dragPoint(screenPosition: Vec2Int){

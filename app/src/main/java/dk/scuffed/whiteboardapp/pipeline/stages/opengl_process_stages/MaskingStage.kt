@@ -8,6 +8,9 @@ import dk.scuffed.whiteboardapp.opengl.*
 import dk.scuffed.whiteboardapp.pipeline.*
 
 
+/**
+ * Outputs framebuffer1 where mask is 0, and framebuffer2 where mask is 1.
+ */
 internal class MaskingStage(
     context: Context,
     private val inputFrameBufferInfo1: FramebufferInfo,

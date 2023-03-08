@@ -8,6 +8,9 @@ import dk.scuffed.whiteboardapp.pipeline.*
 import dk.scuffed.whiteboardapp.pipeline.FramebufferInfo
 import dk.scuffed.whiteboardapp.pipeline.Stage
 
+/**
+ * Writes the bitmap onto the framebuffer each update.
+ */
 internal class BitmapToFramebufferStage(private val inputBitmap: BitmapOutputStage, private val pipeline: Pipeline) : Stage(pipeline) {
 
     var frameBufferInfo: FramebufferInfo
