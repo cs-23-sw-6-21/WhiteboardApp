@@ -9,6 +9,10 @@ import java.nio.ByteOrder
 import java.nio.FloatBuffer
 import java.nio.ShortBuffer
 
+/**
+ * Baseclass for stages that output to an OpenGL framebuffer.
+ * @property frameBufferInfo holds information of the framebuffer that is written into.
+ */
 internal abstract class GLOutputStage(
     private val context: Context,
     private val vertexShaderResource: Int,

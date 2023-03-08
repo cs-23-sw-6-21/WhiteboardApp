@@ -15,6 +15,9 @@ import dk.scuffed.whiteboardapp.pipeline.FramebufferInfo
 import dk.scuffed.whiteboardapp.pipeline.GLOutputStage
 import dk.scuffed.whiteboardapp.pipeline.TextureUnitPair
 
+/**
+ * Draws any stage to tbe screen, allowing switching between stages.
+ */
 internal class DrawPipelineStage(
     context: Context,
     private val stages: MutableList<Stage>,

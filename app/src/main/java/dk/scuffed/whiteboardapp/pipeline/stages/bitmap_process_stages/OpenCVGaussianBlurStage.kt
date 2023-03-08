@@ -19,6 +19,9 @@ import org.opencv.core.Mat
 import org.opencv.imgproc.Imgproc
 
 
+/**
+ * Blur bitmap using OpenCVs gaussian blur.
+ */
 internal class OpenCVGaussianBlurStage(
     private val bitmap: Bitmap,
     pipeline: Pipeline) : BitmapOutputStage(pipeline, Size(bitmap.width, bitmap.height), bitmap.config)

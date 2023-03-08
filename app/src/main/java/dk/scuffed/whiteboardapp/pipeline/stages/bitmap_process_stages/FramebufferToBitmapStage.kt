@@ -7,6 +7,9 @@ import dk.scuffed.whiteboardapp.opengl.*
 import dk.scuffed.whiteboardapp.pipeline.*
 import java.nio.ByteBuffer
 
+/**
+ * Writes the framebuffer into the bitmap each update.
+ */
 internal class FramebufferToBitmapStage(private val inputFramebufferInfo: FramebufferInfo, config: Bitmap.Config, pipeline: Pipeline)
     : BitmapOutputStage(pipeline, Size(inputFramebufferInfo.textureSize.width, inputFramebufferInfo.textureSize.height), config) {
 

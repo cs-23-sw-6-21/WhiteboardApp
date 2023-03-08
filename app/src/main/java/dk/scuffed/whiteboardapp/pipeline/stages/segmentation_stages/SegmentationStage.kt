@@ -6,6 +6,9 @@ import android.util.Size
 import dk.scuffed.whiteboardapp.pipeline.*
 import dk.scuffed.whiteboardapp.segmentation.PPSegmentation
 
+/**
+ * Outputs a mask that covers all humans.
+ */
 internal class SegmentationStage(context: Context, segmentationModel: PPSegmentation.Model,  private val inputBitmap: Bitmap, pipeline: Pipeline)
     : BitmapOutputStage(pipeline, Size(inputBitmap.width, inputBitmap.height), inputBitmap.config) {
 

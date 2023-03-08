@@ -10,6 +10,9 @@ import org.opencv.core.Mat
 import org.opencv.imgproc.Imgproc
 
 
+/**
+ * Runs the OpenCV Canny Edge detection.
+ */
 internal class OpenCVCannyStage(
     private val bitmap: Bitmap,
     pipeline: Pipeline) : BitmapOutputStage(pipeline, Size(bitmap.width, bitmap.height), bitmap.config)

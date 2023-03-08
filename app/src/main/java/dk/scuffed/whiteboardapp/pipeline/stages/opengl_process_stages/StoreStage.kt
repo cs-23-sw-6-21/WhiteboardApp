@@ -8,6 +8,9 @@ import dk.scuffed.whiteboardapp.pipeline.FramebufferInfo
 import dk.scuffed.whiteboardapp.pipeline.GLOutputStage
 import dk.scuffed.whiteboardapp.pipeline.Pipeline
 
+/**
+ * Writes to the framebuffer given as input.
+ */
 internal class StoreStage(context: Context, private val inputFramebufferInfo: FramebufferInfo, private val outputFramebufferInfo: FramebufferInfo, pipeline: Pipeline) : GLOutputStage(context, R.raw.vertex_shader, R.raw.texture, pipeline) {
     init {
         setup()

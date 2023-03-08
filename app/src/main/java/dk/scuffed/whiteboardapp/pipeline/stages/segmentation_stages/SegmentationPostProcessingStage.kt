@@ -9,6 +9,9 @@ import dk.scuffed.whiteboardapp.pipeline.FramebufferInfo
 import dk.scuffed.whiteboardapp.pipeline.GLOutputStage
 import dk.scuffed.whiteboardapp.pipeline.Pipeline
 
+/**
+ * Converts the segmentation result into a result that matches the rest of the pipeline better.
+ */
 internal class SegmentationPostProcessingStage(
     context: Context,
     private val inputFramebufferInfo: FramebufferInfo,

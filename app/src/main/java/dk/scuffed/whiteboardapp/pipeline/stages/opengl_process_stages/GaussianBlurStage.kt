@@ -8,6 +8,9 @@ import dk.scuffed.whiteboardapp.pipeline.FramebufferInfo
 import dk.scuffed.whiteboardapp.pipeline.GLOutputStage
 import dk.scuffed.whiteboardapp.pipeline.Pipeline
 
+/**
+ * Runs an optimized 5x5 gaussian blur with shader.
+ */
 internal class GaussianBlurStage(context: Context, private val inputFramebufferInfo: FramebufferInfo, private val xDirection: Boolean, pipeline: Pipeline) : GLOutputStage(context, R.raw.vertex_shader, R.raw.gaussian_shader, pipeline) {
 
     // https://www.rastergrid.com/blog/2010/09/efficient-gaussian-blur-with-linear-sampling/

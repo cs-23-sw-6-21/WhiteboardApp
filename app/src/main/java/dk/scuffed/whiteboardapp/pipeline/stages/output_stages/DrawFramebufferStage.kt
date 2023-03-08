@@ -10,6 +10,9 @@ import dk.scuffed.whiteboardapp.pipeline.FramebufferInfo
 import dk.scuffed.whiteboardapp.pipeline.GLOutputStage
 import dk.scuffed.whiteboardapp.pipeline.TextureUnitPair
 
+/**
+ * Draws a framebuffer to the screen.
+ */
 internal class DrawFramebufferStage(
     context: Context,
     private val inputFrameBufferInfo: FramebufferInfo,

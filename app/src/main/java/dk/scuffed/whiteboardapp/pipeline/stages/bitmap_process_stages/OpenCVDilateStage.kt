@@ -9,6 +9,9 @@ import org.opencv.core.Mat
 import org.opencv.core.Point
 import org.opencv.imgproc.Imgproc
 
+/**
+ * Dilate bitmap using OpenCVs dilate function.
+ */
 internal class OpenCVDilateStage(
     private val bitmap: BitmapOutputStage,
     private val dilation: Double,

@@ -22,6 +22,9 @@ import dk.scuffed.whiteboardapp.pipeline.Pipeline
 import dk.scuffed.whiteboardapp.pipeline.TextureUnitPair
 import java.util.concurrent.CompletableFuture
 
+/**
+ * Outputs the camera onto a OpenGL framebuffer
+ */
 internal class CameraXStage(
     context: Context,
     pipeline: Pipeline,

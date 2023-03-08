@@ -9,6 +9,9 @@ import dk.scuffed.whiteboardapp.pipeline.FramebufferInfo
 import dk.scuffed.whiteboardapp.pipeline.GLOutputStage
 import dk.scuffed.whiteboardapp.pipeline.Pipeline
 
+/**
+ * Downscales and changes axis of input to match expected input of the segmentation.
+ */
 internal class SegmentationPreProcessingStage(
     context: Context,
     private val inputFramebufferInfo: FramebufferInfo,
