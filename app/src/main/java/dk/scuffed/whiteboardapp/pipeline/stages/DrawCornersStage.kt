@@ -18,12 +18,12 @@ import java.nio.ShortBuffer
  * This class is used to highlight different coordinates on the smartphone screen.
  * @property context the app.
  * @param pipeline the pipeline for analyses.
- * @property cornerPoints the array of coordinates for the different points that needs to be highlighted.
+ * @property pointsStage stage supplying the points used for corners.
  */
 internal class DrawCornersStage(
     private val context: Context,
     pipeline: Pipeline,
-    private vararg val cornerPoints: Vec2Int
+    private val pointsStage: PointsOutputStage
 ) : Stage(pipeline) {
     //The radius of the circle
     private val circleRadius: Int = 25
@@ -33,7 +33,12 @@ internal class DrawCornersStage(
     private val cordsPerVertex = 3
 
     //XYZ Coordinates for the square we are drawing on.
-    private val squareCoords = floatArrayOf()
+    private val squareCoords = floatArrayOf(
+    -1.0f, 1.0f, 0.0f,
+    -1.0f, -1.0f, 0.0f,
+    1.0f, -1.0f, 0.0f,
+    1.0f, 1.0f,0.0f
+    )
 
     // order to draw vertices
     private val drawOrder = shortArrayOf(0, 1, 2, 0, 2, 3)
@@ -86,9 +91,15 @@ internal class DrawCornersStage(
     }
 
     override fun update() {
-        for (point in cornerPoints){
+        glBindFramebuffer(frameBufferInfo.fboHandle)
+        glViewport(0, 0, frameBufferInfo.textureSize.width, frameBufferInfo.textureSize.height)
+        glClearColorClear()
+        glClear(GLES20.GL_COLOR_BUFFER_BIT)
+        glClearColorError() // set back to error color for future stages
+        for (point in pointsStage.points){
             drawPoint(point)
         }
+
     }
 
     /**
@@ -105,7 +116,7 @@ internal class DrawCornersStage(
 
         // Render to our framebuffer
         glBindFramebuffer(frameBufferInfo.fboHandle)
-        glClear(0)
+
 
         glUseProgram(program)
 

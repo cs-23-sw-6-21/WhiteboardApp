@@ -33,6 +33,15 @@ fun glClearColor(red: Float, green: Float, blue: Float, alpha: Float) {
     GLES20.glClearColor(red, green, blue, alpha)
     logErrorIfAny("glClearColor")
 }
+fun glClearColorClear() {
+    GLES20.glClearColor(0f, 0f, 0f, 0f)
+    logErrorIfAny("glClearColor")
+}
+fun glClearColorError() {
+    GLES20.glClearColor(1f, 0f, 1f, 1f)
+    logErrorIfAny("glClearColor")
+}
+
 
 fun glViewport(x: Int, y: Int, width: Int, height: Int) {
     GLES20.glViewport(x, y, width, height)

@@ -15,7 +15,7 @@ void main() {
    if(distance>beginFadeOutRadius){
       if (distance <= 0.25) {
          float alpha = map(distance, beginFadeOutRadius, 0.25, 1.0, 0.0);
-         gl_FragColor = vec4(0.0, alpha, 0.0, 1.0);
+         gl_FragColor = vec4(0.0, 1.0, 0.0, alpha);
       }
       else {
          gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);

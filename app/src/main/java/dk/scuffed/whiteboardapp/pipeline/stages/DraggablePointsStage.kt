@@ -1,0 +1,62 @@
+package dk.scuffed.whiteboardapp.pipeline.stages
+
+import dk.scuffed.whiteboardapp.pipeline.Pipeline
+import dk.scuffed.whiteboardapp.utils.Vec2Int
+import kotlin.math.pow
+
+internal class DraggablePointsStage(
+    pipeline: Pipeline
+    ) : PointsOutputStage(pipeline)
+{
+
+    companion object {
+        private var instance: DraggablePointsStage? = null
+
+        fun dragPoint(screenPosition: Vec2Int) {
+            instance?.dragPoint(screenPosition)
+        }
+
+
+    }
+
+    fun dragPoint(screenPosition: Vec2Int){
+        val closestIndex = getClosest(screenPosition)
+
+        points[closestIndex] = screenPosition
+    }
+
+    private fun getClosest(screenPosition: Vec2Int): Int {
+        var closestSquareDist = Float.POSITIVE_INFINITY
+        var closestIndex = -1
+        for (p in points.indices) {
+            val dist = (points[p].x - screenPosition.x).toFloat().pow(2) + (points[p].y - screenPosition.y).toFloat().pow(2)
+            if (dist < closestSquareDist) {
+                closestSquareDist = dist
+                closestIndex = p
+            }
+        }
+        return closestIndex
+    }
+
+
+    init {
+        instance = this
+        points = generateInitialPoints()
+    }
+
+
+    private fun generateInitialPoints(): Array<Vec2Int> {
+        return arrayOf(
+            Vec2Int(200, 200),
+            Vec2Int(800, 200),
+            Vec2Int(800, 800),
+            Vec2Int(200, 800),
+        )
+    }
+
+
+
+    override fun update() {
+
+    }
+}

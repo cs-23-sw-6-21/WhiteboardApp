@@ -19,7 +19,7 @@ import kotlin.math.*
 internal class DrawLinesStage(
     private val context: Context,
     pipeline: Pipeline,
-    private vararg val cornerPoints: Vec2Int
+    private val pointsStage: PointsOutputStage
 ) : Stage(pipeline) {
     private var program: Int = 999
 
@@ -34,10 +34,10 @@ internal class DrawLinesStage(
     private val heightResolution: Int = 1920
 
     //XYZ Coordinates for the square we are drawing on.
-    private var squareCoords = FloatArray(cornerPoints.size*3)
+    private var squareCoords = FloatArray(pointsStage.points.size*3)
 
     // order to draw vertices
-    private val drawOrder = createDrawOrder(cornerPoints.size)
+    private val drawOrder = createDrawOrder(pointsStage.points.size)
 
     // 4 bytes per vertex
     private val vertexStride: Int = cordsPerVertex * 4
@@ -160,7 +160,9 @@ internal class DrawLinesStage(
 
         // Render to our framebuffer
         glBindFramebuffer(frameBufferInfo.fboHandle)
-        glClear(0)
+        glClearColorClear()
+        glClear(GLES20.GL_COLOR_BUFFER_BIT)
+        glClearColorError() // set back to error color for future stages
 
         glUseProgram(program)
 
@@ -207,15 +209,15 @@ internal class DrawLinesStage(
     private fun createArrayOfCorners(): FloatArray{
         val array: ArrayList<Float> = ArrayList()
         //The array of corners for the vertexBuffer
-        for (i in cornerPoints.indices){
+        for (i in pointsStage.points.indices){
             //The special case is used to connect the last point to the first point in the cornerPoints array
-            if(i == cornerPoints.lastIndex){
+            if(i == pointsStage.points.lastIndex){
                 //Appends all calculated coordinates based on the two points to the array and breaks the for loop
-                array.addAll(arrayOfCorners(cornerPoints[i], cornerPoints[0]))
+                array.addAll(arrayOfCorners(pointsStage.points[i], pointsStage.points[0]))
                 break
             }
             //Appends all calculated coordinates based on the two points to the array
-            array.addAll(arrayOfCorners(cornerPoints[i], cornerPoints[i+1]))
+            array.addAll(arrayOfCorners(pointsStage.points[i], pointsStage.points[i+1]))
         }
         //Returns the array as a FloatArray
         return array.toFloatArray()
