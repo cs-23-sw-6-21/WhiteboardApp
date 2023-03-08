@@ -188,26 +188,29 @@ class Pipeline(context: Context) {
             this
         )
 
+
+
+        val dynamicCorners = DraggablePointsStage(
+            this
+        )
+
+        val drawLines = DrawLinesStage(
+            context,
+            this,
+            dynamicCorners
+        )
+        val drawCorners = DrawCornersStage(
+            context,
+            this,
+            dynamicCorners
+        )
+
+
         val overlaySeg = OverlayStage(
             context,
             maskStage.frameBufferInfo,
             segPostProcess.frameBufferInfo,
             this
-        )
-
-
-        val dynamicCorners = TestDynamicPointsStage(
-            this,
-            Vec2Int(100,100),
-            Vec2Int(500,100),
-            Vec2Int(500,500),
-            Vec2Int(100,500),
-        )
-
-        val drawCorners = DrawLinesStage(
-            context,
-            this,
-            dynamicCorners
         )
 
         val overlayCorners = OverlayStage(
@@ -216,11 +219,18 @@ class Pipeline(context: Context) {
             drawCorners.frameBufferInfo,
             this
         )
+        val overlayLines = OverlayStage(
+            context,
+            overlayCorners.frameBufferInfo,
+            drawLines.frameBufferInfo,
+            this
+        )
+
 
 
         DrawFramebufferStage(
             context,
-            overlayCorners.frameBufferInfo,
+            overlayLines.frameBufferInfo,
             this
         )
     }
