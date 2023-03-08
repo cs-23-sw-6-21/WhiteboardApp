@@ -8,6 +8,7 @@ import dk.scuffed.whiteboardapp.opengl.*
 import dk.scuffed.whiteboardapp.pipeline.stages.*
 import dk.scuffed.whiteboardapp.pipeline.stages.openCVPlaceholders.OpenCVDilateStage
 import dk.scuffed.whiteboardapp.segmentation.PPSegmentation
+import dk.scuffed.whiteboardapp.utils.Vec2Int
 
 class Pipeline(context: Context) {
 
@@ -36,12 +37,13 @@ class Pipeline(context: Context) {
         GLES20.GL_TEXTURE18,
         GLES20.GL_TEXTURE19,
     )
+    private val drawCorners: DrawLinesStage
 
     init {
         glDisable(GLES20.GL_BLEND)
         glDisable(GLES20.GL_CULL_FACE)
         glDisable(GLES20.GL_DEPTH_TEST)
-        glClearColor(1.0f, 0.0f, 1.0f, 1.0f)
+        glClearColorError()
 
 
         val cameraXStage = CameraXStage(
@@ -187,19 +189,43 @@ class Pipeline(context: Context) {
             this
         )
 
-        val overlay = OverlayStage(
+        val overlaySeg = OverlayStage(
             context,
             maskStage.frameBufferInfo,
             segPostProcess.frameBufferInfo,
             this
         )
 
+
+        val dynamicCorners = TestDynamicPointsStage(
+            this,
+            Vec2Int(100,100),
+            Vec2Int(500,100),
+            Vec2Int(500,500),
+            Vec2Int(100,500),
+        )
+
+        drawCorners = DrawLinesStage(
+            context,
+            this,
+            dynamicCorners
+        )
+
+        val overlayCorners = OverlayStage(
+            context,
+            overlaySeg.frameBufferInfo,
+            drawCorners.frameBufferInfo,
+            this
+        )
+
+
         DrawFramebufferStage(
             context,
-            overlay.frameBufferInfo,
+            overlayCorners.frameBufferInfo,
             this
         )
     }
+
 
     fun draw() {
         stages.forEach { stage -> stage.performUpdate() }

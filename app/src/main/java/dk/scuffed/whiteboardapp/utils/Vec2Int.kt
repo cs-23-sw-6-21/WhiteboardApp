@@ -5,7 +5,7 @@ package dk.scuffed.whiteboardapp.utils
  * @property x the x coordinate for a point.
  * @property y the y coordinate for a point.
  */
-class Vec2Int(val x: Int, val y: Int){
+class Vec2Int(var x: Int, var y: Int){
     fun subtact(vec: Vec2Int): Vec2Int{
         return Vec2Int(this.x-vec.x, this.y-vec.y)
     }

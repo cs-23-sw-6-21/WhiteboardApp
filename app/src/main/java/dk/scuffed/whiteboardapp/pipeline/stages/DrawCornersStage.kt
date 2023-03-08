@@ -23,7 +23,7 @@ import java.nio.ShortBuffer
 internal class DrawCornersStage(
     private val context: Context,
     pipeline: Pipeline,
-    private vararg val cornerPoints: Vec2Int
+    vararg var cornerPoints: Vec2Int
 ) : Stage(pipeline) {
     //The radius of the circle
     private val circleRadius: Int = 25
@@ -105,7 +105,9 @@ internal class DrawCornersStage(
 
         // Render to our framebuffer
         glBindFramebuffer(frameBufferInfo.fboHandle)
-        glClear(0)
+        glClearColorClear()
+        glClear(GLES20.GL_COLOR_BUFFER_BIT)
+        glClearColorError() // set back to error color for future stages
 
         glUseProgram(program)
 
