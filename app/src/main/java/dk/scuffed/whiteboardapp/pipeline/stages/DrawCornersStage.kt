@@ -23,7 +23,7 @@ import java.nio.ShortBuffer
 internal class DrawCornersStage(
     private val context: Context,
     pipeline: Pipeline,
-    vararg var cornerPoints: Vec2Int
+    val cornerPoints: PointsOutputStage
 ) : Stage(pipeline) {
     //The radius of the circle
     private val circleRadius: Int = 25
@@ -86,7 +86,7 @@ internal class DrawCornersStage(
     }
 
     override fun update() {
-        for (point in cornerPoints){
+        for (point in cornerPoints.points){
             drawPoint(point)
         }
     }
