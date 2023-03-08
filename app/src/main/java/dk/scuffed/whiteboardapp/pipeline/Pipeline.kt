@@ -49,19 +49,6 @@ class Pipeline(context: Context) {
             this
         )
 
-        val grayscale = GrayscaleStage(
-            context,
-            cameraXStage.frameBufferInfo,
-            this,
-        )
-
-        val binarize = BinarizationStage(
-            context,
-            grayscale.frameBufferInfo,
-            this
-        )
-
-        /*
         val segPreProcess = SegmentationPreProcessingStage(
             context,
             cameraXStage.frameBufferInfo,
@@ -126,8 +113,7 @@ class Pipeline(context: Context) {
             context,
             gaussiany.frameBufferInfo,
             this,
-        ) */
-
+        )
         /*
         val convertBitmap = FramebufferToBitmapStage(
             cameraXStage.frameBufferInfo,
