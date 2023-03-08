@@ -95,9 +95,15 @@ class Pipeline(context: Context) {
             this,
         )
 
-        val gaussianx = GaussianBlurStage(
+
+        val binarizeStage = BinarizationStage(
             context,
             grayscale.frameBufferInfo,
+            this,
+        )
+        val gaussianx = GaussianBlurStage(
+            context,
+            binarizeStage.frameBufferInfo,
             true,
             this,
         )
@@ -109,11 +115,6 @@ class Pipeline(context: Context) {
             this,
         )
 
-        val sobelStage = SobelStage(
-            context,
-            gaussiany.frameBufferInfo,
-            this,
-        )
         /*
         val convertBitmap = FramebufferToBitmapStage(
             cameraXStage.frameBufferInfo,
@@ -164,6 +165,7 @@ class Pipeline(context: Context) {
             cannyCVStage,
             this,
         )
+        */
 
         val storeStageFramebufferInfo : FramebufferInfo =
             allocateFramebuffer(cameraXStage, GLES20.GL_RGBA,
@@ -173,7 +175,7 @@ class Pipeline(context: Context) {
 
         val maskStage = MaskingStage(
             context,
-            sobelStage.frameBufferInfo,
+            gaussiany.frameBufferInfo,
             storeStageFramebufferInfo,
             segPostProcess.frameBufferInfo,
             this
@@ -192,11 +194,10 @@ class Pipeline(context: Context) {
             segPostProcess.frameBufferInfo,
             this
         )
-        */
 
         DrawFramebufferStage(
             context,
-            binarize.frameBufferInfo,
+            overlay.frameBufferInfo,
             this
         )
     }
