@@ -23,7 +23,7 @@ import java.nio.ShortBuffer
 internal class DrawCornersStage(
     private val context: Context,
     pipeline: Pipeline,
-    val pointsStage: PointsOutputStage
+    private val pointsStage: PointsOutputStage
 ) : Stage(pipeline) {
     //The radius of the circle
     private val circleRadius: Int = 25
@@ -33,7 +33,12 @@ internal class DrawCornersStage(
     private val cordsPerVertex = 3
 
     //XYZ Coordinates for the square we are drawing on.
-    private val squareCoords = floatArrayOf()
+    private val squareCoords = floatArrayOf(
+    -1.0f, 1.0f, 0.0f,
+    -1.0f, -1.0f, 0.0f,
+    1.0f, -1.0f, 0.0f,
+    1.0f, 1.0f,0.0f
+    )
 
     // order to draw vertices
     private val drawOrder = shortArrayOf(0, 1, 2, 0, 2, 3)
@@ -86,9 +91,15 @@ internal class DrawCornersStage(
     }
 
     override fun update() {
+        glBindFramebuffer(frameBufferInfo.fboHandle)
+        glViewport(0, 0, frameBufferInfo.textureSize.width, frameBufferInfo.textureSize.height)
+        glClearColorClear()
+        glClear(GLES20.GL_COLOR_BUFFER_BIT)
+        glClearColorError() // set back to error color for future stages
         for (point in pointsStage.points){
             drawPoint(point)
         }
+
     }
 
     /**
@@ -105,9 +116,7 @@ internal class DrawCornersStage(
 
         // Render to our framebuffer
         glBindFramebuffer(frameBufferInfo.fboHandle)
-        glClearColorClear()
-        glClear(GLES20.GL_COLOR_BUFFER_BIT)
-        glClearColorError() // set back to error color for future stages
+
 
         glUseProgram(program)
 
