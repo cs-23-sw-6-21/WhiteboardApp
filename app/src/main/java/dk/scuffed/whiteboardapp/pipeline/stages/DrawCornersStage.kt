@@ -18,12 +18,12 @@ import java.nio.ShortBuffer
  * This class is used to highlight different coordinates on the smartphone screen.
  * @property context the app.
  * @param pipeline the pipeline for analyses.
- * @property cornerPoints the array of coordinates for the different points that needs to be highlighted.
+ * @property pointsStage the array of coordinates for the different points that needs to be highlighted.
  */
 internal class DrawCornersStage(
     private val context: Context,
     pipeline: Pipeline,
-    val cornerPoints: PointsOutputStage
+    val pointsStage: PointsOutputStage
 ) : Stage(pipeline) {
     //The radius of the circle
     private val circleRadius: Int = 25
@@ -86,7 +86,7 @@ internal class DrawCornersStage(
     }
 
     override fun update() {
-        for (point in cornerPoints.points){
+        for (point in pointsStage.points){
             drawPoint(point)
         }
     }
