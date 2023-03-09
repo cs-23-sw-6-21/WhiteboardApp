@@ -22,6 +22,7 @@ internal abstract class GLOutputStage(
     private var program: Int = 999
 
     private val coordsPerVertex = 3
+    private val texCoordsPerVertex = 2
 
     //XYZ Coordinates for the square we are drawing on.
     private val squareCoords = floatArrayOf(
@@ -33,6 +34,16 @@ internal abstract class GLOutputStage(
 
     // order to draw vertices
     private val drawOrder = shortArrayOf(0, 1, 2, 0, 2, 3)
+
+    private val textureCoords = floatArrayOf(
+        0f, 1f,
+        0f, 0f,
+        1f, 0f,
+        1f, 1f,
+        0f, 1f,
+        1f, 0f,
+    )
+
 
     // 4 bytes per vertex
     private val vertexStride: Int = coordsPerVertex * 4
@@ -47,6 +58,17 @@ internal abstract class GLOutputStage(
                 position(0)
             }
         }
+
+    private val vertexTexCoordBuffer: FloatBuffer =
+        // (# of coordinate values * 4 bytes per float)
+        ByteBuffer.allocateDirect(textureCoords.size * 4).run {
+            order(ByteOrder.nativeOrder())
+            asFloatBuffer().apply {
+                put(textureCoords)
+                position(0)
+            }
+        }
+
 
     // initialize byte buffer for the draw list
     private val drawListBuffer: ShortBuffer =
@@ -101,6 +123,13 @@ internal abstract class GLOutputStage(
         val positionHandle = glGetAttribLocation(program, "position")
         glEnableVertexAttribArray(positionHandle)
         glVertexAttribPointer(positionHandle, coordsPerVertex, GLES20.GL_FLOAT, false, vertexStride, vertexBuffer)
+
+        val textureCoordinateHandle = GLES20.glGetAttribLocation(program, "a_TexCoordinate")
+        if (textureCoordinateHandle != -1){
+            glEnableVertexAttribArray(textureCoordinateHandle)
+            glVertexAttribPointer(textureCoordinateHandle, texCoordsPerVertex, GLES20.GL_FLOAT, false, 0, vertexTexCoordBuffer);
+
+        }
 
         // Always provide resolution
         val resolutionHandle = glGetUniformLocation(program, "resolution")
