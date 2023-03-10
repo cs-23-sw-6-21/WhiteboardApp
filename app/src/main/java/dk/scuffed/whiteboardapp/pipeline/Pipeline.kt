@@ -18,6 +18,7 @@ import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.GaussianBl
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.GrayscaleStage
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.OverlayStage
 import dk.scuffed.whiteboardapp.pipeline.stages.output_stages.DrawFramebufferStage
+import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.DraggablePointsStage
 import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.DrawLinesStage
 import dk.scuffed.whiteboardapp.utils.Color
 
@@ -68,19 +69,14 @@ class Pipeline(context: Context) {
             this
 
         )
-
+/*
         val drawLinesStage = DrawLinesStage(
             context,
-            this,
-            draggablePointsStage
-        )
-
-        val corrected = PerspectiveCorrectionStage(
-            context,
-            textureStage.frameBufferInfo,
             draggablePointsStage,
+            Color(0f, 1f, 0f, 1f),
             this,
-        )
+            )
+
 
 
         val overlayStage = OverlayStage(
@@ -88,11 +84,17 @@ class Pipeline(context: Context) {
             corrected.frameBufferInfo,
             drawLinesStage.frameBufferInfo,
             this
+        )*/
+        val corrected = PerspectiveCorrectionStage(
+            context,
+            textureStage.frameBufferInfo,
+            draggablePointsStage,
+            this,
         )
 
         DrawFramebufferStage(
             context,
-            overlayStage.frameBufferInfo,
+            corrected.frameBufferInfo,
             this
         )
     }
