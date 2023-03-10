@@ -23,7 +23,6 @@ internal class PerspectiveCorrectionStage(
     R.raw.texture_distortable, pipeline) {
     init {
         setup()
-        //XYZ Coordinates for the square we are drawing on.
     }
 
     override fun setupFramebufferInfo() {
@@ -43,15 +42,6 @@ internal class PerspectiveCorrectionStage(
         glUniform1i(framebufferTextureHandle, inputFramebufferInfo.textureUnitPair.textureUnitIndex)
         glActiveTexture(inputFramebufferInfo.textureUnitPair.textureUnit)
         glBindTexture(GLES20.GL_TEXTURE_2D, inputFramebufferInfo.textureHandle)
-/*
-        reassignVertices(
-            Vec2Float(-1.0f, 1.0f),
-            Vec2Float(-1.0f, -1.0f),
-            Vec2Float(1.0f, -1.0f),
-            Vec2Float(1.0f, 1.0f)
-        )*/
-
-
 
         val convertedPoints = arrayListOf(
             convert(inputVertices.points[0]),
@@ -62,18 +52,8 @@ internal class PerspectiveCorrectionStage(
 
         val projected = calculateProjection(convertedPoints)
 
-
-        val aaaaaaaaa = arrayListOf(
-            Vec3Float(0f, 0f, projected[0].z),
-            convert(inputVertices.points[1]),
-            convert(inputVertices.points[2]),
-            convert(inputVertices.points[3])
-        )
-
-
         reassignVertices(convertedPoints)
         reassignTexCoord(projected)
-
     }
 
     private fun calculateProjection(convertedPoints: ArrayList<Vec2Float>) : ArrayList<Vec3Float>{
