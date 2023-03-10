@@ -1,4 +1,4 @@
-package dk.scuffed.whiteboardapp.pipeline
+package dk.scuffed.whiteboardapp.pipeline.stages
 
 import android.content.Context
 import android.opengl.GLES20
@@ -6,6 +6,9 @@ import android.util.Size
 import dk.scuffed.whiteboardapp.opengl.*
 import dk.scuffed.whiteboardapp.utils.Vec2Float
 import dk.scuffed.whiteboardapp.utils.Vec3Float
+import dk.scuffed.whiteboardapp.pipeline.FramebufferInfo
+import dk.scuffed.whiteboardapp.pipeline.Pipeline
+import dk.scuffed.whiteboardapp.pipeline.readRawResource
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.FloatBuffer
@@ -19,7 +22,8 @@ internal abstract class GLOutputStage(
     private val context: Context,
     private val vertexShaderResource: Int,
     private val fragmentShaderResource: Int,
-    private val pipeline: Pipeline) : Stage(pipeline)
+    private val pipeline: Pipeline
+) : Stage(pipeline)
 {
     private var program: Int = 999
 

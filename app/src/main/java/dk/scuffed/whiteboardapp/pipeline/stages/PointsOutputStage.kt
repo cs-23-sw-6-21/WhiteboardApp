@@ -1,7 +1,6 @@
 package dk.scuffed.whiteboardapp.pipeline.stages
 
 import dk.scuffed.whiteboardapp.pipeline.Pipeline
-import dk.scuffed.whiteboardapp.pipeline.Stage
 import dk.scuffed.whiteboardapp.utils.Vec2Int
 
 /**
@@ -13,9 +12,10 @@ internal abstract class PointsOutputStage(
     vararg initialPoints: Vec2Int
     ) : Stage(pipeline)
 {
-    var points: Array<Vec2Int>
+    val points: ArrayList<Vec2Int> = ArrayList()
 
     init {
-        points = initialPoints as Array<Vec2Int>
+        points.clear()
+        points.addAll(initialPoints)
     }
 }

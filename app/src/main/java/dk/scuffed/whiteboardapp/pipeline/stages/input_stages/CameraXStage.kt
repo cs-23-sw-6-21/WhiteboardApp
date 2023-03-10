@@ -1,4 +1,4 @@
-package dk.scuffed.whiteboardapp.pipeline.stages
+package dk.scuffed.whiteboardapp.pipeline.stages.input_stages
 
 import android.content.Context
 import android.graphics.SurfaceTexture
@@ -17,7 +17,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import dk.scuffed.whiteboardapp.R
 import dk.scuffed.whiteboardapp.opengl.*
-import dk.scuffed.whiteboardapp.pipeline.GLOutputStage
+import dk.scuffed.whiteboardapp.pipeline.stages.GLOutputStage
 import dk.scuffed.whiteboardapp.pipeline.Pipeline
 import dk.scuffed.whiteboardapp.pipeline.TextureUnitPair
 import java.util.concurrent.CompletableFuture

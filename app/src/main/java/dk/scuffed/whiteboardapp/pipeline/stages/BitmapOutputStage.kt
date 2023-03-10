@@ -3,7 +3,6 @@ package dk.scuffed.whiteboardapp.pipeline.stages
 import android.graphics.Bitmap
 import android.util.Size
 import dk.scuffed.whiteboardapp.pipeline.Pipeline
-import dk.scuffed.whiteboardapp.pipeline.Stage
 
 /**
  * Baseclass for stages that output bitmaps.

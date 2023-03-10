@@ -1,6 +1,7 @@
-package dk.scuffed.whiteboardapp.pipeline.stages
+package dk.scuffed.whiteboardapp.pipeline.stages.points_stages
 
 import dk.scuffed.whiteboardapp.pipeline.Pipeline
+import dk.scuffed.whiteboardapp.pipeline.stages.PointsOutputStage
 import dk.scuffed.whiteboardapp.utils.Vec2Int
 import kotlin.math.pow
 
@@ -41,17 +42,17 @@ internal class DraggablePointsStage(
 
     init {
         instance = this
-        points = generateInitialPoints()
+        setInitialPoints()
     }
 
 
-    private fun generateInitialPoints(): Array<Vec2Int> {
-        return arrayOf(
+    private fun setInitialPoints() {
+        points.addAll(arrayOf(
             Vec2Int(200, 200),
             Vec2Int(800, 200),
             Vec2Int(800, 800),
             Vec2Int(200, 800),
-        )
+        ))
     }
 
 
