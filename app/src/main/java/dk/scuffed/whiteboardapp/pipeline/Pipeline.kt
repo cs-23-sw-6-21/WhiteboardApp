@@ -10,6 +10,7 @@ import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.BitmapToFr
 import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.FramebufferToBitmapStage
 import dk.scuffed.whiteboardapp.pipeline.stages.input_stages.CameraXStage
 import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.OpenCVDilateStage
+import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.OpenCVLineDetectionStage
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.*
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.BinarizationStage
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.GaussianBlurStage
@@ -24,6 +25,7 @@ import dk.scuffed.whiteboardapp.pipeline.stages.segmentation_stages.Segmentation
 import dk.scuffed.whiteboardapp.pipeline.stages.segmentation_stages.SegmentationPreProcessingStage
 import dk.scuffed.whiteboardapp.pipeline.stages.segmentation_stages.SegmentationStage
 import dk.scuffed.whiteboardapp.segmentation.PPSegmentation
+import dk.scuffed.whiteboardapp.utils.Color
 
 class Pipeline(context: Context) {
 
@@ -72,15 +74,9 @@ class Pipeline(context: Context) {
             this,
         )
 
-
-        val binarizeStage = BinarizationStage(
-            context,
-            grayscale.frameBufferInfo,
-            this,
-        )
         val gaussianx = GaussianBlurStage(
             context,
-            binarizeStage.frameBufferInfo,
+            grayscale.frameBufferInfo,
             true,
             this,
         )
@@ -92,160 +88,49 @@ class Pipeline(context: Context) {
             this,
         )
 
-        val segPreProcess = SegmentationPreProcessingStage(
-            context,
-            cameraXStage.frameBufferInfo,
-            Size(256, 144),
-            this
-        )
-
-        val convertBitmap = FramebufferToBitmapStage(
-            segPreProcess.frameBufferInfo,
-            Bitmap.Config.ARGB_8888,
-            this,
-        )
-
-        val segStage = SegmentationStage(
-            context,
-            PPSegmentation.Model.PORTRAIT,
-            convertBitmap.outputBitmap,
-            this,
-        )
-
-        val dilate = OpenCVDilateStage(
-            segStage,
-            1.0,
-            this
-        )
-
-        val convertFramebuffer = BitmapToFramebufferStage(
-            dilate,
-            this,
-        )
-
-        val segPostProcess = SegmentationPostProcessingStage(
-            context,
-            convertFramebuffer.frameBufferInfo,
-            cameraXStage.frameBufferInfo.textureSize,
-            this
-        )
-
-        /*
-        val convertBitmap = FramebufferToBitmapStage(
-            cameraXStage.frameBufferInfo,
-            Bitmap.Config.ARGB_8888,
-            this,
-        )
-        
-        var convertBitmap = FramebufferToBitmapStage(
-            segPreProcess.frameBufferInfo,
-            Bitmap.Config.ARGB_8888,
-            this,
-        )
-
-        
-       val segStage = SegmentationStage(
-            context,
-            PPSegmentation.Model.PORTRAIT,
-
-        val grayscaleCVStage = OpenCVGrayScaleStage(
-            convertBitmap.outputBitmap,
-            this,
-        )
-
-        val gaussianBlurCVStage = OpenCVGaussianBlurStage(
-            grayscaleCVStage.outputBitmap,
-            this,
-        )
-
-        val sobelCVStage =  OpenCVSobelStage(
-            gaussianBlurCVStage.outputBitmap,
-            this,
-        )
-
-        val cannyCVStage = OpenCVCannyStage(
-            sobelCVStage.outputBitmap,
-            this,
-        )
-
-
-
-        DrawFramebufferStage(
-            context,
-            segPostProcess.frameBufferInfo,
-            this
-        )
-
-        val convertFramebuffer = BitmapToFramebufferStage(
-            cannyCVStage,
-            this,
-        )
-        */
-
-        val storeStageFramebufferInfo : FramebufferInfo =
-            allocateFramebuffer(cameraXStage, GLES20.GL_RGBA,
-                cameraXStage.frameBufferInfo.textureSize.width,
-                cameraXStage.frameBufferInfo.textureSize.height
-            )
-
-        val maskStage = MaskingStage(
+        val sobelStage = SobelStage(
             context,
             gaussiany.frameBufferInfo,
-            storeStageFramebufferInfo,
-            segPostProcess.frameBufferInfo,
             this
         )
 
-        val storeStage = StoreStage(
+        val cannyStage = CannyStage(
             context,
-            maskStage.frameBufferInfo,
-            storeStageFramebufferInfo,
+            sobelStage.frameBufferInfo,
+            0.1f,
+            0.2f,
             this
         )
 
-
-
-        val dynamicCorners = DraggablePointsStage(
+        val cannyBitmapStage = FramebufferToBitmapStage(
+            cannyStage.frameBufferInfo,
+            Bitmap.Config.ARGB_8888,
             this
         )
 
-        val drawLines = DrawLinesStage(
-            context,
-            this,
-            dynamicCorners
-        )
-        val drawCorners = DrawCornersStage(
-            context,
-            this,
-            dynamicCorners
-        )
-
-
-        val overlaySeg = OverlayStage(
-            context,
-            maskStage.frameBufferInfo,
-            segPostProcess.frameBufferInfo,
+        val openCVLineDetectionStage = OpenCVLineDetectionStage(
+            cannyBitmapStage,
+            150,
             this
         )
 
-        val overlayCorners = OverlayStage(
+        val drawLinesStage = DrawLinesStage(
             context,
-            overlaySeg.frameBufferInfo,
-            drawCorners.frameBufferInfo,
-            this
-        )
-        val overlayLines = OverlayStage(
-            context,
-            overlayCorners.frameBufferInfo,
-            drawLines.frameBufferInfo,
+            openCVLineDetectionStage,
+            Color(1.0f, 0.0f, 0.0f, 1.0f),
             this
         )
 
-
+        val overlayStage = OverlayStage(
+            context,
+            cannyStage.frameBufferInfo,
+            drawLinesStage.frameBufferInfo,
+            this
+        )
 
         DrawFramebufferStage(
             context,
-            overlayLines.frameBufferInfo,
+            overlayStage.frameBufferInfo,
             this
         )
     }

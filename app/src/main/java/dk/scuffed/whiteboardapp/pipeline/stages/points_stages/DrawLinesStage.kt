@@ -8,7 +8,9 @@ import dk.scuffed.whiteboardapp.pipeline.FramebufferInfo
 import dk.scuffed.whiteboardapp.pipeline.Pipeline
 import dk.scuffed.whiteboardapp.pipeline.stages.Stage
 import dk.scuffed.whiteboardapp.pipeline.readRawResource
+import dk.scuffed.whiteboardapp.pipeline.stages.LinesOutputStage
 import dk.scuffed.whiteboardapp.pipeline.stages.PointsOutputStage
+import dk.scuffed.whiteboardapp.utils.Color
 import dk.scuffed.whiteboardapp.utils.Vec2Float
 import dk.scuffed.whiteboardapp.utils.Vec2Int
 import java.nio.ByteBuffer
@@ -19,8 +21,9 @@ import kotlin.math.*
 
 internal class DrawLinesStage(
     private val context: Context,
+    private val linesOutputStage: LinesOutputStage,
+    private val color: Color,
     pipeline: Pipeline,
-    private val pointsStage: PointsOutputStage
 ) : Stage(pipeline) {
     private var program: Int = 999
 
@@ -34,25 +37,9 @@ internal class DrawLinesStage(
     // The height of the smartphone's resolution
     private val heightResolution: Int = 1920
 
-    //XYZ Coordinates for the square we are drawing on.
-    private var squareCoords = FloatArray(pointsStage.points.size*3)
-
-    // order to draw vertices
-    private val drawOrder = createDrawOrder(pointsStage.points.size)
-
     // 4 bytes per vertex
     private val vertexStride: Int = cordsPerVertex * 4
 
-    // initialize byte buffer for the draw list
-    private val drawListBuffer: ShortBuffer =
-        // (# of coordinate values * 2 bytes per short)
-        ByteBuffer.allocateDirect(drawOrder.size * 2).run {
-            order(ByteOrder.nativeOrder())
-            asShortBuffer().apply {
-                put(drawOrder)
-                position(0)
-            }
-        }
 
     val frameBufferInfo: FramebufferInfo
 
@@ -139,8 +126,22 @@ internal class DrawLinesStage(
      * Draws the line between the coordinates
      */
     private fun drawLines() {
+        // order to draw vertices
+        val drawOrder = createDrawOrder(linesOutputStage.lines.size)
+
         //Sets the coordinates for the squares
-        squareCoords = createArrayOfCorners()
+        val squareCoords = createArrayOfCorners()
+
+        // initialize byte buffer for the draw list
+       val drawListBuffer: ShortBuffer =
+            // (# of coordinate values * 2 bytes per short)
+            ByteBuffer.allocateDirect(drawOrder.size * 2).run {
+                order(ByteOrder.nativeOrder())
+                asShortBuffer().apply {
+                    put(drawOrder)
+                    position(0)
+                }
+            }
 
         val vertexBuffer: FloatBuffer =
             // (# of coordinate values * 4 bytes per float)
@@ -177,6 +178,10 @@ internal class DrawLinesStage(
             vertexStride,
             vertexBuffer
         )
+
+        val colorHandle = glGetUniformLocation(program, "color")
+        glUniform4f(colorHandle, color.r, color.g, color.b, color.a)
+
         glDrawElements(
             GLES20.GL_TRIANGLES,
             drawOrder.size,
@@ -191,7 +196,7 @@ internal class DrawLinesStage(
      * @param squares The numbers of squares
      */
     private fun createDrawOrder(squares: Int): ShortArray {
-        var drawOrder: ShortArray = ShortArray(squares*6)
+        val drawOrder: ShortArray = ShortArray(squares*6)
         //The specific draw order is set in the for loop
         for (i: Int in 0 until squares){
             drawOrder[i*6] = (i*4).toShort()
@@ -209,18 +214,14 @@ internal class DrawLinesStage(
      */
     private fun createArrayOfCorners(): FloatArray{
         val array: ArrayList<Float> = ArrayList()
-        //The array of corners for the vertexBuffer
-        for (i in pointsStage.points.indices){
-            //The special case is used to connect the last point to the first point in the cornerPoints array
-            if(i == pointsStage.points.lastIndex){
-                //Appends all calculated coordinates based on the two points to the array and breaks the for loop
-                array.addAll(arrayOfCorners(pointsStage.points[i], pointsStage.points[0]))
-                break
-            }
-            //Appends all calculated coordinates based on the two points to the array
-            array.addAll(arrayOfCorners(pointsStage.points[i], pointsStage.points[i+1]))
+
+        for (line in linesOutputStage.lines) {
+            val p1 = Vec2Int(line.startPoint.x.toInt(), line.startPoint.y.toInt())
+            val p2 = Vec2Int(line.endPoint.x.toInt(), line.endPoint.y.toInt())
+
+            array.addAll(arrayOfCorners(p1, p2))
         }
-        //Returns the array as a FloatArray
+
         return array.toFloatArray()
     }
 }
