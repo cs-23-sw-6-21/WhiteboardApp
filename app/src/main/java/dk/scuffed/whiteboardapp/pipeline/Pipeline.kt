@@ -3,6 +3,7 @@ package dk.scuffed.whiteboardapp.pipeline
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Camera
 import android.opengl.GLES20
 import android.util.Size
 import dk.scuffed.whiteboardapp.R
@@ -47,22 +48,43 @@ class Pipeline(context: Context) {
         glClearColorError()
 
 
-        val textureStage = TextureStage(
+        val opt = BitmapFactory.Options()
+        opt.inScaled = false
+
+        val textureStage = CameraXStage(
             context,
-            BitmapFactory.decodeResource(context.resources, R.drawable.checkerboard),
             this
+        )
+
+        val draggablePointsStage = DraggablePointsStage(
+            this
+
+        )
+
+        val drawLinesStage = DrawLinesStage(
+            context,
+            this,
+            draggablePointsStage
         )
 
         val corrected = PerspectiveCorrectionStage(
             context,
             textureStage.frameBufferInfo,
-            this
+            draggablePointsStage,
+            this,
         )
 
 
-        DrawFramebufferStage(
+        val overlayStage = OverlayStage(
             context,
             corrected.frameBufferInfo,
+            drawLinesStage.frameBufferInfo,
+            this
+        )
+
+        DrawFramebufferStage(
+            context,
+            overlayStage.frameBufferInfo,
             this
         )
     }

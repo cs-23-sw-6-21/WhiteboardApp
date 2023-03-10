@@ -4,6 +4,8 @@ import android.content.Context
 import android.opengl.GLES20
 import android.util.Size
 import dk.scuffed.whiteboardapp.opengl.*
+import dk.scuffed.whiteboardapp.utils.Vec2Float
+import dk.scuffed.whiteboardapp.utils.Vec3Float
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.FloatBuffer
@@ -22,7 +24,7 @@ internal abstract class GLOutputStage(
     private var program: Int = 999
 
     private val coordsPerVertex = 3
-    private val texCoordsPerVertex = 2
+    private val texCoordsPerVertex = 3
 
     //XYZ Coordinates for the square we are drawing on.
     private val squareCoords = floatArrayOf(
@@ -36,12 +38,12 @@ internal abstract class GLOutputStage(
     private val drawOrder = shortArrayOf(0, 1, 2, 0, 2, 3)
 
     private val textureCoords = floatArrayOf(
-        0f, 1f,
-        0f, 0f,
-        1f, 0f,
-        1f, 1f,
-        0f, 1f,
-        1f, 0f,
+        0f, 1f, 0f,
+        0f, 0f, 0f,
+        1f, 0f, 0f,
+        1f, 1f, 0f,
+        0f, 1f, 0f,
+        1f, 0f, 0f,
     )
 
 
@@ -109,6 +111,28 @@ internal abstract class GLOutputStage(
     protected open fun setupUniforms(program: Int) {
 
     }
+
+    final protected fun reassignVertices(vertices: ArrayList<Vec2Float>){
+        vertexBuffer.position(0)
+        for (v in vertices){
+            vertexBuffer.put(v.x)
+            vertexBuffer.put(v.y)
+            vertexBuffer.put(0f)
+        }
+        vertexBuffer.position(0)
+
+    }
+    final protected fun reassignTexCoord(vertices: ArrayList<Vec3Float>){
+        vertexTexCoordBuffer.position(0)
+        for (v in vertices){
+            vertexTexCoordBuffer.put(v.x)
+            vertexTexCoordBuffer.put(v.y)
+            vertexTexCoordBuffer.put(v.z)
+        }
+        vertexTexCoordBuffer.position(0)
+
+    }
+
 
     final override fun update() {
         val size = frameBufferInfo.textureSize
