@@ -1,7 +1,6 @@
 package dk.scuffed.whiteboardapp.pipeline.stages
 
 import dk.scuffed.whiteboardapp.pipeline.Pipeline
-import dk.scuffed.whiteboardapp.pipeline.Stage
 import dk.scuffed.whiteboardapp.utils.Vec2Int
 
 /**

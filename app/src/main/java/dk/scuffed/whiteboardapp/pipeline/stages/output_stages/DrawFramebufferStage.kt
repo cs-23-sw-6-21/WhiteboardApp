@@ -1,4 +1,4 @@
-package dk.scuffed.whiteboardapp.pipeline.stages
+package dk.scuffed.whiteboardapp.pipeline.stages.output_stages
 
 import android.content.Context
 import android.opengl.GLES20
@@ -7,7 +7,7 @@ import dk.scuffed.whiteboardapp.R
 import dk.scuffed.whiteboardapp.opengl.*
 import dk.scuffed.whiteboardapp.pipeline.*
 import dk.scuffed.whiteboardapp.pipeline.FramebufferInfo
-import dk.scuffed.whiteboardapp.pipeline.GLOutputStage
+import dk.scuffed.whiteboardapp.pipeline.stages.GLOutputStage
 import dk.scuffed.whiteboardapp.pipeline.TextureUnitPair
 
 /**

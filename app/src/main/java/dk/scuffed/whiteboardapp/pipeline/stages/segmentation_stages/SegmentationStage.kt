@@ -1,9 +1,10 @@
-package dk.scuffed.whiteboardapp.pipeline.stages
+package dk.scuffed.whiteboardapp.pipeline.stages.segmentation_stages
 
 import android.content.Context
 import android.graphics.Bitmap
 import android.util.Size
 import dk.scuffed.whiteboardapp.pipeline.*
+import dk.scuffed.whiteboardapp.pipeline.stages.BitmapOutputStage
 import dk.scuffed.whiteboardapp.segmentation.PPSegmentation
 
 /**

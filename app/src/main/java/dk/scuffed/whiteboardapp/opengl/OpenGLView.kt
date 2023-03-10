@@ -3,8 +3,8 @@ package dk.scuffed.whiteboardapp.opengl
 import android.content.Context
 import android.opengl.GLSurfaceView
 import android.view.MotionEvent
-import dk.scuffed.whiteboardapp.pipeline.stages.DraggablePointsStage
-import dk.scuffed.whiteboardapp.pipeline.stages.DrawPipelineStage
+import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.DraggablePointsStage
+import dk.scuffed.whiteboardapp.pipeline.stages.output_stages.DrawPipelineStage
 import dk.scuffed.whiteboardapp.utils.Vec2Int
 
 class OpenGLView(context: Context) : GLSurfaceView(context) {

@@ -1,6 +1,7 @@
-package dk.scuffed.whiteboardapp.pipeline
+package dk.scuffed.whiteboardapp.pipeline.stages
 
 import android.util.Log
+import dk.scuffed.whiteboardapp.pipeline.Pipeline
 
 /**
  * Baseclass for stages.

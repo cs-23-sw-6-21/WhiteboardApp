@@ -1,9 +1,7 @@
-package dk.scuffed.whiteboardapp.pipeline.stages
+package dk.scuffed.whiteboardapp.pipeline.stages.points_stages
 
-import android.graphics.Bitmap
-import android.util.Size
 import dk.scuffed.whiteboardapp.pipeline.Pipeline
-import dk.scuffed.whiteboardapp.pipeline.Stage
+import dk.scuffed.whiteboardapp.pipeline.stages.PointsOutputStage
 import dk.scuffed.whiteboardapp.utils.Vec2Int
 
 /**

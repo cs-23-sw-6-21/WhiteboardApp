@@ -1,4 +1,4 @@
-package dk.scuffed.whiteboardapp.pipeline.stages.openCVPlaceholders
+package dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages
 
 import android.util.Size
 import dk.scuffed.whiteboardapp.pipeline.*

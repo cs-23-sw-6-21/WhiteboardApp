@@ -1,10 +1,11 @@
-package dk.scuffed.whiteboardapp.pipeline.stages
+package dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages
 
 import android.graphics.Bitmap
 import android.opengl.GLES20
 import android.util.Size
 import dk.scuffed.whiteboardapp.opengl.*
 import dk.scuffed.whiteboardapp.pipeline.*
+import dk.scuffed.whiteboardapp.pipeline.stages.BitmapOutputStage
 import java.nio.ByteBuffer
 
 /**
