@@ -6,25 +6,16 @@ import android.opengl.GLES20
 import android.util.Size
 import dk.scuffed.whiteboardapp.opengl.*
 import dk.scuffed.whiteboardapp.pipeline.stages.*
-import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.BitmapToFramebufferStage
 import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.FramebufferToBitmapStage
 import dk.scuffed.whiteboardapp.pipeline.stages.input_stages.CameraXStage
-import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.OpenCVDilateStage
 import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.OpenCVLineDetectionStage
+import dk.scuffed.whiteboardapp.pipeline.stages.lines_stages.LinesAngleDiscriminatorStage
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.*
-import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.BinarizationStage
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.GaussianBlurStage
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.GrayscaleStage
-import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.MaskingStage
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.OverlayStage
 import dk.scuffed.whiteboardapp.pipeline.stages.output_stages.DrawFramebufferStage
-import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.DraggablePointsStage
-import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.DrawCornersStage
 import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.DrawLinesStage
-import dk.scuffed.whiteboardapp.pipeline.stages.segmentation_stages.SegmentationPostProcessingStage
-import dk.scuffed.whiteboardapp.pipeline.stages.segmentation_stages.SegmentationPreProcessingStage
-import dk.scuffed.whiteboardapp.pipeline.stages.segmentation_stages.SegmentationStage
-import dk.scuffed.whiteboardapp.segmentation.PPSegmentation
 import dk.scuffed.whiteboardapp.utils.Color
 
 class Pipeline(context: Context) {
@@ -114,23 +105,52 @@ class Pipeline(context: Context) {
             this
         )
 
-        val drawLinesStage = DrawLinesStage(
-            context,
+        val verticalLinesAngleDiscriminatorStage = LinesAngleDiscriminatorStage(
             openCVLineDetectionStage,
+            -(Math.PI / 4.0f).toFloat(),
+            (Math.PI / 4.0f).toFloat(),
+            this
+        )
+
+        val verticalDrawLinesStage = DrawLinesStage(
+            context,
+            verticalLinesAngleDiscriminatorStage,
             Color(1.0f, 0.0f, 0.0f, 1.0f),
             this
         )
 
-        val overlayStage = OverlayStage(
+        val horizontalLinesAngleDiscriminatorStage = LinesAngleDiscriminatorStage(
+            openCVLineDetectionStage,
+            (Math.PI / 4.0f).toFloat(),
+            (Math.PI / 2.0f + Math.PI / 4.0f).toFloat(),
+            this
+        )
+
+        val horizontalDrawLinesStage = DrawLinesStage(
+            context,
+            horizontalLinesAngleDiscriminatorStage,
+            Color(0.0f, 1.0f, 0.0f, 1.0f),
+        this
+        )
+
+
+        val verticalOverlayStage = OverlayStage(
             context,
             cannyStage.frameBufferInfo,
-            drawLinesStage.frameBufferInfo,
+            verticalDrawLinesStage.frameBufferInfo,
+            this
+        )
+
+        val horizontalOverlayStage = OverlayStage(
+            context,
+            verticalOverlayStage.frameBufferInfo,
+            horizontalDrawLinesStage.frameBufferInfo,
             this
         )
 
         DrawFramebufferStage(
             context,
-            overlayStage.frameBufferInfo,
+            horizontalOverlayStage.frameBufferInfo,
             this
         )
     }
