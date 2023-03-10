@@ -1,4 +1,4 @@
-package dk.scuffed.whiteboardapp.pipeline.stages
+package dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages
 
 import android.opengl.GLES20
 import android.opengl.GLUtils
@@ -6,7 +6,8 @@ import android.util.Size
 import dk.scuffed.whiteboardapp.opengl.*
 import dk.scuffed.whiteboardapp.pipeline.*
 import dk.scuffed.whiteboardapp.pipeline.FramebufferInfo
-import dk.scuffed.whiteboardapp.pipeline.Stage
+import dk.scuffed.whiteboardapp.pipeline.stages.Stage
+import dk.scuffed.whiteboardapp.pipeline.stages.BitmapOutputStage
 
 /**
  * Writes the bitmap onto the framebuffer each update.
