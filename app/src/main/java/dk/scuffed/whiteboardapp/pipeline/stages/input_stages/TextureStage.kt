@@ -38,6 +38,11 @@ internal class TextureStage(private val context: Context, private val texture : 
         glUniform1i(noiseTextureHandle, textureUnitPair.textureUnitIndex)
         glActiveTexture(textureUnitPair.textureUnit)
         glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle)
+
+        // Input framebuffer resolution
+        val framebufferResolutionHandle = glGetUniformLocation(program, "resolution")
+        glUniform2f(framebufferResolutionHandle, texture.width.toFloat(), texture.height.toFloat())
+
     }
 
 
