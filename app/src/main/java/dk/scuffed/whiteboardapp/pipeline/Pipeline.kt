@@ -18,9 +18,12 @@ import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.GaussianBl
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.GrayscaleStage
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.OverlayStage
 import dk.scuffed.whiteboardapp.pipeline.stages.output_stages.DrawFramebufferStage
+import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.*
 import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.DraggablePointsStage
-import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.DrawLinesStage
+import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.PerspectiveTransformPointsStage
+import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.StaticPointsStage
 import dk.scuffed.whiteboardapp.utils.Color
+import dk.scuffed.whiteboardapp.utils.Vec2Int
 
 class Pipeline(context: Context) {
 
@@ -67,34 +70,48 @@ class Pipeline(context: Context) {
 
         val draggablePointsStage = DraggablePointsStage(
             this
-
         )
-/*
-        val drawLinesStage = DrawLinesStage(
-            context,
-            draggablePointsStage,
-            Color(0f, 1f, 0f, 1f),
+
+        val screenPoints = StaticPointsStage(
             this,
+            Vec2Int(0, 0),
+            Vec2Int(0, 1920),
+            Vec2Int(1080, 1920),
+            Vec2Int(1080, 0),
+        )
+
+
+        val perspectivePoints = PerspectiveTransformPointsStage(
+            this,
+            draggablePointsStage,
+            screenPoints
+        )
+
+        val drawLinesStage = DrawCornersStage(
+            context,
+            this,
+            draggablePointsStage
             )
 
 
 
+        val corrected = PerspectiveCorrectionStage(
+            context,
+            textureStage.frameBufferInfo,
+            perspectivePoints,
+            this,
+        )
         val overlayStage = OverlayStage(
             context,
             corrected.frameBufferInfo,
             drawLinesStage.frameBufferInfo,
             this
-        )*/
-        val corrected = PerspectiveCorrectionStage(
-            context,
-            textureStage.frameBufferInfo,
-            draggablePointsStage,
-            this,
         )
+
 
         DrawFramebufferStage(
             context,
-            corrected.frameBufferInfo,
+            overlayStage.frameBufferInfo,
             this
         )
     }
