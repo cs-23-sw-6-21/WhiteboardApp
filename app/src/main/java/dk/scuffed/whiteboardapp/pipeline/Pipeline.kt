@@ -74,10 +74,10 @@ class Pipeline(context: Context) {
 
         val screenPoints = StaticPointsStage(
             this,
-            Vec2Int(0, 0),
             Vec2Int(0, 1920),
-            Vec2Int(1080, 1920),
+            Vec2Int(0, 0),
             Vec2Int(1080, 0),
+            Vec2Int(1080, 1920),
         )
 
 
