@@ -12,6 +12,7 @@ import dk.scuffed.whiteboardapp.pipeline.stages.*
 import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.FramebufferToBitmapStage
 import dk.scuffed.whiteboardapp.pipeline.stages.input_stages.CameraXStage
 import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.OpenCVLineDetectionStage
+import dk.scuffed.whiteboardapp.pipeline.stages.lines_stages.BiggestSquareStage
 import dk.scuffed.whiteboardapp.pipeline.stages.lines_stages.LinesAngleDiscriminatorStage
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.*
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.GaussianBlurStage
@@ -19,9 +20,6 @@ import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.GrayscaleS
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.OverlayStage
 import dk.scuffed.whiteboardapp.pipeline.stages.output_stages.DrawFramebufferStage
 import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.*
-import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.DraggablePointsStage
-import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.PerspectiveTransformPointsStage
-import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.StaticPointsStage
 import dk.scuffed.whiteboardapp.utils.Color
 import dk.scuffed.whiteboardapp.utils.Vec2Int
 
@@ -63,16 +61,79 @@ class Pipeline(context: Context) {
         val opt = BitmapFactory.Options()
         opt.inScaled = false
 
-        val textureStage = CameraXStage(
+
+        val cameraXStage = CameraXStage(
             context,
             this
         )
 
-        val draggablePointsStage = DraggablePointsStage(
+        val grayscaleStage = GrayscaleStage(
+            context,
+            cameraXStage.frameBufferInfo,
             this
         )
 
-        val screenPoints = StaticPointsStage(
+        val gaussianXBlurStage = GaussianBlurStage(
+            context,
+            grayscaleStage.frameBufferInfo,
+            true,
+            this
+        )
+
+        val gaussianYBlurStage = GaussianBlurStage(
+            context,
+            gaussianXBlurStage.frameBufferInfo,
+            false,
+            this
+        )
+
+        val sobelStage = SobelStage(
+            context,
+            gaussianYBlurStage.frameBufferInfo,
+            this
+        )
+
+        val cannyStage = CannyStage(
+            context,
+            sobelStage.frameBufferInfo,
+            0.1f,
+            0.2f,
+            this
+        )
+
+        val cannyBitmapStage = FramebufferToBitmapStage(
+            cannyStage.frameBufferInfo,
+            Bitmap.Config.ARGB_8888,
+            this
+        )
+
+        val openCVLineDetectionStage = OpenCVLineDetectionStage(
+            cannyBitmapStage,
+            150,
+            this
+        )
+
+        val verticalLinesAngleDiscriminatorStage = LinesAngleDiscriminatorStage(
+            openCVLineDetectionStage,
+            -(Math.PI / 4.0f).toFloat(),
+            (Math.PI / 4.0f).toFloat(),
+            this
+        )
+
+        val horizontalLinesAngleDiscriminatorStage = LinesAngleDiscriminatorStage(
+            openCVLineDetectionStage,
+            (Math.PI / 4.0f).toFloat(),
+            (Math.PI / 2.0f + Math.PI / 4.0f).toFloat(),
+            this
+        )
+
+        val biggestSquareStage = BiggestSquareStage(
+            horizontalLinesAngleDiscriminatorStage,
+            verticalLinesAngleDiscriminatorStage,
+            this
+        )
+
+        val staticPointStage = StaticPointsStage(
             this,
             Vec2Int(0, 1920),
             Vec2Int(0, 0),
@@ -80,38 +141,22 @@ class Pipeline(context: Context) {
             Vec2Int(1080, 1920),
         )
 
-
-        val perspectivePoints = PerspectiveTransformPointsStage(
+        val perspectiveTransformPointsStage = PerspectiveTransformPointsStage(
             this,
-            draggablePointsStage,
-            screenPoints
+            biggestSquareStage,
+            staticPointStage
         )
 
-        val drawLinesStage = DrawCornersStage(
+        val perspectiveCorrectionStage = PerspectiveCorrectionStage(
             context,
-            this,
-            draggablePointsStage
-            )
-
-
-
-        val corrected = PerspectiveCorrectionStage(
-            context,
-            textureStage.frameBufferInfo,
-            perspectivePoints,
-            this,
-        )
-        val overlayStage = OverlayStage(
-            context,
-            corrected.frameBufferInfo,
-            drawLinesStage.frameBufferInfo,
+            cameraXStage.frameBufferInfo,
+            perspectiveTransformPointsStage,
             this
         )
 
-
         DrawFramebufferStage(
             context,
-            overlayStage.frameBufferInfo,
+            perspectiveCorrectionStage.frameBufferInfo,
             this
         )
     }

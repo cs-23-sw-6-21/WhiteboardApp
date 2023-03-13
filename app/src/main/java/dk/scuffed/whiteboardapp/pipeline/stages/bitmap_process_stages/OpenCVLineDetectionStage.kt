@@ -35,8 +35,8 @@ internal class OpenCVLineDetectionStage(private val bitmapOutputStage: BitmapOut
             val b = sin(theta)
             val x0 = a * rho
             val y0 = b * rho
-            val pt1 = Vec2Float((x0 + 10000.0f * -b).toFloat(), (y0 + 10000.0f * a).toFloat())
-            val pt2 = Vec2Float((x0 - 10000.0f * -b).toFloat(), (y0 - 10000.0f * a).toFloat())
+            val pt1 = Vec2Float((x0 + 2000.0f * -b).toFloat(), (y0 + 2000.0f * a).toFloat())
+            val pt2 = Vec2Float((x0 - 2000.0f * -b).toFloat(), (y0 - 2000.0f * a).toFloat())
 
             lines.add(LineFloat(pt1, pt2))
         }
