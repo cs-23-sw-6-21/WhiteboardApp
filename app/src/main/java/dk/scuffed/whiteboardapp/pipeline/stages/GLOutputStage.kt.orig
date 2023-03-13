@@ -4,11 +4,14 @@ import android.content.Context
 import android.opengl.GLES20
 import android.util.Size
 import dk.scuffed.whiteboardapp.opengl.*
+<<<<<<< HEAD
 import dk.scuffed.whiteboardapp.pipeline.FramebufferInfo
 import dk.scuffed.whiteboardapp.pipeline.Pipeline
 import dk.scuffed.whiteboardapp.pipeline.readRawResource
+=======
 import dk.scuffed.whiteboardapp.utils.Vec2Float
 import dk.scuffed.whiteboardapp.utils.Vec3Float
+>>>>>>> 986b4f5 (Allow distortion of quad)
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.FloatBuffer
@@ -50,6 +53,7 @@ internal abstract class GLOutputStage(
         1f, 0f, 0f,
     )
 
+
     // 4 bytes per vertex
     private val vertexStride: Int = coordsPerVertex * 4
 
@@ -73,6 +77,7 @@ internal abstract class GLOutputStage(
                 position(0)
             }
         }
+
 
     // initialize byte buffer for the draw list
     private val drawListBuffer: ShortBuffer =
@@ -124,7 +129,6 @@ internal abstract class GLOutputStage(
         vertexBuffer.position(0)
 
     }
-
     final protected fun reassignTexCoord(vertices: ArrayList<Vec3Float>){
         vertexTexCoordBuffer.position(0)
         for (v in vertices){
@@ -135,6 +139,7 @@ internal abstract class GLOutputStage(
         vertexTexCoordBuffer.position(0)
 
     }
+
 
     final override fun update() {
         val size = frameBufferInfo.textureSize
