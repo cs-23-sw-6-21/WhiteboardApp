@@ -20,4 +20,12 @@ class Vec2Float(val x: Float, val y: Float){
             this.x, this.y, 0.0f,
         )
     }
+
+    fun toVec2Int():Vec2Int{
+        return Vec2Int(this.x.toInt(), this.y.toInt())
+    }
+
+    override fun toString(): String {
+        return "($x, $y)"
+    }
 }
