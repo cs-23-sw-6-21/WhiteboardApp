@@ -24,12 +24,16 @@ internal class BinarizationStage(context: Context, private val inputFramebufferI
     override fun setupUniforms(program: Int) {
         super.setupUniforms(program)
 
-        // We don't need the framebuffer resolution as it is the same as resolution :^)
-
         // Input framebuffer
         val framebufferTextureHandle = glGetUniformLocation(program, "framebuffer")
         glUniform1i(framebufferTextureHandle, inputFramebufferInfo.textureUnitPair.textureUnitIndex)
         glActiveTexture(inputFramebufferInfo.textureUnitPair.textureUnit)
         glBindTexture(GLES20.GL_TEXTURE_2D, inputFramebufferInfo.textureHandle)
+
+        val windowSize = glGetUniformLocation(program, "windowSize")
+        glUniform1i(windowSize, 10)
+
+        val threshold = glGetUniformLocation(program, "threshold")
+        glUniform1f(threshold, 20f)
     }
 }
