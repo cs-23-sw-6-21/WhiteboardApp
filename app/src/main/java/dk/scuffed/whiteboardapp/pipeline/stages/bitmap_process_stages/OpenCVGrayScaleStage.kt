@@ -30,11 +30,14 @@ internal class OpenCVGrayScaleStage(
     override fun update() {
         Utils.bitmapToMat(bitmap, img)
 
-        var edges = Mat(img.size(), CvType.CV_8UC1)
+        val edges = Mat(img.size(), CvType.CV_8UC1)
 
         Imgproc.cvtColor(img, edges, Imgproc.COLOR_RGB2GRAY, 4)
 
         Utils.matToBitmap(edges, outputBitmap)
+
+        img.release()
+        edges.release()
     }
 
 }
