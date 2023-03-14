@@ -32,11 +32,6 @@ internal class DrawLinesStage(
     //Number of vertexes
     private val cordsPerVertex = 3
 
-    // The width of the smartphone's resolution
-    private val widthResolution: Int = 1080
-    // The height of the smartphone's resolution
-    private val heightResolution: Int = 1920
-
     // 4 bytes per vertex
     private val vertexStride: Int = cordsPerVertex * 4
 
@@ -44,7 +39,7 @@ internal class DrawLinesStage(
     val frameBufferInfo: FramebufferInfo
 
     init {
-        frameBufferInfo = pipeline.allocateFramebuffer(this, GLES20.GL_RGBA, widthResolution.toInt(), heightResolution.toInt())
+        frameBufferInfo = pipeline.allocateFramebuffer(this, GLES20.GL_RGBA, getResolution().width, getResolution().height)
         setupGlProgram()
     }
 
@@ -105,10 +100,10 @@ internal class DrawLinesStage(
         val bottomRightCorner = bottomLeftCorner.additon(vecBetween)
 
         return arrayListOf(
-            map(topLeftCorner.x, widthResolution), map(topLeftCorner.y, heightResolution), 0.0f,
-            map(bottomLeftCorner.x, widthResolution), map(bottomLeftCorner.y, heightResolution), 0.0f,
-            map(bottomRightCorner.x, widthResolution), map(bottomRightCorner.y, heightResolution), 0.0f,
-            map(topRightCorner.x, widthResolution), map(topRightCorner.y, heightResolution), 0.0f
+            map(topLeftCorner.x, getResolution().width), map(topLeftCorner.y, getResolution().height), 0.0f,
+            map(bottomLeftCorner.x, getResolution().width), map(bottomLeftCorner.y, getResolution().height), 0.0f,
+            map(bottomRightCorner.x, getResolution().width), map(bottomRightCorner.y, getResolution().height), 0.0f,
+            map(topRightCorner.x, getResolution().width), map(topRightCorner.y, getResolution().height), 0.0f
         )
     }
 
@@ -156,8 +151,8 @@ internal class DrawLinesStage(
         glViewport(
             0,
             0,
-            widthResolution,
-            heightResolution
+            getResolution().width,
+            getResolution().height
         )
 
         // Render to our framebuffer

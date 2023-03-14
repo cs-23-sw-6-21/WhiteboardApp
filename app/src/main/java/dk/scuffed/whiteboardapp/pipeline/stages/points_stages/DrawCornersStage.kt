@@ -72,7 +72,7 @@ internal class DrawCornersStage(
     val frameBufferInfo: FramebufferInfo
 
     init {
-        frameBufferInfo = pipeline.allocateFramebuffer(this, GLES20.GL_RGBA, 1080, 1920)
+        frameBufferInfo = pipeline.allocateFramebuffer(this, GLES20.GL_RGBA, getResolution().width, getResolution().height)
         setupGlProgram()
     }
 

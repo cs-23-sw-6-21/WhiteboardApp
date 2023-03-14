@@ -12,10 +12,6 @@ internal class TestDynamicPointsStage(
     vararg dynamicPoints: Vec2Int
     ) : PointsOutputStage(pipeline, *dynamicPoints)
 {
-    init {
-    }
-
-
 
     override fun update() {
         for (i in 0..points.size-1) {
