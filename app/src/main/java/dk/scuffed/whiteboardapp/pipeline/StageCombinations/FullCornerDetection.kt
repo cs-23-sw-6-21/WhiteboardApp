@@ -9,6 +9,7 @@ import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.Framebuffe
 import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.OpenCVLineDetectionStage
 import dk.scuffed.whiteboardapp.pipeline.stages.lines_stages.BiggestSquareStage
 import dk.scuffed.whiteboardapp.pipeline.stages.lines_stages.LinesAngleDiscriminatorStage
+import dk.scuffed.whiteboardapp.pipeline.stages.lines_stages.SimpleBiggestSquareStage
 
 /**
  * Does corner detection using hough line transforms and finding the biggest quadrilateral.
@@ -48,7 +49,7 @@ internal fun fullCornerDetection(context: Context, inputStage: GLOutputStage, pi
         pipeline
     )
 
-    val biggestSquareStage = BiggestSquareStage(
+    val biggestSquareStage = SimpleBiggestSquareStage(
         horizontalLinesAngleDiscriminatorStage,
         verticalLinesAngleDiscriminatorStage,
         pipeline

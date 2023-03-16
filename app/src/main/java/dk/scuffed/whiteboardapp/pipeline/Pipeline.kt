@@ -76,6 +76,7 @@ class Pipeline(context: Context, internal val initialResolution: Size) {
             context,
             this
         )
+        /*
         val fullSegmentation = fullSegmentation(context, cameraXStage.frameBufferInfo, this)
 
         val storedFramebuffer: FramebufferInfo = allocateFramebuffer(cameraXStage, GLES20.GL_RGBA, cameraXStage.frameBufferInfo.textureSize.width, cameraXStage.frameBufferInfo.textureSize.height)
@@ -94,12 +95,12 @@ class Pipeline(context: Context, internal val initialResolution: Size) {
         )
 
 
-        //val cornerDetection = fullCornerDetection(context, storeStage, this)
-        val draggablePointsStage = DraggablePointsStage(this)
+        val cornerDetection = fullCornerDetection(context, storeStage, this)
+        //val draggablePointsStage = DraggablePointsStage(this)
         val drawCorners = DrawCornersStage(
             context,
             this,
-            draggablePointsStage
+            cornerDetection
         )
 
 
@@ -107,7 +108,7 @@ class Pipeline(context: Context, internal val initialResolution: Size) {
         val perspectiveCorrection = fullPerspectiveCorrection(
             context,
             storeStage,
-            draggablePointsStage,
+            cornerDetection,
             resolutionStage,
             this
         )
@@ -126,10 +127,13 @@ class Pipeline(context: Context, internal val initialResolution: Size) {
             drawCorners.frameBufferInfo,
             this
         )
+*/
+
+        val (a, b) = fullCornerDetectionWithDebugDrawing(context, cameraXStage, this)
 
         DrawFramebufferStage(
             context,
-            overlay.frameBufferInfo,
+            b.frameBufferInfo,
             this
         )
     }
