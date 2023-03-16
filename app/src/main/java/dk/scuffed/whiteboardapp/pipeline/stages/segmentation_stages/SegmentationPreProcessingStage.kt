@@ -8,6 +8,7 @@ import dk.scuffed.whiteboardapp.opengl.*
 import dk.scuffed.whiteboardapp.pipeline.FramebufferInfo
 import dk.scuffed.whiteboardapp.pipeline.Pipeline
 import dk.scuffed.whiteboardapp.pipeline.stages.GLOutputStage
+import dk.scuffed.whiteboardapp.segmentation.PPSegmentation
 
 /**
  * Downscales and changes axis of input to match expected input of the segmentation.
@@ -15,7 +16,7 @@ import dk.scuffed.whiteboardapp.pipeline.stages.GLOutputStage
 internal class SegmentationPreProcessingStage(
     context: Context,
     private val inputFramebufferInfo: FramebufferInfo,
-    private val outputResolution: Size,
+    private val segmentationModel: PPSegmentation.Model,
     pipeline: Pipeline,
 ) : GLOutputStage(context, R.raw.vertex_shader, R.raw.segment_preprocess_shader, pipeline) {
     init {
@@ -23,7 +24,7 @@ internal class SegmentationPreProcessingStage(
     }
 
     override fun setupFramebufferInfo() {
-        allocateFramebuffer(GLES20.GL_RGBA, outputResolution)
+        allocateFramebuffer(GLES20.GL_RGBA, Size(segmentationModel.width, segmentationModel.height))
     }
 
     override fun setupUniforms(program: Int) {

@@ -15,7 +15,6 @@ import dk.scuffed.whiteboardapp.pipeline.stages.GLOutputStage
 internal class SegmentationPostProcessingStage(
     context: Context,
     private val inputFramebufferInfo: FramebufferInfo,
-    private val outputResolution: Size,
     pipeline: Pipeline,
 ) : GLOutputStage(context, R.raw.vertex_shader, R.raw.segment_postprocess_shader, pipeline) {
     init {
@@ -23,7 +22,7 @@ internal class SegmentationPostProcessingStage(
     }
 
     override fun setupFramebufferInfo() {
-        allocateFramebuffer(GLES20.GL_RGBA, outputResolution)
+        allocateFramebuffer(GLES20.GL_RGBA, getResolution())
     }
 
     override fun setupUniforms(program: Int) {
