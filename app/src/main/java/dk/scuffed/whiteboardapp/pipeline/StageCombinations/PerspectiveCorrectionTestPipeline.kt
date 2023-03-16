@@ -13,7 +13,7 @@ import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.PerspectiveTransfo
 import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.ResolutionPointsStage
 
 /**
- * Runs an efficient 5x5 gaussian blur
+ * Runs the entire perspective correction based on draggable points and screen points and an input framebuffer
  */
 internal fun perspectiveCorrectionTestPipeline(context: Context, inputStage: GLOutputStage, pipeline: Pipeline): GLOutputStage {
     val draggablePoints = DraggablePointsStage(
