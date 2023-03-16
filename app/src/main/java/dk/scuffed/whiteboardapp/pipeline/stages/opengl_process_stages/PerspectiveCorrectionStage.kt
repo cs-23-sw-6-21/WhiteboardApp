@@ -97,6 +97,8 @@ internal class PerspectiveCorrectionStage(
     }
 
     private fun convert(v: Vec2Int): Vec2Float {
-        return (Vec2Float(((v.x / 1080f )-0.5f)*2f, ((v.y / 1920f )-0.5f)*2f))
+        return (Vec2Float(
+            ((v.x / getResolution().width.toFloat()) - 0.5f) * 2f,
+            ((v.y / getResolution().height.toFloat()) - 0.5f) * 2f))
     }
 }
