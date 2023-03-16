@@ -45,10 +45,10 @@ internal class PerspectiveCorrectionStage(
 
         // Converts the input vertices from screenspace in resolution to -1 to 1
         val convertedPoints = arrayListOf(
-            convert(inputVertices.points[0]),
-            convert(inputVertices.points[1]),
-            convert(inputVertices.points[2]),
-            convert(inputVertices.points[3])
+            convertToVertexSpace(inputVertices.points[0]),
+            convertToVertexSpace(inputVertices.points[1]),
+            convertToVertexSpace(inputVertices.points[2]),
+            convertToVertexSpace(inputVertices.points[3])
         )
 
         // Calculates the projection
@@ -96,7 +96,7 @@ internal class PerspectiveCorrectionStage(
         return (d + dOpp) / dOpp
     }
 
-    private fun convert(v: Vec2Int): Vec2Float {
+    private fun convertToVertexSpace(v: Vec2Int): Vec2Float {
         return (Vec2Float(
             ((v.x / getResolution().width.toFloat()) - 0.5f) * 2f,
             ((v.y / getResolution().height.toFloat()) - 0.5f) * 2f))
