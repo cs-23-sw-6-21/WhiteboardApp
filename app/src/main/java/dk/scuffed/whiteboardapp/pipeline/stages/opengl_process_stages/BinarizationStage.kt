@@ -11,7 +11,11 @@ import dk.scuffed.whiteboardapp.pipeline.Pipeline
 /**
  * Does simple binarization using a global threshold with a shader.
  */
-internal class BinarizationStage(context: Context, private val inputFramebufferInfo: FramebufferInfo, pipeline: Pipeline) : GLOutputStage(context, R.raw.vertex_shader, R.raw.binarization_shader, pipeline) {
+internal class BinarizationStage(context: Context,
+                                 private val inputFramebufferInfo: FramebufferInfo,
+                                 private val windowSize: Int,
+                                 private val thresholdValue: Float,
+                                 pipeline: Pipeline) : GLOutputStage(context, R.raw.vertex_shader, R.raw.binarization_shader, pipeline) {
 
     init {
         setup()
@@ -30,10 +34,10 @@ internal class BinarizationStage(context: Context, private val inputFramebufferI
         glActiveTexture(inputFramebufferInfo.textureUnitPair.textureUnit)
         glBindTexture(GLES20.GL_TEXTURE_2D, inputFramebufferInfo.textureHandle)
 
-        val windowSize = glGetUniformLocation(program, "windowSize")
-        glUniform1i(windowSize, 10)
+        val window = glGetUniformLocation(program, "windowSize")
+        glUniform1i(window, windowSize)
 
         val threshold = glGetUniformLocation(program, "threshold")
-        glUniform1f(threshold, 20f)
+        glUniform1f(threshold, thresholdValue)
     }
 }

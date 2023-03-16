@@ -17,14 +17,11 @@ void main() {
     vec4 binarized = texture2D(framebuffer, uv);
     float subImageSum = 0.0;
 
-    for (int i = 0; i < windowSize; i++)
+    for (int i = -windowSize; i <= windowSize; i++)
     {
-        for (int j = 0; j < windowSize; j++)
+        for (int j = -windowSize; j <= windowSize; j++)
         {
             subImageSum += texture2D(framebuffer, uv + h*float(i) + w*float(j)).x;
-            subImageSum += texture2D(framebuffer, uv - h*float(i) - w*float(j)).x;
-            subImageSum += texture2D(framebuffer, uv + h*float(i) - w*float(j)).x;
-            subImageSum += texture2D(framebuffer, uv - h*float(i) + w*float(j)).x;
         }
     }
 
