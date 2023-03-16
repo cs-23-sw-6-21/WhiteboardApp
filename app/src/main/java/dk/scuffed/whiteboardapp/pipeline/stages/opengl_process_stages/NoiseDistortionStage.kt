@@ -30,8 +30,7 @@ internal class NoiseDistortionStage(private val context: Context, private val in
     }
 
     override fun setupFramebufferInfo() {
-        val resolution = Size(inputFrameBufferInfo.textureSize.width, inputFrameBufferInfo.textureSize.height)
-        allocateFramebuffer(GLES20.GL_RGBA, resolution)
+        allocateFramebuffer(GLES20.GL_RGBA, inputFrameBufferInfo.textureSize)
     }
 
     fun loadTexture(){

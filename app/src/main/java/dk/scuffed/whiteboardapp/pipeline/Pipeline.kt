@@ -20,7 +20,7 @@ import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.DrawCornersStage
 import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.DrawLinesStage
 import dk.scuffed.whiteboardapp.utils.Color
 
-class Pipeline(context: Context) {
+class Pipeline(context: Context, internal val initialResolution: Size) {
 
     private var stages = mutableListOf<Stage>()
     private var nextTextureUnit: Int = 0
@@ -179,6 +179,10 @@ class Pipeline(context: Context) {
 
     fun draw() {
         stages.forEach { stage -> stage.performUpdate() }
+    }
+
+    fun onResolutionChanged(resolution: Size) {
+        stages.forEach { stage -> stage.performOnResolutionChanged(resolution) }
     }
 
     internal fun allocateFramebuffer(stage: Stage, textureFormat: Int, width: Int, height: Int): FramebufferInfo {
