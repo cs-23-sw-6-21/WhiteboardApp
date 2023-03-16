@@ -1,13 +1,32 @@
 package dk.scuffed.whiteboardapp.pipeline
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Camera
 import android.opengl.GLES20
 import android.util.Size
+import dk.scuffed.whiteboardapp.R
 import dk.scuffed.whiteboardapp.opengl.*
 import dk.scuffed.whiteboardapp.pipeline.StageCombinations.fullCornerDetectionWithDebugDrawing
+import dk.scuffed.whiteboardapp.pipeline.StageCombinations.fullPerspectiveCorrection
+import dk.scuffed.whiteboardapp.pipeline.StageCombinations.perspectiveCorrectionTestPipeline
 import dk.scuffed.whiteboardapp.pipeline.stages.*
+import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.FramebufferToBitmapStage
+import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.OpenCVLineDetectionStage
 import dk.scuffed.whiteboardapp.pipeline.stages.input_stages.CameraXStage
+import dk.scuffed.whiteboardapp.pipeline.stages.lines_stages.BiggestSquareStage
+import dk.scuffed.whiteboardapp.pipeline.stages.lines_stages.LinesAngleDiscriminatorStage
+import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.*
+import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.CannyStage
+import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.GaussianBlurStage
+import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.GrayscaleStage
+import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.PerspectiveCorrectionStage
+import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.SobelStage
 import dk.scuffed.whiteboardapp.pipeline.stages.output_stages.DrawFramebufferStage
+import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.*
+import dk.scuffed.whiteboardapp.utils.Color
+import dk.scuffed.whiteboardapp.utils.Vec2Int
 
 class Pipeline(context: Context, internal val initialResolution: Size) {
 
@@ -44,16 +63,20 @@ class Pipeline(context: Context, internal val initialResolution: Size) {
         glClearColorError()
 
 
+        val opt = BitmapFactory.Options()
+        opt.inScaled = false
+
+
         val cameraXStage = CameraXStage(
             context,
             this
         )
 
-        val (points, debug) = fullCornerDetectionWithDebugDrawing(context, cameraXStage, this)
+        val perspectiveCorrectionTestPipeline = perspectiveCorrectionTestPipeline(context, cameraXStage, this)
 
         DrawFramebufferStage(
             context,
-            debug.frameBufferInfo,
+            perspectiveCorrectionTestPipeline.frameBufferInfo,
             this
         )
     }

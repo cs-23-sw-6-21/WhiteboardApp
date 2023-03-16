@@ -38,7 +38,7 @@ internal class DrawPipelineStage(
     }
 
     // TODO Get this from the view.
-    private val resolution: Size = Size(1080, 1920)
+    private val resolution: Size = Size(getResolution().width, getResolution().height)
 
     private var currentStageIndex: Int
 
