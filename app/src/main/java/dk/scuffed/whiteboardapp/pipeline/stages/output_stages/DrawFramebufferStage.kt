@@ -19,16 +19,13 @@ internal class DrawFramebufferStage(
     pipeline: Pipeline) : GLOutputStage(context, R.raw.vertex_shader, R.raw.passthrough_shader, pipeline)
 {
 
-    // TODO Get this from the view.
-    private val resolution: Size = Size(1080, 1920)
-
     init {
         setup()
     }
 
     override fun setupFramebufferInfo() {
         // Set framebuffer to screen
-        frameBufferInfo = FramebufferInfo(0, 0, TextureUnitPair(0, 0), 0, resolution)
+        frameBufferInfo = FramebufferInfo(0, 0, TextureUnitPair(0, 0), 0, getResolution())
     }
 
     override fun setupUniforms(program: Int) {

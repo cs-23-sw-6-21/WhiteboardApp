@@ -31,11 +31,14 @@ internal class OpenCVGaussianBlurStage(
     override fun update() {
         Utils.bitmapToMat(bitmap, img)
 
-        var blurredImg = Mat(img.size(), CvType.CV_8UC1)
+        val blurredImg = Mat(img.size(), CvType.CV_8UC1)
 
         Imgproc.GaussianBlur(img, blurredImg, org.opencv.core.Size(5.0,5.0), 1.0, 1.0)
 
         Utils.matToBitmap(blurredImg, outputBitmap)
+
+        img.release()
+        blurredImg.release()
     }
 
 }

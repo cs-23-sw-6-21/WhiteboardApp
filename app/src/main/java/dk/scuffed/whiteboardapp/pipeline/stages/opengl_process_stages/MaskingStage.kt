@@ -24,6 +24,8 @@ internal class MaskingStage(
     }
 
     override fun setupFramebufferInfo() {
+        assert(inputFrameBufferInfo1.textureSize == inputFrameBufferInfo2.textureSize)
+
         val resolution = Size(inputFrameBufferInfo1.textureSize.width, inputFrameBufferInfo1.textureSize.height)
         allocateFramebuffer(GLES20.GL_RGBA, resolution)
 

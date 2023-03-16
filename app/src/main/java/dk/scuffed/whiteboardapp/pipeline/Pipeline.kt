@@ -8,22 +8,15 @@ import android.opengl.GLES20
 import android.util.Size
 import dk.scuffed.whiteboardapp.R
 import dk.scuffed.whiteboardapp.opengl.*
+import dk.scuffed.whiteboardapp.pipeline.StageCombinations.fullCornerDetectionWithDebugDrawing
 import dk.scuffed.whiteboardapp.pipeline.stages.*
-import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.FramebufferToBitmapStage
 import dk.scuffed.whiteboardapp.pipeline.stages.input_stages.CameraXStage
-import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.OpenCVLineDetectionStage
-import dk.scuffed.whiteboardapp.pipeline.stages.lines_stages.BiggestSquareStage
-import dk.scuffed.whiteboardapp.pipeline.stages.lines_stages.LinesAngleDiscriminatorStage
-import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.*
-import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.GaussianBlurStage
-import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.GrayscaleStage
-import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.OverlayStage
 import dk.scuffed.whiteboardapp.pipeline.stages.output_stages.DrawFramebufferStage
 import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.*
 import dk.scuffed.whiteboardapp.utils.Color
 import dk.scuffed.whiteboardapp.utils.Vec2Int
 
-class Pipeline(context: Context) {
+class Pipeline(context: Context, internal val initialResolution: Size) {
 
     private var stages = mutableListOf<Stage>()
     private var nextTextureUnit: Int = 0
@@ -164,6 +157,10 @@ class Pipeline(context: Context) {
 
     fun draw() {
         stages.forEach { stage -> stage.performUpdate() }
+    }
+
+    fun onResolutionChanged(resolution: Size) {
+        stages.forEach { stage -> stage.performOnResolutionChanged(resolution) }
     }
 
     internal fun allocateFramebuffer(stage: Stage, textureFormat: Int, width: Int, height: Int): FramebufferInfo {

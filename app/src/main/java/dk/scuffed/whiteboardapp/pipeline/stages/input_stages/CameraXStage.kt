@@ -42,7 +42,7 @@ internal class CameraXStage(
 
         // We definitely should not specify the resolution here
         // We should probably get the biggest resolution
-        cameraSurfaceTexture.setDefaultBufferSize(1920, 1080)
+        cameraSurfaceTexture.setDefaultBufferSize(getResolution().height, getResolution().width)
 
         val cameraSelector = CameraSelector.Builder()
             .requireLensFacing(LENS_FACING_BACK)
