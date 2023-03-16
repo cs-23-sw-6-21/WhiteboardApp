@@ -44,11 +44,11 @@ internal class PerspectiveTransformPointsStage(
             Point(pointsTo.points[3].x.toDouble(), pointsTo.points[3].y.toDouble()),
         )
 
-        val warpmat = Imgproc.getPerspectiveTransform(src, dst)
+        val perspectiveTransformMatrix = Imgproc.getPerspectiveTransform(src, dst)
 
         val result = MatOfPoint2f()
 
-        Core.perspectiveTransform(dst, result, warpmat)
+        Core.perspectiveTransform(dst, result, perspectiveTransformMatrix)
 
         val newpoints = result.toArray()
 

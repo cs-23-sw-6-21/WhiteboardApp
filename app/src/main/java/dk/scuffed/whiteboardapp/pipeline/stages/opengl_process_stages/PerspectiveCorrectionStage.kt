@@ -92,10 +92,13 @@ internal class PerspectiveCorrectionStage(
         return texCoords
     }
 
+    // Calculate some kind of pseudo depth used for the projection
+    // See details at https://www.reedbeta.com/blog/quadrilateral-interpolation-part-1/
     private fun calculateZValue(d: Float, dOpp: Float): Float{
         return (d + dOpp) / dOpp
     }
 
+    // Converts the input vertices from screenspace (resolution) to vertex space (-1 to 1)
     private fun convertToVertexSpace(v: Vec2Int): Vec2Float {
         return (Vec2Float(
             ((v.x / getResolution().width.toFloat()) - 0.5f) * 2f,
