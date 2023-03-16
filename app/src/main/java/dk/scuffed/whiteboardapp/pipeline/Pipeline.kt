@@ -8,10 +8,11 @@ import android.opengl.GLES20
 import android.util.Size
 import dk.scuffed.whiteboardapp.R
 import dk.scuffed.whiteboardapp.opengl.*
-import dk.scuffed.whiteboardapp.pipeline.StageCombinations.fullCornerDetectionWithDebugDrawing
-import dk.scuffed.whiteboardapp.pipeline.StageCombinations.fullPerspectiveCorrection
+import dk.scuffed.whiteboardapp.pipeline.StageCombinations.*
+import dk.scuffed.whiteboardapp.pipeline.StageCombinations.fullSegmentation
 import dk.scuffed.whiteboardapp.pipeline.StageCombinations.perspectiveCorrectionTestPipeline
 import dk.scuffed.whiteboardapp.pipeline.stages.*
+import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.BitmapToFramebufferStage
 import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.FramebufferToBitmapStage
 import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.OpenCVLineDetectionStage
 import dk.scuffed.whiteboardapp.pipeline.stages.input_stages.CameraXStage
@@ -25,6 +26,10 @@ import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.Perspectiv
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.SobelStage
 import dk.scuffed.whiteboardapp.pipeline.stages.output_stages.DrawFramebufferStage
 import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.*
+import dk.scuffed.whiteboardapp.pipeline.stages.segmentation_stages.SegmentationPostProcessingStage
+import dk.scuffed.whiteboardapp.pipeline.stages.segmentation_stages.SegmentationPreProcessingStage
+import dk.scuffed.whiteboardapp.pipeline.stages.segmentation_stages.SegmentationStage
+import dk.scuffed.whiteboardapp.segmentation.PPSegmentation
 import dk.scuffed.whiteboardapp.utils.Color
 import dk.scuffed.whiteboardapp.utils.Vec2Int
 
@@ -71,12 +76,60 @@ class Pipeline(context: Context, internal val initialResolution: Size) {
             context,
             this
         )
+        val fullSegmentation = fullSegmentation(context, cameraXStage.frameBufferInfo, this)
 
-        val perspectiveCorrectionTestPipeline = perspectiveCorrectionTestPipeline(context, cameraXStage, this)
+        val storedFramebuffer: FramebufferInfo = allocateFramebuffer(cameraXStage, GLES20.GL_RGBA, cameraXStage.frameBufferInfo.textureSize.width, cameraXStage.frameBufferInfo.textureSize.height)
+        val maskStage = MaskingStage(
+            context,
+            cameraXStage.frameBufferInfo,
+            storedFramebuffer,
+            fullSegmentation.frameBufferInfo,
+            this
+        )
+        val storeStage = StoreStage(
+            context,
+            maskStage.frameBufferInfo,
+            storedFramebuffer,
+            this
+        )
+
+
+        //val cornerDetection = fullCornerDetection(context, storeStage, this)
+        val draggablePointsStage = DraggablePointsStage(this)
+        val drawCorners = DrawCornersStage(
+            context,
+            this,
+            draggablePointsStage
+        )
+
+
+        val resolutionStage = ResolutionPointsStage(this)
+        val perspectiveCorrection = fullPerspectiveCorrection(
+            context,
+            storeStage,
+            draggablePointsStage,
+            resolutionStage,
+            this
+        )
+
+        val binarizationStage = BinarizationStage(
+            context,
+            perspectiveCorrection.frameBufferInfo,
+            10,
+            20f,
+            this
+        )
+
+        val overlay = OverlayStage(
+            context,
+            binarizationStage.frameBufferInfo,
+            drawCorners.frameBufferInfo,
+            this
+        )
 
         DrawFramebufferStage(
             context,
-            perspectiveCorrectionTestPipeline.frameBufferInfo,
+            overlay.frameBufferInfo,
             this
         )
     }
