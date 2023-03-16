@@ -12,8 +12,6 @@ import dk.scuffed.whiteboardapp.utils.LineFloat
 import dk.scuffed.whiteboardapp.utils.Vec2Float
 import dk.scuffed.whiteboardapp.utils.Vec2Int
 import dk.scuffed.whiteboardapp.utils.Vec3Float
-import kotlin.math.pow
-import kotlin.math.sqrt
 
 /**
  * Distorts the input image by rendering with the inputVertices so that it appears as if it has been distorted in 3D
