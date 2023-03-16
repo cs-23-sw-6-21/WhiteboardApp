@@ -33,6 +33,10 @@ internal class OpenCVDilateStage(
         Imgproc.dilate(img, dilated, element)
 
         Utils.matToBitmap(dilated, outputBitmap)
+
+        img.release()
+        dilated.release()
+        element.release()
     }
 
 }

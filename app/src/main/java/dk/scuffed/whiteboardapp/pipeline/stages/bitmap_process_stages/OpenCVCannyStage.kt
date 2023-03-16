@@ -22,11 +22,14 @@ internal class OpenCVCannyStage(
     override fun update() {
         Utils.bitmapToMat(bitmap, img)
 
-        var edges = Mat(img.size(), CvType.CV_8UC1)
+        val edges = Mat(img.size(), CvType.CV_8UC1)
 
         Imgproc.Canny(img, edges, 80.0, 130.0)
 
         Utils.matToBitmap(edges, outputBitmap)
+
+        img.release()
+        edges.release()
     }
 
 }

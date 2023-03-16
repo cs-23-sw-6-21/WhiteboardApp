@@ -31,9 +31,9 @@ internal class OpenCVSobelStage(
     override fun update() {
         Utils.bitmapToMat(bitmap, img)
 
-        var sobelEdgesX = Mat(img.size(), CvType.CV_8UC1)
-        var sobelEdgesY = Mat(img.size(), CvType.CV_8UC1)
-        var edges = Mat(img.size(), CvType.CV_8UC1)
+        val sobelEdgesX = Mat(img.size(), CvType.CV_8UC1)
+        val sobelEdgesY = Mat(img.size(), CvType.CV_8UC1)
+        val edges = Mat(img.size(), CvType.CV_8UC1)
 
         Imgproc.Sobel(img, sobelEdgesX, CvType.CV_8UC1,1, 0, 3)
         Imgproc.Sobel(img, sobelEdgesY, CvType.CV_8UC1,0, 1, 3)
@@ -41,6 +41,11 @@ internal class OpenCVSobelStage(
         Core.addWeighted(sobelEdgesX, 0.5, sobelEdgesY, 0.5, 0.0, edges)
 
         Utils.matToBitmap(edges, outputBitmap)
+
+        img.release()
+        sobelEdgesX.release()
+        sobelEdgesY.release()
+        edges.release()
     }
 
 }
