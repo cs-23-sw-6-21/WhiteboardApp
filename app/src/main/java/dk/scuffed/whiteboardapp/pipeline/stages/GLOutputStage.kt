@@ -151,6 +151,7 @@ internal abstract class GLOutputStage(
         glVertexAttribPointer(positionHandle, coordsPerVertex, GLES20.GL_FLOAT, false, vertexStride, vertexBuffer)
 
         val textureCoordinateHandle = GLES20.glGetAttribLocation(program, "a_TexCoordinate")
+        // Only set if it exists in the shader - only few of our shaders actually have texture coordinates
         if (textureCoordinateHandle != -1){
             glEnableVertexAttribArray(textureCoordinateHandle)
             glVertexAttribPointer(textureCoordinateHandle, texCoordsPerVertex, GLES20.GL_FLOAT, false, 0, vertexTexCoordBuffer);
