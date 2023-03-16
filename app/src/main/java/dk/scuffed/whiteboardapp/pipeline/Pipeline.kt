@@ -74,11 +74,11 @@ class Pipeline(context: Context, internal val initialResolution: Size) {
 
         //val perspectiveCorrectionTestPipeline = perspectiveCorrectionTestPipeline(context, cameraXStage, this)
 
-        val (madsFuckery1, madsFuckery2) = fullCornerDetectionWithDebugDrawing(context, cameraXStage, this)
+        val (points, debugdraw) = fullCornerDetectionWithDebugDrawing(context, cameraXStage, this)
 
         DrawFramebufferStage(
             context,
-            madsFuckery2.frameBufferInfo,
+            debugdraw.frameBufferInfo,
             this
         )
     }
