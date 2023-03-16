@@ -10,12 +10,16 @@ import kotlin.math.round
 
 
 /**
- * Stage that always has the points given in the constructor.
+ * Stage that outputs the points required so that pointsFrom will be at pointsTo.
+ * Requires everything to have 4 points, as this is designed for quads.
+ * @param pointsFrom the points forming a quad that we want to be moved to pointsTo.
+ * @param pointsTo the points forming a quad that we want pointsFrom to be moved to.
+ * @returns the points of the quad that will ensure pointsFrom is distorted so they are at pointsTo.
  */
 internal class PerspectiveTransformPointsStage(
     pipeline: Pipeline,
-    val pointsFrom: PointsOutputStage,
-    val pointsTo: PointsOutputStage
+    private val pointsFrom: PointsOutputStage,
+    private val pointsTo: PointsOutputStage
     ) : PointsOutputStage(pipeline)
 {
     init {
@@ -23,12 +27,16 @@ internal class PerspectiveTransformPointsStage(
     }
 
     override fun update() {
+        assert(pointsFrom.points.size == 4)
+        assert(pointsTo.points.size == 4)
+
         val src = MatOfPoint2f(
             Point(pointsFrom.points[0].x.toDouble(), pointsFrom.points[0].y.toDouble()),
             Point(pointsFrom.points[1].x.toDouble(), pointsFrom.points[1].y.toDouble()),
             Point(pointsFrom.points[2].x.toDouble(), pointsFrom.points[2].y.toDouble()),
             Point(pointsFrom.points[3].x.toDouble(), pointsFrom.points[3].y.toDouble()),
             )
+
         val dst = MatOfPoint2f(
             Point(pointsTo.points[0].x.toDouble(), pointsTo.points[0].y.toDouble()),
             Point(pointsTo.points[1].x.toDouble(), pointsTo.points[1].y.toDouble()),
@@ -40,38 +48,13 @@ internal class PerspectiveTransformPointsStage(
 
         val result = MatOfPoint2f()
 
-
-        //Imgproc.warpPerspective(dst, result, warpmat, src.size())
         Core.perspectiveTransform(dst, result, warpmat)
 
-        //Log.d("sdklfs", "Size: " + result)
-
-
-
         val newpoints = result.toArray()
-
 
         for (i in points.indices) {
             points[i] = Vec2Int(newpoints[i].x.toInt(), newpoints[i].y.toInt())
         }
-
-        /*
-        val src = MatOfPoint2f(
-            pointsFrom.points,
-            sortedPoints.get(1),
-            sortedPoints.get(2),
-            sortedPoints.get(3)
-        )
-
-        var dst: MatOfPoint2f? = MatOfPoint2f(
-            Point(0, 0),
-            Point(450 - 1, 0),
-            Point(0, 450 - 1),
-            Point(450 - 1, 450 - 1)
-        )        Imgproc.getPerspectiveTransform()
-        val transformMatrix = Core.p
-        */
-
     }
     private fun setInitialPoints() {
         points.addAll(arrayOf(
@@ -81,5 +64,4 @@ internal class PerspectiveTransformPointsStage(
             Vec2Int(200, 800),
         ))
     }
-
 }
