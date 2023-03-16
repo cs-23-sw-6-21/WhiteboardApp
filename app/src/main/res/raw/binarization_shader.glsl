@@ -27,5 +27,5 @@ void main() {
 
     subImageSum = subImageSum * (100.0-threshold)/100.0;
 
-    gl_FragColor = vec4(step(subImageSum, float(4*windowSize*windowSize)*binarized.xyz), 1.0);
+    gl_FragColor = vec4(step(subImageSum, float(4*windowSize*windowSize)*binarized.xxx), 1.0);
 }

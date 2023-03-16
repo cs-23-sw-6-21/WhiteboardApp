@@ -8,6 +8,7 @@ import dk.scuffed.whiteboardapp.pipeline.stages.GLOutputStage
 import dk.scuffed.whiteboardapp.pipeline.stages.PointsOutputStage
 import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.BitmapToFramebufferStage
 import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.FramebufferToBitmapStage
+import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.OpenCVDilateStage
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.GaussianBlurStage
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.PerspectiveCorrectionStage
 import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.PerspectiveTransformPointsStage
@@ -40,8 +41,14 @@ internal fun fullSegmentation(context: Context, inputFramebufferInfo: Framebuffe
         pipeline
     )
 
-    val segFramebufferInfo = BitmapToFramebufferStage(
+    val dilation = OpenCVDilateStage(
         seg,
+        2.0,
+        pipeline
+    )
+
+    val segFramebufferInfo = BitmapToFramebufferStage(
+        dilation,
         pipeline
     )
 
