@@ -9,7 +9,7 @@ import dk.scuffed.whiteboardapp.pipeline.stages.GLOutputStage
 import dk.scuffed.whiteboardapp.pipeline.Pipeline
 
 /**
- * Does simple binarization using a global threshold with a shader.
+ * Does binarization using an adaptive threshold with a shader.
  */
 internal class BinarizationStage(context: Context,
                                  private val inputFramebufferInfo: FramebufferInfo,
@@ -34,6 +34,7 @@ internal class BinarizationStage(context: Context,
         glActiveTexture(inputFramebufferInfo.textureUnitPair.textureUnit)
         glBindTexture(GLES20.GL_TEXTURE_2D, inputFramebufferInfo.textureHandle)
 
+        // Inputs to shader for adaptive thresholding
         val window = glGetUniformLocation(program, "windowSize")
         glUniform1i(window, windowSize)
 
