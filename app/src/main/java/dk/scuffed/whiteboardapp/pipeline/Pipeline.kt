@@ -1,24 +1,13 @@
 package dk.scuffed.whiteboardapp.pipeline
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.opengl.GLES20
 import android.util.Size
 import dk.scuffed.whiteboardapp.opengl.*
+import dk.scuffed.whiteboardapp.pipeline.StageCombinations.fullCornerDetectionWithDebugDrawing
 import dk.scuffed.whiteboardapp.pipeline.stages.*
-import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.FramebufferToBitmapStage
 import dk.scuffed.whiteboardapp.pipeline.stages.input_stages.CameraXStage
-import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.OpenCVLineDetectionStage
-import dk.scuffed.whiteboardapp.pipeline.stages.lines_stages.BiggestSquareStage
-import dk.scuffed.whiteboardapp.pipeline.stages.lines_stages.LinesAngleDiscriminatorStage
-import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.*
-import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.GaussianBlurStage
-import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.GrayscaleStage
-import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.OverlayStage
 import dk.scuffed.whiteboardapp.pipeline.stages.output_stages.DrawFramebufferStage
-import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.DrawCornersStage
-import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.DrawLinesStage
-import dk.scuffed.whiteboardapp.utils.Color
 
 class Pipeline(context: Context, internal val initialResolution: Size) {
 
@@ -60,118 +49,11 @@ class Pipeline(context: Context, internal val initialResolution: Size) {
             this
         )
 
-
-        val grayscale = GrayscaleStage(
-            context,
-            cameraXStage.frameBufferInfo,
-            this,
-        )
-
-        val gaussianx = GaussianBlurStage(
-            context,
-            grayscale.frameBufferInfo,
-            true,
-            this,
-        )
-
-        val gaussiany = GaussianBlurStage(
-            context,
-            gaussianx.frameBufferInfo,
-            false,
-            this,
-        )
-
-        val sobelStage = SobelStage(
-            context,
-            gaussiany.frameBufferInfo,
-            this
-        )
-
-        val cannyStage = CannyStage(
-            context,
-            sobelStage.frameBufferInfo,
-            0.1f,
-            0.2f,
-            this
-        )
-
-        val cannyBitmapStage = FramebufferToBitmapStage(
-            cannyStage.frameBufferInfo,
-            Bitmap.Config.ARGB_8888,
-            this
-        )
-
-        val openCVLineDetectionStage = OpenCVLineDetectionStage(
-            cannyBitmapStage,
-            150,
-            this
-        )
-
-        val verticalLinesAngleDiscriminatorStage = LinesAngleDiscriminatorStage(
-            openCVLineDetectionStage,
-            -(Math.PI / 4.0f).toFloat(),
-            (Math.PI / 4.0f).toFloat(),
-            this
-        )
-
-        val verticalDrawLinesStage = DrawLinesStage(
-            context,
-            verticalLinesAngleDiscriminatorStage,
-            Color(1.0f, 0.0f, 0.0f, 1.0f),
-            this
-        )
-
-        val horizontalLinesAngleDiscriminatorStage = LinesAngleDiscriminatorStage(
-            openCVLineDetectionStage,
-            (Math.PI / 4.0f).toFloat(),
-            (Math.PI / 2.0f + Math.PI / 4.0f).toFloat(),
-            this
-        )
-
-        val horizontalDrawLinesStage = DrawLinesStage(
-            context,
-            horizontalLinesAngleDiscriminatorStage,
-            Color(0.0f, 1.0f, 0.0f, 1.0f),
-        this
-        )
-
-
-        val verticalOverlayStage = OverlayStage(
-            context,
-            cameraXStage.frameBufferInfo,
-            verticalDrawLinesStage.frameBufferInfo,
-            this
-        )
-
-        val horizontalOverlayStage = OverlayStage(
-            context,
-            verticalOverlayStage.frameBufferInfo,
-            horizontalDrawLinesStage.frameBufferInfo,
-            this
-        )
-
-        val biggestSquareStage = BiggestSquareStage(
-            horizontalLinesAngleDiscriminatorStage,
-            verticalLinesAngleDiscriminatorStage,
-            this
-        )
-
-        val drawCornersStage = DrawCornersStage(
-            context,
-            this,
-            biggestSquareStage
-        )
-
-        val pointOverlayStage = OverlayStage(
-            context,
-            horizontalOverlayStage.frameBufferInfo,
-            drawCornersStage.frameBufferInfo,
-            this
-        )
+        val (points, debug) = fullCornerDetectionWithDebugDrawing(context, cameraXStage, this)
 
         DrawFramebufferStage(
             context,
-            pointOverlayStage.frameBufferInfo,
+            debug.frameBufferInfo,
             this
         )
     }
