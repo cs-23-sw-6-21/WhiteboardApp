@@ -1,5 +1,8 @@
 package dk.scuffed.whiteboardapp.utils
 
+import kotlin.math.pow
+import kotlin.math.sqrt
+
 /**
  * This class is used to store coordinates in a vector2 float.
  * @property x the x coordinate for a point.
@@ -19,6 +22,10 @@ class Vec2Float(val x: Float, val y: Float){
         return floatArrayOf(
             this.x, this.y, 0.0f,
         )
+    }
+
+    fun distance(to: Vec2Float): Float{
+        return sqrt((to.x - this.x).pow(2f) + (to.y - this.y).pow(2f))
     }
 
     fun toVec2Int():Vec2Int{
