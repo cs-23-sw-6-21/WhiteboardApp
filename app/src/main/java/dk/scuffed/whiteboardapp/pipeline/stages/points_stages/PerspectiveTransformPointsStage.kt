@@ -55,6 +55,11 @@ internal class PerspectiveTransformPointsStage(
         for (i in points.indices) {
             points[i] = Vec2Int(newpoints[i].x.toInt(), newpoints[i].y.toInt())
         }
+
+        warpmat.release()
+        result.release()
+        src.release()
+        dst.release()
     }
     private fun setInitialPoints() {
         points.addAll(arrayOf(
