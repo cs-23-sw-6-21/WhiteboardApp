@@ -6,10 +6,12 @@ import dk.scuffed.whiteboardapp.pipeline.stages.PointsOutputStage
 import dk.scuffed.whiteboardapp.utils.Vec2Float
 import dk.scuffed.whiteboardapp.utils.Vec2Int
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.math.abs
 
 internal class BiggestSquareStage(private val horizontalLinesStage: LinesOutputStage, private val verticalLinesStage: LinesOutputStage, pipeline: Pipeline) :
     PointsOutputStage(pipeline, Vec2Int(0, 0)) {
+
     override fun update() {
         var bestA = Vec2Float(0f,0f)
         var bestB = Vec2Float(0f,0f)
@@ -68,7 +70,7 @@ internal class BiggestSquareStage(private val horizontalLinesStage: LinesOutputS
         }
         val output = convexHull(arrayOf(bestA, bestB, bestC, bestC, bestD))
 
-        if (output != null)  {
+        if (output != null && output.size == 4)  {
             points.add(output[0].toVec2Int())
             points.add(output[1].toVec2Int())
             points.add(output[2].toVec2Int())
@@ -96,7 +98,7 @@ internal class BiggestSquareStage(private val horizontalLinesStage: LinesOutputS
         if (n < 3) return null
 
         // Initialize Result
-        val hull = Vector<Vec2Float>()
+        val hull = ArrayList<Vec2Float>()
 
         // Find the leftmost point
         var l = 0
