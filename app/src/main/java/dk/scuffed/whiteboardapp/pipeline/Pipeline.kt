@@ -9,8 +9,20 @@ import android.util.Size
 import dk.scuffed.whiteboardapp.R
 import dk.scuffed.whiteboardapp.opengl.*
 import dk.scuffed.whiteboardapp.pipeline.StageCombinations.fullCornerDetectionWithDebugDrawing
+import dk.scuffed.whiteboardapp.pipeline.StageCombinations.fullPerspectiveCorrection
+import dk.scuffed.whiteboardapp.pipeline.StageCombinations.perspectiveCorrectionTestPipeline
 import dk.scuffed.whiteboardapp.pipeline.stages.*
+import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.FramebufferToBitmapStage
+import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.OpenCVLineDetectionStage
 import dk.scuffed.whiteboardapp.pipeline.stages.input_stages.CameraXStage
+import dk.scuffed.whiteboardapp.pipeline.stages.lines_stages.BiggestSquareStage
+import dk.scuffed.whiteboardapp.pipeline.stages.lines_stages.LinesAngleDiscriminatorStage
+import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.*
+import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.CannyStage
+import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.GaussianBlurStage
+import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.GrayscaleStage
+import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.PerspectiveCorrectionStage
+import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.SobelStage
 import dk.scuffed.whiteboardapp.pipeline.stages.output_stages.DrawFramebufferStage
 import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.*
 import dk.scuffed.whiteboardapp.utils.Color
@@ -60,96 +72,11 @@ class Pipeline(context: Context, internal val initialResolution: Size) {
             this
         )
 
-        val grayscaleStage = GrayscaleStage(
-            context,
-            cameraXStage.frameBufferInfo,
-            this
-        )
-
-        val gaussianXBlurStage = GaussianBlurStage(
-            context,
-            grayscaleStage.frameBufferInfo,
-            true,
-            this
-        )
-
-        val gaussianYBlurStage = GaussianBlurStage(
-            context,
-            gaussianXBlurStage.frameBufferInfo,
-            false,
-            this
-        )
-
-        val sobelStage = SobelStage(
-            context,
-            gaussianYBlurStage.frameBufferInfo,
-            this
-        )
-
-        val cannyStage = CannyStage(
-            context,
-            sobelStage.frameBufferInfo,
-            0.1f,
-            0.2f,
-            this
-        )
-
-        val cannyBitmapStage = FramebufferToBitmapStage(
-            cannyStage.frameBufferInfo,
-            Bitmap.Config.ARGB_8888,
-            this
-        )
-
-        val openCVLineDetectionStage = OpenCVLineDetectionStage(
-            cannyBitmapStage,
-            150,
-            this
-        )
-
-        val verticalLinesAngleDiscriminatorStage = LinesAngleDiscriminatorStage(
-            openCVLineDetectionStage,
-            -(Math.PI / 4.0f).toFloat(),
-            (Math.PI / 4.0f).toFloat(),
-            this
-        )
-
-        val horizontalLinesAngleDiscriminatorStage = LinesAngleDiscriminatorStage(
-            openCVLineDetectionStage,
-            (Math.PI / 4.0f).toFloat(),
-            (Math.PI / 2.0f + Math.PI / 4.0f).toFloat(),
-            this
-        )
-
-        val biggestSquareStage = BiggestSquareStage(
-            horizontalLinesAngleDiscriminatorStage,
-            verticalLinesAngleDiscriminatorStage,
-            this
-        )
-
-        val staticPointStage = StaticPointsStage(
-            this,
-            Vec2Int(0, 1920),
-            Vec2Int(0, 0),
-            Vec2Int(1080, 0),
-            Vec2Int(1080, 1920),
-        )
-
-        val perspectiveTransformPointsStage = PerspectiveTransformPointsStage(
-            this,
-            biggestSquareStage,
-            staticPointStage
-        )
-
-        val perspectiveCorrectionStage = PerspectiveCorrectionStage(
-            context,
-            cameraXStage.frameBufferInfo,
-            perspectiveTransformPointsStage,
-            this
-        )
+        val perspectiveCorrectionTestPipeline = perspectiveCorrectionTestPipeline(context, cameraXStage, this)
 
         DrawFramebufferStage(
             context,
-            perspectiveCorrectionStage.frameBufferInfo,
+            perspectiveCorrectionTestPipeline.frameBufferInfo,
             this
         )
     }
