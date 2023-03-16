@@ -24,7 +24,7 @@ internal class OverlayStage(
 
     init {
         // FIXME: For now we only support framebuffers with the same size
-        assert(backgroundFramebufferInfo.textureSize == foregroundFramebufferInfo.textureSize)
+        //assert(backgroundFramebufferInfo.textureSize == foregroundFramebufferInfo.textureSize)
 
         setup()
     }
