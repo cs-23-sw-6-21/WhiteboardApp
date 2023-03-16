@@ -38,6 +38,7 @@ internal fun fullCornerDetection(context: Context, inputStage: GLOutputStage, pi
         openCVLineDetectionStage,
         -(Math.PI / 4.0f).toFloat(),
         (Math.PI / 4.0f).toFloat(),
+        20,
         pipeline
     )
 
@@ -45,6 +46,7 @@ internal fun fullCornerDetection(context: Context, inputStage: GLOutputStage, pi
         openCVLineDetectionStage,
         (Math.PI / 4.0f).toFloat(),
         (Math.PI / 2.0f + Math.PI / 4.0f).toFloat(),
+        20,
         pipeline
     )
 

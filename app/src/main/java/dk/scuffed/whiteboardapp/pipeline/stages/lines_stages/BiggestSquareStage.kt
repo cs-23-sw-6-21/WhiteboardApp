@@ -17,7 +17,11 @@ internal class BiggestSquareStage(private val horizontalLinesStage: LinesOutputS
         var bestD = Vec2Float(0f,0f)
         var bestArea = 0f
 
+
+
         points.clear()
+
+        val intersectionArray = arrayOf(Vec2Float(0f,0f),Vec2Float(0f,0f),Vec2Float(0f,0f),Vec2Float(0f,0f))
         for (x1 in 0 until horizontalLinesStage.lines.size) {
             for (x2 in x1+1 until horizontalLinesStage.lines.size) {
                 for (y1 in 0 until verticalLinesStage.lines.size) {
@@ -27,41 +31,50 @@ internal class BiggestSquareStage(private val horizontalLinesStage: LinesOutputS
                         val ly1 = verticalLinesStage.lines[y1]
                         val ly2 = verticalLinesStage.lines[y2]
 
-                        lx1.intersect(ly1)?.let { p1 ->
-                            lx1.intersect(ly2)?.let { p2 ->
-                                lx2.intersect(ly1)?.let { p3 ->
-                                    lx2.intersect(ly2)?.let { p4 ->
-                                        val ps = convexHull(arrayOf(p1, p2, p3, p4))
-                                        ps?.let {
-                                            val a = it[0]
-                                            val b = it[1]
-                                            val c = it[2]
-                                            val d = it[3]
+                        val p1 = lx1.intersect(ly1)
+                        val p2 = lx1.intersect(ly2)
+                        val p3 = lx2.intersect(ly1)
+                        val p4 = lx2.intersect(ly2)
 
-                                            val area = areaOfTriangle(a, b, c) + areaOfTriangle(a, c, d)
+                        if (p1 != null && p2 != null && p3 != null && p4 != null){
 
-                                            if (area > bestArea) {
-                                                bestA = a
-                                                bestB = b
-                                                bestC = c
-                                                bestD = d
-                                                bestArea = area
-                                            }
-                                        }
-                                    }
+                            intersectionArray[0] = p1
+                            intersectionArray[1] = p2
+                            intersectionArray[2] = p3
+                            intersectionArray[3] = p4
+
+                            val ps = intersectionArray
+
+                            if (ps != null && ps.size == 4) {
+                                val a = ps[0]
+                                val b = ps[1]
+                                val c = ps[2]
+                                val d = ps[3]
+
+                                val area = areaOfTriangle(a, b, c) + areaOfTriangle(a, c, d)
+
+                                if (area > bestArea) {
+                                    bestA = a
+                                    bestB = b
+                                    bestC = c
+                                    bestD = d
+                                    bestArea = area
                                 }
                             }
-                        }
-
                     }
                 }
             }
         }
+    }
+        val output = convexHull(arrayOf(bestA, bestB, bestC, bestC, bestD))
 
-        points.add(bestA.toVec2Int())
-        points.add(bestB.toVec2Int())
-        points.add(bestC.toVec2Int())
-        points.add(bestD.toVec2Int())
+        if (output != null)  {
+            points.add(output[0].toVec2Int())
+            points.add(output[1].toVec2Int())
+            points.add(output[2].toVec2Int())
+            points.add(output[3].toVec2Int())
+
+        }
     }
 
     // To find orientation of ordered triplet (p, q, r).
