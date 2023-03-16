@@ -61,11 +61,11 @@ internal class BiggestSquareStage(private val horizontalLinesStage: LinesOutputS
                                     bestArea = area
                                 }
                             }
+                        }
                     }
                 }
             }
         }
-    }
         val output = convexHull(arrayOf(bestA, bestB, bestC, bestC, bestD))
 
         if (output != null)  {
