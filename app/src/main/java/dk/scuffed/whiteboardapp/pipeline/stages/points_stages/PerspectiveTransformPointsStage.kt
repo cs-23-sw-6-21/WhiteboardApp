@@ -56,7 +56,7 @@ internal class PerspectiveTransformPointsStage(
             points[i] = Vec2Int(newpoints[i].x.toInt(), newpoints[i].y.toInt())
         }
 
-        warpmat.release()
+        perspectiveTransformMatrix.release()
         result.release()
         src.release()
         dst.release()
