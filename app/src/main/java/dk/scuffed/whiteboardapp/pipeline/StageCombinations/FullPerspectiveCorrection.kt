@@ -6,17 +6,27 @@ import dk.scuffed.whiteboardapp.pipeline.stages.GLOutputStage
 import dk.scuffed.whiteboardapp.pipeline.stages.PointsOutputStage
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.GaussianBlurStage
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.PerspectiveCorrectionStage
+import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.AspectRatioCorrectionStage
 import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.PerspectiveTransformPointsStage
 
 /**
  * Runs the entire perspective correction based on two sets of points and an input framebuffer
  */
 internal fun fullPerspectiveCorrection(context: Context, inputStage: GLOutputStage, pointsFrom: PointsOutputStage, pointsTo: PointsOutputStage, pipeline: Pipeline): GLOutputStage {
-    val perspectiveTransformPointsStage = PerspectiveTransformPointsStage(
+
+    val screenPointsAspectRatioCorrected = AspectRatioCorrectionStage(
         pipeline,
         pointsFrom,
         pointsTo
     )
+
+
+    val perspectiveTransformPointsStage = PerspectiveTransformPointsStage(
+        pipeline,
+        pointsFrom,
+        screenPointsAspectRatioCorrected
+    )
+
 
     val perspectiveCorrectionStage = PerspectiveCorrectionStage(
         context,

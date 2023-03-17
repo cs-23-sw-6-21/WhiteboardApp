@@ -48,10 +48,10 @@ internal class DraggablePointsStage(
 
     private fun setInitialPoints() {
         points.addAll(arrayOf(
-            Vec2Int(200, 800),
-            Vec2Int(200, 200),
-            Vec2Int(800, 200),
-            Vec2Int(800, 800),
+            Vec2Int(0, getResolution().height),
+            Vec2Int(0, 0),
+            Vec2Int(getResolution().width, 0),
+            Vec2Int(getResolution().width, getResolution().height),
         ))
     }
 
