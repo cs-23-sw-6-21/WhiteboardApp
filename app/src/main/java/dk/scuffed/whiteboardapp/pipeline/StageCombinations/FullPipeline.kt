@@ -5,6 +5,7 @@ import android.opengl.GLES20
 import dk.scuffed.whiteboardapp.pipeline.FramebufferInfo
 import dk.scuffed.whiteboardapp.pipeline.Pipeline
 import dk.scuffed.whiteboardapp.pipeline.stages.GLOutputStage
+import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.*
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.BinarizationStage
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.MaskingStage
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.OverlayStage
@@ -53,9 +54,15 @@ internal fun fullPipeline(context: Context, inputStage: GLOutputStage, pipeline:
         pipeline
     )
 
-    val binarizationStage = BinarizationStage(
+    val grayscaleStage = GrayscaleStage(
         context,
         perspectiveCorrection.frameBufferInfo,
+        pipeline
+    )
+
+    val binarizationStage = BinarizationStage(
+        context,
+        grayscaleStage.frameBufferInfo,
         10,
         20f,
         pipeline
