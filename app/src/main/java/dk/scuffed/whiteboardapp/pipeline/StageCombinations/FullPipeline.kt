@@ -12,7 +12,7 @@ import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.OverlaySta
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.StoreStage
 import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.DraggablePointsStage
 import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.DrawCornersStage
-import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.ResolutionPointsStage
+import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.ScreenCornerPointsStage
 
 /**
  * Our canonical full pipeline that does everything except input/output
@@ -45,7 +45,7 @@ internal fun fullPipeline(context: Context, inputStage: GLOutputStage, pipeline:
     )
 
 
-    val resolutionStage = ResolutionPointsStage(pipeline)
+    val resolutionStage = ScreenCornerPointsStage(pipeline)
     val perspectiveCorrection = fullPerspectiveCorrection(
         context,
         storeStage,
