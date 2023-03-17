@@ -5,11 +5,13 @@ import dk.scuffed.whiteboardapp.pipeline.stages.LinesOutputStage
 import dk.scuffed.whiteboardapp.pipeline.stages.PointsOutputStage
 import dk.scuffed.whiteboardapp.utils.Vec2Float
 import dk.scuffed.whiteboardapp.utils.Vec2Int
-import java.util.*
 import kotlin.math.abs
 
 internal class BiggestSquareStage(private val horizontalLinesStage: LinesOutputStage, private val verticalLinesStage: LinesOutputStage, pipeline: Pipeline) :
-    PointsOutputStage(pipeline, Vec2Int(0, 0)) {
+    PointsOutputStage(pipeline, Vec2Int(0, 0), Vec2Int(0, 0), Vec2Int(0, 0), Vec2Int(0, 0)) {
+
+    private val intersectionArray = arrayOf(Vec2Float(0f, 0f), Vec2Float(0f, 0f), Vec2Float(0f, 0f), Vec2Float(0f, 0f))
+    private val hullArray = arrayOf(Vec2Float(0f, 0f), Vec2Float(0f, 0f), Vec2Float(0f, 0f), Vec2Float(0f, 0f))
     override fun update() {
         var bestA = Vec2Float(0f,0f)
         var bestB = Vec2Float(0f,0f)
@@ -17,7 +19,6 @@ internal class BiggestSquareStage(private val horizontalLinesStage: LinesOutputS
         var bestD = Vec2Float(0f,0f)
         var bestArea = 0f
 
-        points.clear()
         for (x1 in 0 until horizontalLinesStage.lines.size) {
             for (x2 in x1+1 until horizontalLinesStage.lines.size) {
                 for (y1 in 0 until verticalLinesStage.lines.size) {
@@ -27,41 +28,43 @@ internal class BiggestSquareStage(private val horizontalLinesStage: LinesOutputS
                         val ly1 = verticalLinesStage.lines[y1]
                         val ly2 = verticalLinesStage.lines[y2]
 
-                        lx1.intersect(ly1)?.let { p1 ->
-                            lx1.intersect(ly2)?.let { p2 ->
-                                lx2.intersect(ly1)?.let { p3 ->
-                                    lx2.intersect(ly2)?.let { p4 ->
-                                        val ps = convexHull(arrayOf(p1, p2, p3, p4))
-                                        ps?.let {
-                                            val a = it[0]
-                                            val b = it[1]
-                                            val c = it[2]
-                                            val d = it[3]
+                        val p1 = lx1.intersect(ly1)
+                        val p2 = lx1.intersect(ly2)
+                        val p3 = lx2.intersect(ly1)
+                        val p4 = lx2.intersect(ly2)
 
-                                            val area = areaOfTriangle(a, b, c) + areaOfTriangle(a, c, d)
+                        if (p1 != null && p2 != null && p3 != null && p4 != null) {
+                            intersectionArray[0] = p1
+                            intersectionArray[1] = p2
+                            intersectionArray[2] = p3
+                            intersectionArray[3] = p4
+                            val foundSquare = convexHull()
+                            if (foundSquare) {
+                                val a = hullArray[0]
+                                val b = hullArray[1]
+                                val c = hullArray[2]
+                                val d = hullArray[3]
 
-                                            if (area > bestArea) {
-                                                bestA = a
-                                                bestB = b
-                                                bestC = c
-                                                bestD = d
-                                                bestArea = area
-                                            }
-                                        }
-                                    }
+                                val area = areaOfTriangle(a, b, c) + areaOfTriangle(a, c, d)
+
+                                if (area > bestArea) {
+                                    bestA = a
+                                    bestB = b
+                                    bestC = c
+                                    bestD = d
+                                    bestArea = area
                                 }
                             }
                         }
-
                     }
                 }
             }
         }
 
-        points.add(bestA.toVec2Int())
-        points.add(bestB.toVec2Int())
-        points.add(bestC.toVec2Int())
-        points.add(bestD.toVec2Int())
+        points[0] = bestA.toVec2Int()
+        points[1] = bestB.toVec2Int()
+        points[2] = bestC.toVec2Int()
+        points[3] = bestD.toVec2Int()
     }
 
     // To find orientation of ordered triplet (p, q, r).
@@ -77,17 +80,14 @@ internal class BiggestSquareStage(private val horizontalLinesStage: LinesOutputS
     }
 
     // Prints convex hull of a set of n points.
-    fun convexHull(points: Array<Vec2Float>): Array<Vec2Float>? {
-        val n = points.size
-        // There must be at least 3 points
-        if (n < 3) return null
+    fun convexHull(): Boolean {
+        val n = intersectionArray.size
 
         // Initialize Result
-        val hull = Vector<Vec2Float>()
 
         // Find the leftmost point
         var l = 0
-        for (i in 1 until n) if (points[i].x < points[l].x) l = i
+        for (i in 1 until n) if (intersectionArray[i].x < intersectionArray[l].x) l = i
 
         // Start from leftmost point, keep moving
         // counterclockwise until reach the start point
@@ -95,9 +95,10 @@ internal class BiggestSquareStage(private val horizontalLinesStage: LinesOutputS
         // number of points in result or output.
         var p = l
         var q: Int
+        var x = 0
         do {
             // Add current point to result
-            hull.add(points[p])
+            hullArray[x++] = intersectionArray[p]
 
             // Search for a point 'q' such that
             // orientation(p, q, x) is counterclockwise
@@ -109,7 +110,7 @@ internal class BiggestSquareStage(private val horizontalLinesStage: LinesOutputS
             for (i in 0 until n) {
                 // If i is more counterclockwise than
                 // current q, then update q
-                if (orientation(points[p], points[i], points[q])
+                if (orientation(intersectionArray[p], intersectionArray[i], intersectionArray[q])
                     == 2
                 ) q = i
             }
@@ -119,20 +120,8 @@ internal class BiggestSquareStage(private val horizontalLinesStage: LinesOutputS
             // so that q is added to result 'hull'
             p = q
         } while (p != l) // While we don't come to first
-        // point
 
-        /*
-        var thing = "New points!\n"
-        // Print Result
-        for (temp: Vec2Float in hull) {
-            thing +=
-            (("(" + temp.x) + ", " +
-                    temp.y) + ")\n"
-        }
-        Log.d("POINTS", thing)
-         */
-
-        return hull.toTypedArray()
+        return x == 4
     }
 
     // https://www.mathopenref.com/coordtrianglearea.html
