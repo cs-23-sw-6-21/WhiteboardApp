@@ -31,12 +31,12 @@ internal class BiggestSquareStage(private val horizontalLinesStage: LinesOutputS
                             lx1.intersect(ly2)?.let { p2 ->
                                 lx2.intersect(ly1)?.let { p3 ->
                                     lx2.intersect(ly2)?.let { p4 ->
-                                        val ps = convexHull(arrayOf(p1, p2, p3, p4))
-                                        ps?.let {
-                                            val a = it[0]
-                                            val b = it[1]
-                                            val c = it[2]
-                                            val d = it[3]
+
+                                        if (convexHull(arrayOf(p1, p2, p3, p4)) != -1) {
+                                            val a = convexResult[0]
+                                            val b = convexResult[1]
+                                            val c = convexResult[2]
+                                            val d = convexResult[3]
 
                                             val area = areaOfTriangle(a, b, c) + areaOfTriangle(a, c, d)
 
@@ -76,11 +76,15 @@ internal class BiggestSquareStage(private val horizontalLinesStage: LinesOutputS
         return if (v > 0) 1 else 2 // clock or counterclock wise
     }
 
+
+
+    val convexResult: Array<Vec2Float> = arrayOf(Vec2Float(0f,0f),Vec2Float(0f,0f),Vec2Float(0f,0f),Vec2Float(0f,0f))
+
     // Prints convex hull of a set of n points.
-    fun convexHull(points: Array<Vec2Float>): Array<Vec2Float>? {
+    fun convexHull(points: Array<Vec2Float>): Int {
         val n = points.size
         // There must be at least 3 points
-        if (n < 3) return null
+        if (n < 3) return -1
 
         // Initialize Result
         val hull = Vector<Vec2Float>()
@@ -95,9 +99,13 @@ internal class BiggestSquareStage(private val horizontalLinesStage: LinesOutputS
         // number of points in result or output.
         var p = l
         var q: Int
+        var cur = 0
         do {
+            if (cur == 4) return -1
             // Add current point to result
-            hull.add(points[p])
+            //hull.add(points[p])
+            convexResult[cur] = points[p]
+            cur++
 
             // Search for a point 'q' such that
             // orientation(p, q, x) is counterclockwise
@@ -132,7 +140,7 @@ internal class BiggestSquareStage(private val horizontalLinesStage: LinesOutputS
         Log.d("POINTS", thing)
          */
 
-        return hull.toTypedArray()
+        return 1
     }
 
     // https://www.mathopenref.com/coordtrianglearea.html

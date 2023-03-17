@@ -94,12 +94,12 @@ class Pipeline(context: Context, internal val initialResolution: Size) {
         )
 
 
-        //val cornerDetection = fullCornerDetection(context, storeStage, this)
-        val draggablePointsStage = DraggablePointsStage(this)
+        val points = fullCornerDetection(context, storeStage, this)
+        //val points = DraggablePointsStage(this)
         val drawCorners = DrawCornersStage(
             context,
             this,
-            draggablePointsStage
+            points
         )
 
 
@@ -107,7 +107,7 @@ class Pipeline(context: Context, internal val initialResolution: Size) {
         val perspectiveCorrection = fullPerspectiveCorrection(
             context,
             storeStage,
-            draggablePointsStage,
+            points,
             resolutionStage,
             this
         )

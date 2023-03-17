@@ -24,6 +24,7 @@ internal class BitmapToFramebufferStage(private val inputBitmap: BitmapOutputSta
         glActiveTexture(frameBufferInfo.textureUnitPair.textureUnit)
         glBindTexture(GLES20.GL_TEXTURE_2D, frameBufferInfo.textureHandle)
         GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, inputBitmap.outputBitmap, 0)
+        glClear(0)
     }
 
     private fun allocateTexture() : FramebufferInfo{
