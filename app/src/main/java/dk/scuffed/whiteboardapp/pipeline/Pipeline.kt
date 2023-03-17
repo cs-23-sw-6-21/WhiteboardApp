@@ -76,60 +76,13 @@ class Pipeline(context: Context, internal val initialResolution: Size) {
             context,
             this
         )
-        val fullSegmentation = fullSegmentation(context, cameraXStage.frameBufferInfo, this)
-
-        val storedFramebuffer: FramebufferInfo = allocateFramebuffer(cameraXStage, GLES20.GL_RGBA, cameraXStage.frameBufferInfo.textureSize.width, cameraXStage.frameBufferInfo.textureSize.height)
-        val maskStage = MaskingStage(
-            context,
-            cameraXStage.frameBufferInfo,
-            storedFramebuffer,
-            fullSegmentation.frameBufferInfo,
-            this
-        )
-        val storeStage = StoreStage(
-            context,
-            maskStage.frameBufferInfo,
-            storedFramebuffer,
-            this
-        )
 
 
-        //val cornerDetection = fullCornerDetection(context, storeStage, this)
-        val draggablePointsStage = DraggablePointsStage(this)
-        val drawCorners = DrawCornersStage(
-            context,
-            this,
-            draggablePointsStage
-        )
-
-
-        val resolutionStage = ResolutionPointsStage(this)
-        val perspectiveCorrection = fullPerspectiveCorrection(
-            context,
-            storeStage,
-            draggablePointsStage,
-            resolutionStage,
-            this
-        )
-
-        val binarizationStage = BinarizationStage(
-            context,
-            perspectiveCorrection.frameBufferInfo,
-            10,
-            20f,
-            this
-        )
-
-        val overlay = OverlayStage(
-            context,
-            binarizationStage.frameBufferInfo,
-            drawCorners.frameBufferInfo,
-            this
-        )
+        val entirePipeline = fullPipeline(context, cameraXStage, this)
 
         DrawFramebufferStage(
             context,
-            overlay.frameBufferInfo,
+            entirePipeline.frameBufferInfo,
             this
         )
     }
