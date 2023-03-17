@@ -40,7 +40,6 @@ internal class OpenCVLineDetectionStage(private val bitmapOutputStage: BitmapOut
 
             lines.add(LineFloat(pt1, pt2))
         }
-        Log.d("LINES", "Found ${lines.size} lines!")
 
         linesMat.release()
         grayMat.release()
