@@ -17,7 +17,7 @@ internal class OpenCVBinarization (
     private val c : Double, // Constant weight that gets subtracted from the mean
     pipeline: Pipeline) : BitmapOutputStage(pipeline, Size(bitmapStage.outputBitmap.width, bitmapStage.outputBitmap.height), bitmapStage.outputBitmap.config)
     {
-        private var img = Mat(bitmapStage.outputBitmap.width, bitmapStage.outputBitmap.height, CvType.CV_8UC1)
+        private val img = Mat(bitmapStage.outputBitmap.width, bitmapStage.outputBitmap.height, CvType.CV_8UC1)
 
         override fun update() {
             Utils.bitmapToMat(bitmapStage.outputBitmap, img)
@@ -28,7 +28,7 @@ internal class OpenCVBinarization (
 
             val binarized = Mat(img.size(), CvType.CV_8UC1)
 
-            Imgproc.adaptiveThreshold(grayscale, binarized,maxValue, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY, 11, 2.0)
+            Imgproc.adaptiveThreshold(grayscale, binarized,maxValue, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY, blockSize, c)
 
             Utils.matToBitmap(binarized, outputBitmap)
 
