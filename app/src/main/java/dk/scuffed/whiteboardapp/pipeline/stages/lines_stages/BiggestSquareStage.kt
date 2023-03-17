@@ -68,7 +68,7 @@ internal class BiggestSquareStage(private val horizontalLinesStage: LinesOutputS
                 }
             }
         }
-        val output = convexHull(arrayOf(bestA, bestB, bestC, bestC, bestD))
+        val output = convexHull(arrayOf(bestA, bestB, bestC, bestD))
 
         if (output != null && output.size == 4)  {
             points.add(output[0].toVec2Int())
