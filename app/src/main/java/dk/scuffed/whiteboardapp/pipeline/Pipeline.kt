@@ -8,10 +8,11 @@ import android.opengl.GLES20
 import android.util.Size
 import dk.scuffed.whiteboardapp.R
 import dk.scuffed.whiteboardapp.opengl.*
-import dk.scuffed.whiteboardapp.pipeline.StageCombinations.fullCornerDetectionWithDebugDrawing
-import dk.scuffed.whiteboardapp.pipeline.StageCombinations.fullPerspectiveCorrection
+import dk.scuffed.whiteboardapp.pipeline.StageCombinations.*
+import dk.scuffed.whiteboardapp.pipeline.StageCombinations.fullSegmentation
 import dk.scuffed.whiteboardapp.pipeline.StageCombinations.perspectiveCorrectionTestPipeline
 import dk.scuffed.whiteboardapp.pipeline.stages.*
+import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.BitmapToFramebufferStage
 import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.FramebufferToBitmapStage
 import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.OpenCVLineDetectionStage
 import dk.scuffed.whiteboardapp.pipeline.stages.input_stages.CameraXStage
@@ -25,6 +26,10 @@ import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.Perspectiv
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.SobelStage
 import dk.scuffed.whiteboardapp.pipeline.stages.output_stages.DrawFramebufferStage
 import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.*
+import dk.scuffed.whiteboardapp.pipeline.stages.segmentation_stages.SegmentationPostProcessingStage
+import dk.scuffed.whiteboardapp.pipeline.stages.segmentation_stages.SegmentationPreProcessingStage
+import dk.scuffed.whiteboardapp.pipeline.stages.segmentation_stages.SegmentationStage
+import dk.scuffed.whiteboardapp.segmentation.PPSegmentation
 import dk.scuffed.whiteboardapp.utils.Color
 import dk.scuffed.whiteboardapp.utils.Vec2Int
 
@@ -72,11 +77,12 @@ class Pipeline(context: Context, internal val initialResolution: Size) {
             this
         )
 
-        val perspectiveCorrectionTestPipeline = perspectiveCorrectionTestPipeline(context, cameraXStage, this)
+
+        val entirePipeline = fullPipeline(context, cameraXStage, this)
 
         DrawFramebufferStage(
             context,
-            perspectiveCorrectionTestPipeline.frameBufferInfo,
+            entirePipeline.frameBufferInfo,
             this
         )
     }
