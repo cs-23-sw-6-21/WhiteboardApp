@@ -11,25 +11,29 @@ import org.opencv.imgproc.Imgproc
 
 // Does not need grayscale as input.
 internal class OpenCVBinarization (
-    private val bitmap: Bitmap,
-    pipeline: Pipeline) : BitmapOutputStage(pipeline, Size(bitmap.width, bitmap.height), bitmap.config)
+    private val bitmapStage: BitmapOutputStage,
+    private val maxValue : Double,
+    private val blockSize : Int, // The size of the pixel neighbourhood usedd for the thresholding. Has to be an odd number
+    private val c : Double, // Constant weight that gets subtracted from the mean
+    pipeline: Pipeline) : BitmapOutputStage(pipeline, Size(bitmapStage.outputBitmap.width, bitmapStage.outputBitmap.height), bitmapStage.outputBitmap.config)
     {
-        private var img = Mat(bitmap.width, bitmap.height, CvType.CV_8UC1)
+        private var img = Mat(bitmapStage.outputBitmap.width, bitmapStage.outputBitmap.height, CvType.CV_8UC1)
 
         override fun update() {
-            Utils.bitmapToMat(bitmap, img)
+            Utils.bitmapToMat(bitmapStage.outputBitmap, img)
 
-            var grayscale = Mat(img.size(), CvType.CV_8UC1)
+            val grayscale = Mat(img.size(), CvType.CV_8UC1)
 
             Imgproc.cvtColor(img, grayscale, Imgproc.COLOR_RGB2GRAY, 4)
 
             val binarized = Mat(img.size(), CvType.CV_8UC1)
 
-            Imgproc.adaptiveThreshold(grayscale, binarized,255.0, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY, 11, 2.0)
+            Imgproc.adaptiveThreshold(grayscale, binarized,maxValue, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY, 11, 2.0)
 
             Utils.matToBitmap(binarized, outputBitmap)
 
             img.release()
+            grayscale.release()
             binarized.release()
         }
 }
