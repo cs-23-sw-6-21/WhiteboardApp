@@ -45,12 +45,12 @@ internal fun fullPipeline(context: Context, inputStage: GLOutputStage, pipeline:
     )
 
 
-    val resolutionStage = ScreenCornerPointsStage(pipeline)
+    val screenPointsStage = ScreenCornerPointsStage(pipeline)
     val perspectiveCorrection = fullPerspectiveCorrection(
         context,
         storeStage,
         draggablePointsStage,
-        resolutionStage,
+        screenPointsStage,
         pipeline
     )
 

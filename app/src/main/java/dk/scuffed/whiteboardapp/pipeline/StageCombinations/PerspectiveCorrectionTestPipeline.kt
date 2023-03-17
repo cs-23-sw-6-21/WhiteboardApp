@@ -16,7 +16,7 @@ internal fun perspectiveCorrectionTestPipeline(context: Context, inputStage: GLO
         pipeline
     )
 
-    val resolutionPoints = ScreenCornerPointsStage(
+    val screenPoints = ScreenCornerPointsStage(
         pipeline
     )
 
@@ -25,7 +25,7 @@ internal fun perspectiveCorrectionTestPipeline(context: Context, inputStage: GLO
         context,
         inputStage,
         draggablePoints,
-        resolutionPoints,
+        screenPoints,
         pipeline
     )
 
