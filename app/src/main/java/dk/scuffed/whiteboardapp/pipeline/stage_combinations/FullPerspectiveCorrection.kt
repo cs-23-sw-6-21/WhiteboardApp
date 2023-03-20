@@ -1,10 +1,9 @@
-package dk.scuffed.whiteboardapp.pipeline.StageCombinations
+package dk.scuffed.whiteboardapp.pipeline.stage_combinations
 
 import android.content.Context
 import dk.scuffed.whiteboardapp.pipeline.Pipeline
 import dk.scuffed.whiteboardapp.pipeline.stages.GLOutputStage
 import dk.scuffed.whiteboardapp.pipeline.stages.PointsOutputStage
-import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.GaussianBlurStage
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.PerspectiveCorrectionStage
 import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.PerspectiveTransformPointsStage
 

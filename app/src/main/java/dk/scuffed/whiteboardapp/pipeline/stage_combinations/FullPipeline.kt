@@ -1,4 +1,4 @@
-package dk.scuffed.whiteboardapp.pipeline.StageCombinations
+package dk.scuffed.whiteboardapp.pipeline.stage_combinations
 
 import android.content.Context
 import android.opengl.GLES20
@@ -10,7 +10,6 @@ import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.Binarizati
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.MaskingStage
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.OverlayStage
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.StoreStage
-import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.DraggablePointsStage
 import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.DrawCornersStage
 import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.ScreenCornerPointsStage
 
@@ -36,12 +35,12 @@ internal fun fullPipeline(context: Context, inputStage: GLOutputStage, pipeline:
     )
 
 
-    //val cornerDetection = fullCornerDetection(context, storeStage, this)
-    val draggablePointsStage = DraggablePointsStage(pipeline)
+    val cornerDetection = fullCornerDetection(context, storeStage, pipeline)
+    //val draggablePointsStage = DraggablePointsStage(pipeline)
     val drawCorners = DrawCornersStage(
         context,
         pipeline,
-        draggablePointsStage
+        cornerDetection
     )
 
 
@@ -49,7 +48,7 @@ internal fun fullPipeline(context: Context, inputStage: GLOutputStage, pipeline:
     val perspectiveCorrection = fullPerspectiveCorrection(
         context,
         storeStage,
-        draggablePointsStage,
+        cornerDetection,
         screenPointsStage,
         pipeline
     )
