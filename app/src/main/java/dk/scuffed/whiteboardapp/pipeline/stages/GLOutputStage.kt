@@ -154,7 +154,7 @@ internal abstract class GLOutputStage(
         // Only set if it exists in the shader - only few of our shaders actually have texture coordinates
         if (textureCoordinateHandle != -1){
             glEnableVertexAttribArray(textureCoordinateHandle)
-            glVertexAttribPointer(textureCoordinateHandle, texCoordsPerVertex, GLES20.GL_FLOAT, false, 0, vertexTexCoordBuffer);
+            glVertexAttribPointer(textureCoordinateHandle, texCoordsPerVertex, GLES20.GL_FLOAT, false, 0, vertexTexCoordBuffer)
 
         }
 
