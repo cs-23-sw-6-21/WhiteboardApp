@@ -14,13 +14,13 @@ import org.opencv.imgproc.Imgproc
  * Runs the OpenCV Canny Edge detection.
  */
 internal class OpenCVCannyStage(
-    private val bitmap: Bitmap,
-    pipeline: Pipeline) : BitmapOutputStage(pipeline, Size(bitmap.width, bitmap.height), bitmap.config)
+    private val bitmapStage: BitmapOutputStage,
+    pipeline: Pipeline) : BitmapOutputStage(pipeline, Size(bitmapStage.outputBitmap.width, bitmapStage.outputBitmap.height), bitmapStage.outputBitmap.config)
 {
     private var img = Mat()
 
     override fun update() {
-        Utils.bitmapToMat(bitmap, img)
+        Utils.bitmapToMat(bitmapStage.outputBitmap, img)
 
         val edges = Mat(img.size(), CvType.CV_8UC1)
 
