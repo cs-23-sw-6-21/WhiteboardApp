@@ -21,7 +21,7 @@ class PPSegmentation (context : Context, private val model : Model) {
 
     fun segment(input : Bitmap) : Bitmap{
         if (input.width !=  model.width || input.height !=  model.height){
-            throw Exception("Resolution of input bitmap to segmentor ("+input.width + "," + input.height +") doesnt match required resolution of("+model.width + "," + model.height +")");
+            throw Exception("Resolution of input bitmap to segmentor ("+input.width + "," + input.height +") doesnt match required resolution of("+model.width + "," + model.height +")")
         }
 
         segmentationModel.predict(input, segmentationResult)

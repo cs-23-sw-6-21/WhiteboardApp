@@ -15,9 +15,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         if(!OpenCVLoader.initDebug()) {
-            Log.d("Whiteboard App", "Unable to load OpenCV");
+            Log.d("Whiteboard App", "Unable to load OpenCV")
         } else {
-            Log.d("Whiteboard App", "OpenCV loaded");
+            Log.d("Whiteboard App", "OpenCV loaded")
         }
 
         // Check and request camera permissions

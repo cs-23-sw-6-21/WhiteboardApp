@@ -93,7 +93,7 @@ class Pipeline(context: Context, internal val initialResolution: Size) {
     }
 
     internal fun allocateTextureUnit(stage: Stage): TextureUnitPair {
-        val textureUnitIndex = nextTextureUnit++;
+        val textureUnitIndex = nextTextureUnit++
         val textureUnit = indexToTextureUnit[textureUnitIndex]
         return TextureUnitPair(textureUnit, textureUnitIndex)
     }
