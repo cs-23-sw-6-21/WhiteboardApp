@@ -20,7 +20,7 @@ import dk.scuffed.whiteboardapp.pipeline.stages.Stage
 internal class DrawPipelineStage(
     context: Context,
     private val stages: MutableList<Stage>,
-    private val pipeline: Pipeline) : GLOutputStage(context, R.raw.vertex_shader, R.raw.passthrough_shader, pipeline)
+    private val pipeline: IPipeline) : GLOutputStage(context, R.raw.vertex_shader, R.raw.passthrough_shader, pipeline)
 {
 
     companion object {

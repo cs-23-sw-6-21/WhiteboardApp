@@ -17,7 +17,7 @@ internal class MaskingStage(
     private val inputFrameBufferInfo1: FramebufferInfo,
     private val inputFrameBufferInfo2: FramebufferInfo,
     private val maskFrameBufferInfo: FramebufferInfo,
-    pipeline: Pipeline): GLOutputStage(context, R.raw.vertex_shader, R.raw.masking_shader, pipeline) {
+    pipeline: IPipeline): GLOutputStage(context, R.raw.vertex_shader, R.raw.masking_shader, pipeline) {
 
     init {
         setup()

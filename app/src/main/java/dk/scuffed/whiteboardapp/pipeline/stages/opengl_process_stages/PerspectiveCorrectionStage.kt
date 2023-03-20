@@ -5,6 +5,7 @@ import android.opengl.GLES20
 import dk.scuffed.whiteboardapp.R
 import dk.scuffed.whiteboardapp.opengl.*
 import dk.scuffed.whiteboardapp.pipeline.FramebufferInfo
+import dk.scuffed.whiteboardapp.pipeline.IPipeline
 import dk.scuffed.whiteboardapp.pipeline.Pipeline
 import dk.scuffed.whiteboardapp.pipeline.stages.GLOutputStage
 import dk.scuffed.whiteboardapp.pipeline.stages.PointsOutputStage
@@ -22,7 +23,8 @@ internal class PerspectiveCorrectionStage(
     context: Context,
     private val inputFramebufferInfo: FramebufferInfo,
     private val inputVertices: PointsOutputStage,
-    pipeline: Pipeline)
+    pipeline: IPipeline
+)
     : GLOutputStage(context,
     R.raw.vertex_perspective_correction_shader,
     R.raw.texture_distortable, pipeline) {

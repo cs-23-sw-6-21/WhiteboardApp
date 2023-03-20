@@ -14,7 +14,7 @@ import org.opencv.imgproc.Imgproc
  */
 internal class OpenCVGrayScaleStage(
     private val bitmapStage: BitmapOutputStage,
-    pipeline: Pipeline) : BitmapOutputStage(pipeline, Size(bitmapStage.outputBitmap.width, bitmapStage.outputBitmap.height), bitmapStage.outputBitmap.config)
+    pipeline: IPipeline) : BitmapOutputStage(pipeline, Size(bitmapStage.outputBitmap.width, bitmapStage.outputBitmap.height), bitmapStage.outputBitmap.config)
 {
     private var img = Mat()
 

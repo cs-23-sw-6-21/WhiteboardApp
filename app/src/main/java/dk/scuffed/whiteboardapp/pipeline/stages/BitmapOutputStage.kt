@@ -2,6 +2,7 @@ package dk.scuffed.whiteboardapp.pipeline.stages
 
 import android.graphics.Bitmap
 import android.util.Size
+import dk.scuffed.whiteboardapp.pipeline.IPipeline
 import dk.scuffed.whiteboardapp.pipeline.Pipeline
 
 /**
@@ -9,7 +10,7 @@ import dk.scuffed.whiteboardapp.pipeline.Pipeline
  * @property outputBitmap allows to read and write this bitmap.
  */
 internal abstract class BitmapOutputStage(
-    pipeline: Pipeline,
+    pipeline: IPipeline,
     resolution: Size,
     config: Bitmap.Config
     ) : Stage(pipeline)

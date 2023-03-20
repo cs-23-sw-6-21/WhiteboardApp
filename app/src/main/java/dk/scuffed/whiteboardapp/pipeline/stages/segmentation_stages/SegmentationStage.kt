@@ -10,7 +10,7 @@ import dk.scuffed.whiteboardapp.segmentation.PPSegmentation
 /**
  * Outputs a mask that covers all humans.
  */
-internal class SegmentationStage(context: Context, segmentationModel: PPSegmentation.Model,  private val inputBitmap: Bitmap, pipeline: Pipeline)
+internal class SegmentationStage(context: Context, segmentationModel: PPSegmentation.Model,  private val inputBitmap: Bitmap, pipeline: IPipeline)
     : BitmapOutputStage(pipeline, Size(inputBitmap.width, inputBitmap.height), inputBitmap.config) {
 
     private var segmentor: PPSegmentation

@@ -8,6 +8,7 @@ import dk.scuffed.whiteboardapp.opengl.glBindTexture
 import dk.scuffed.whiteboardapp.opengl.glGetUniformLocation
 import dk.scuffed.whiteboardapp.opengl.glUniform1i
 import dk.scuffed.whiteboardapp.pipeline.FramebufferInfo
+import dk.scuffed.whiteboardapp.pipeline.IPipeline
 import dk.scuffed.whiteboardapp.pipeline.Pipeline
 import dk.scuffed.whiteboardapp.pipeline.stages.GLOutputStage
 
@@ -19,7 +20,7 @@ internal class OverlayStage(
     context: Context,
     private val backgroundFramebufferInfo: FramebufferInfo,
     private val foregroundFramebufferInfo: FramebufferInfo,
-    pipeline: Pipeline
+    pipeline: IPipeline
 ) : GLOutputStage(context, R.raw.vertex_shader, R.raw.overlay_shader, pipeline) {
 
     init {

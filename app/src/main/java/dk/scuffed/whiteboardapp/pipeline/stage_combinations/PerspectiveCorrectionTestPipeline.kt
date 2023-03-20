@@ -1,6 +1,7 @@
 package dk.scuffed.whiteboardapp.pipeline.stage_combinations
 
 import android.content.Context
+import dk.scuffed.whiteboardapp.pipeline.IPipeline
 import dk.scuffed.whiteboardapp.pipeline.Pipeline
 import dk.scuffed.whiteboardapp.pipeline.stages.GLOutputStage
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.OverlayStage
@@ -11,7 +12,7 @@ import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.ScreenCornerPoints
 /**
  * Runs the entire perspective correction based on draggable points and screen points and an input framebuffer
  */
-internal fun perspectiveCorrectionTestPipeline(context: Context, inputStage: GLOutputStage, pipeline: Pipeline): GLOutputStage {
+internal fun perspectiveCorrectionTestPipeline(context: Context, inputStage: GLOutputStage, pipeline: IPipeline): GLOutputStage {
     val draggablePoints = DraggablePointsStage(
         pipeline
     )

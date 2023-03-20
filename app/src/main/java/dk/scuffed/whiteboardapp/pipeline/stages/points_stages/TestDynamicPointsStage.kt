@@ -1,5 +1,6 @@
 package dk.scuffed.whiteboardapp.pipeline.stages.points_stages
 
+import dk.scuffed.whiteboardapp.pipeline.IPipeline
 import dk.scuffed.whiteboardapp.pipeline.Pipeline
 import dk.scuffed.whiteboardapp.pipeline.stages.PointsOutputStage
 import dk.scuffed.whiteboardapp.utils.Vec2Int
@@ -8,7 +9,7 @@ import dk.scuffed.whiteboardapp.utils.Vec2Int
  * Simple test stage that offsets the given points on x and y :).
  */
 internal class TestDynamicPointsStage(
-    pipeline: Pipeline,
+    pipeline: IPipeline,
     vararg dynamicPoints: Vec2Int
     ) : PointsOutputStage(pipeline, *dynamicPoints)
 {

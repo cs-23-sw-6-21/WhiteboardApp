@@ -15,7 +15,7 @@ import org.opencv.imgproc.Imgproc
 internal class OpenCVDilateStage(
     private val bitmap: BitmapOutputStage,
     private val dilation: Double,
-    pipeline: Pipeline) : BitmapOutputStage(pipeline, Size(bitmap.outputBitmap.width, bitmap.outputBitmap.height), bitmap.outputBitmap.config)
+    pipeline: IPipeline) : BitmapOutputStage(pipeline, Size(bitmap.outputBitmap.width, bitmap.outputBitmap.height), bitmap.outputBitmap.config)
 {
     private var img = Mat()
 

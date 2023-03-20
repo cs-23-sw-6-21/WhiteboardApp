@@ -5,6 +5,7 @@ import android.opengl.GLES20
 import dk.scuffed.whiteboardapp.R
 import dk.scuffed.whiteboardapp.opengl.*
 import dk.scuffed.whiteboardapp.pipeline.FramebufferInfo
+import dk.scuffed.whiteboardapp.pipeline.IPipeline
 import dk.scuffed.whiteboardapp.pipeline.Pipeline
 import dk.scuffed.whiteboardapp.pipeline.stages.Stage
 import dk.scuffed.whiteboardapp.pipeline.readRawResource
@@ -23,7 +24,7 @@ import java.nio.ShortBuffer
  */
 internal class DrawCornersStage(
     private val context: Context,
-    pipeline: Pipeline,
+    pipeline: IPipeline,
     private val pointsStage: PointsOutputStage
 ) : Stage(pipeline) {
     //The radius of the circle

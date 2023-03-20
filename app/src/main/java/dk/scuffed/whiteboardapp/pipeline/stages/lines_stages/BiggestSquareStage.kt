@@ -1,5 +1,6 @@
 package dk.scuffed.whiteboardapp.pipeline.stages.lines_stages
 
+import dk.scuffed.whiteboardapp.pipeline.IPipeline
 import dk.scuffed.whiteboardapp.pipeline.Pipeline
 import dk.scuffed.whiteboardapp.pipeline.stages.LinesOutputStage
 import dk.scuffed.whiteboardapp.pipeline.stages.PointsOutputStage
@@ -8,7 +9,7 @@ import dk.scuffed.whiteboardapp.utils.Vec2Float
 import dk.scuffed.whiteboardapp.utils.Vec2Int
 import java.util.*
 
-internal class BiggestSquareStage(private val horizontalLinesStage: LinesOutputStage, private val verticalLinesStage: LinesOutputStage, pipeline: Pipeline) :
+internal class BiggestSquareStage(private val horizontalLinesStage: LinesOutputStage, private val verticalLinesStage: LinesOutputStage, pipeline: IPipeline) :
     PointsOutputStage(pipeline, Vec2Int(0, 0), Vec2Int(0, 0), Vec2Int(0,0), Vec2Int(0,0)) {
 
     override fun update() {

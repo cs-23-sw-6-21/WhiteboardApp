@@ -5,6 +5,7 @@ import android.opengl.GLES20
 import dk.scuffed.whiteboardapp.R
 import dk.scuffed.whiteboardapp.opengl.*
 import dk.scuffed.whiteboardapp.pipeline.FramebufferInfo
+import dk.scuffed.whiteboardapp.pipeline.IPipeline
 import dk.scuffed.whiteboardapp.pipeline.Pipeline
 import dk.scuffed.whiteboardapp.pipeline.stages.Stage
 import dk.scuffed.whiteboardapp.pipeline.readRawResource
@@ -23,7 +24,7 @@ internal class DrawLinesStage(
     private val context: Context,
     private val linesOutputStage: LinesOutputStage,
     private val color: Color,
-    pipeline: Pipeline,
+    pipeline: IPipeline,
 ) : Stage(pipeline) {
     private var program: Int = 999
 
