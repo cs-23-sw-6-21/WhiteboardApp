@@ -21,7 +21,7 @@ internal class OpenCVLineDetectionStage(private val bitmapOutputStage: BitmapOut
         Utils.bitmapToMat(bitmapOutputStage.outputBitmap, inputMat)
 
         val grayMat = Mat(inputMat.size(), CvType.CV_8UC1)
-        Imgproc.cvtColor(inputMat, grayMat, Imgproc.COLOR_RGBA2GRAY);
+        Imgproc.cvtColor(inputMat, grayMat, Imgproc.COLOR_RGBA2GRAY)
         inputMat.release()
 
         val linesMat = Mat(grayMat.size(), CvType.CV_8UC1)
@@ -40,7 +40,6 @@ internal class OpenCVLineDetectionStage(private val bitmapOutputStage: BitmapOut
 
             lines.add(LineFloat(pt1, pt2))
         }
-        Log.d("LINES", "Found ${lines.size} lines!")
 
         linesMat.release()
         grayMat.release()

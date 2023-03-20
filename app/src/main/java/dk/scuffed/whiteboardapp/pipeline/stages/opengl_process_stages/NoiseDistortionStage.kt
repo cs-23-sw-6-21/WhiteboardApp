@@ -20,7 +20,7 @@ internal class NoiseDistortionStage(private val context: Context, private val in
     private lateinit var textureBuffer : ByteBuffer
     private lateinit var textureUnitPair: TextureUnitPair
 
-    private val time = System.currentTimeMillis();
+    private val time = System.currentTimeMillis()
 
     private var textureHandle : Int = 0
 
