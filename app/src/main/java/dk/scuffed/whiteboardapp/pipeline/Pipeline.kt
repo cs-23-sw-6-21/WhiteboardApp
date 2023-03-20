@@ -9,7 +9,7 @@ import dk.scuffed.whiteboardapp.pipeline.stages.*
 import dk.scuffed.whiteboardapp.pipeline.stages.input_stages.CameraXStage
 import dk.scuffed.whiteboardapp.pipeline.stages.output_stages.DrawFramebufferStage
 
-class Pipeline(context: Context, internal val initialResolution: Size) {
+internal class Pipeline(context: Context, private val initialResolution: Size): IPipeline {
 
     private var stages = mutableListOf<Stage>()
     private var nextTextureUnit: Int = 0
@@ -58,15 +58,19 @@ class Pipeline(context: Context, internal val initialResolution: Size) {
     }
 
 
-    fun draw() {
+    override fun draw() {
         stages.forEach { stage -> stage.performUpdate() }
     }
 
-    fun onResolutionChanged(resolution: Size) {
+    override fun onResolutionChanged(resolution: Size) {
         stages.forEach { stage -> stage.performOnResolutionChanged(resolution) }
     }
 
-    internal fun allocateFramebuffer(stage: Stage, textureFormat: Int, width: Int, height: Int): FramebufferInfo {
+    override fun getInitialResolution(): Size {
+        return initialResolution
+    }
+
+    override fun allocateFramebuffer(stage: Stage, textureFormat: Int, width: Int, height: Int): FramebufferInfo {
         val fboHandle = glGenFramebuffer()
 
         val textureHandle = glGenTexture()
@@ -88,11 +92,11 @@ class Pipeline(context: Context, internal val initialResolution: Size) {
         return FramebufferInfo(fboHandle, textureHandle, textureUnitPair, GLES20.GL_RGBA, Size(width, height))
     }
 
-    internal fun addStage(stage: Stage){
+    override fun addStage(stage: Stage){
         stages.add(stage)
     }
 
-    internal fun allocateTextureUnit(stage: Stage): TextureUnitPair {
+    override fun allocateTextureUnit(stage: Stage): TextureUnitPair {
         val textureUnitIndex = nextTextureUnit++
         val textureUnit = indexToTextureUnit[textureUnitIndex]
         return TextureUnitPair(textureUnit, textureUnitIndex)

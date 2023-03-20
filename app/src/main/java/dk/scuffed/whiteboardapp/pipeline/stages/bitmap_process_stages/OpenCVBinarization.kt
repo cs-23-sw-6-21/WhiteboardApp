@@ -2,6 +2,7 @@ package dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages
 
 import android.graphics.Bitmap
 import android.util.Size
+import dk.scuffed.whiteboardapp.pipeline.IPipeline
 import dk.scuffed.whiteboardapp.pipeline.Pipeline
 import dk.scuffed.whiteboardapp.pipeline.stages.BitmapOutputStage
 import org.opencv.android.Utils
@@ -15,7 +16,8 @@ internal class OpenCVBinarization (
     private val maxValue : Double,
     private val blockSize : Int, // The size of the pixel neighbourhood usedd for the thresholding. Has to be an odd number
     private val c : Double, // Constant weight that gets subtracted from the mean
-    pipeline: Pipeline) : BitmapOutputStage(pipeline, Size(bitmapStage.outputBitmap.width, bitmapStage.outputBitmap.height), bitmapStage.outputBitmap.config)
+    pipeline: IPipeline
+) : BitmapOutputStage(pipeline, Size(bitmapStage.outputBitmap.width, bitmapStage.outputBitmap.height), bitmapStage.outputBitmap.config)
     {
         private val img = Mat(bitmapStage.outputBitmap.width, bitmapStage.outputBitmap.height, CvType.CV_8UC1)
 

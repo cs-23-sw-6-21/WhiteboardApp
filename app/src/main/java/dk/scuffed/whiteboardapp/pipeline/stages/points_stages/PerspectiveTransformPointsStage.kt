@@ -1,6 +1,7 @@
 package dk.scuffed.whiteboardapp.pipeline.stages.points_stages
 
 import android.util.Log
+import dk.scuffed.whiteboardapp.pipeline.IPipeline
 import dk.scuffed.whiteboardapp.pipeline.Pipeline
 import dk.scuffed.whiteboardapp.pipeline.stages.PointsOutputStage
 import dk.scuffed.whiteboardapp.utils.Vec2Int
@@ -17,7 +18,7 @@ import kotlin.math.round
  * @returns the points of the quad that will ensure pointsFrom is distorted so they are at pointsTo.
  */
 internal class PerspectiveTransformPointsStage(
-    pipeline: Pipeline,
+    pipeline: IPipeline,
     private val pointsFrom: PointsOutputStage,
     private val pointsTo: PointsOutputStage
     ) : PointsOutputStage(pipeline)

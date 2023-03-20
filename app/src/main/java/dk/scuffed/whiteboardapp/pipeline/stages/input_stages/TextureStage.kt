@@ -14,7 +14,7 @@ import java.nio.ByteBuffer
 /**
  * Outputs a bitmap given in constructor as a OpenGL framebuffer.
  */
-internal class TextureStage(private val context: Context, private val texture : Bitmap, private val pipeline: Pipeline): GLOutputStage(context, R.raw.vertex_shader, R.raw.texture, pipeline) {
+internal class TextureStage(private val context: Context, private val texture : Bitmap, private val pipeline: IPipeline): GLOutputStage(context, R.raw.vertex_shader, R.raw.texture, pipeline) {
 
     // Texture data
     private lateinit var textureBuffer : ByteBuffer

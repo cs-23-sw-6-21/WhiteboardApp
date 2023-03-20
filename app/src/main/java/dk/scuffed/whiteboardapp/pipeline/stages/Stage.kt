@@ -2,13 +2,13 @@ package dk.scuffed.whiteboardapp.pipeline.stages
 
 import android.util.Log
 import android.util.Size
-import dk.scuffed.whiteboardapp.pipeline.Pipeline
+import dk.scuffed.whiteboardapp.pipeline.IPipeline
 
 /**
  * Baseclass for stages.
  * Manages updates and connection to the pipeline.
  */
-internal abstract class Stage(pipeline: Pipeline) {
+internal abstract class Stage(pipeline: IPipeline) {
 
     private val name: String
 
@@ -17,7 +17,7 @@ internal abstract class Stage(pipeline: Pipeline) {
     init {
         pipeline.addStage(this)
         name = this.javaClass.name
-        resolution = pipeline.initialResolution
+        resolution = pipeline.getInitialResolution()
     }
 
     protected fun getResolution() : Size {
@@ -40,10 +40,10 @@ internal abstract class Stage(pipeline: Pipeline) {
 
     fun performOnResolutionChanged(resolution: Size) {
         this.resolution = resolution
-        onResolutionChanged(resolution)
+        whenResolutionChanged(resolution)
     }
 
-    protected open fun onResolutionChanged(resolution: Size) {
+    protected open fun whenResolutionChanged(resolution: Size) {
         // Intentionally left blank :^)
     }
 }

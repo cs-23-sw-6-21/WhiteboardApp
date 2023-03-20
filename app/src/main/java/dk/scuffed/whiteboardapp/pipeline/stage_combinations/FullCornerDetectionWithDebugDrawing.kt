@@ -2,6 +2,7 @@ package dk.scuffed.whiteboardapp.pipeline.stage_combinations
 
 import android.content.Context
 import android.graphics.Bitmap
+import dk.scuffed.whiteboardapp.pipeline.IPipeline
 import dk.scuffed.whiteboardapp.pipeline.Pipeline
 import dk.scuffed.whiteboardapp.pipeline.stages.GLOutputStage
 import dk.scuffed.whiteboardapp.pipeline.stages.PointsOutputStage
@@ -18,7 +19,7 @@ import dk.scuffed.whiteboardapp.utils.Color
  * Does corner detection using hough line transforms and finding the biggest quadrilateral.
  * @return a pair consisting of points found, and a framebuffer containing overlaid debug corners and lines
  */
-internal fun fullCornerDetectionWithDebugDrawing(context: Context, inputStage: GLOutputStage, pipeline: Pipeline): Pair<PointsOutputStage, GLOutputStage> {
+internal fun fullCornerDetectionWithDebugDrawing(context: Context, inputStage: GLOutputStage, pipeline: IPipeline): Pair<PointsOutputStage, GLOutputStage> {
 
     val edges = fullCannyEdgeDetection(
         context,

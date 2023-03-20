@@ -2,6 +2,7 @@ package dk.scuffed.whiteboardapp.pipeline.stage_combinations
 
 import android.content.Context
 import android.graphics.Bitmap
+import dk.scuffed.whiteboardapp.pipeline.IPipeline
 import dk.scuffed.whiteboardapp.pipeline.Pipeline
 import dk.scuffed.whiteboardapp.pipeline.stages.GLOutputStage
 import dk.scuffed.whiteboardapp.pipeline.stages.PointsOutputStage
@@ -15,7 +16,7 @@ import dk.scuffed.whiteboardapp.pipeline.stages.lines_stages.LinesAngleDiscrimin
  * Preprocesses the image using canny edge detection.
  * @return points found
  */
-internal fun fullCornerDetection(context: Context, inputStage: GLOutputStage, pipeline: Pipeline): PointsOutputStage {
+internal fun fullCornerDetection(context: Context, inputStage: GLOutputStage, pipeline: IPipeline): PointsOutputStage {
     val edges = fullCannyEdgeDetection(
         context,
         inputStage,

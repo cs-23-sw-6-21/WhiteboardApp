@@ -14,7 +14,7 @@ import java.nio.ByteBuffer
 /**
  * A silly shader that distorts the UVs of the input over time.
  */
-internal class NoiseDistortionStage(private val context: Context, private val inputFrameBufferInfo: FramebufferInfo, private val pipeline: Pipeline): GLOutputStage(context, R.raw.vertex_shader, R.raw.shaderfun, pipeline) {
+internal class NoiseDistortionStage(private val context: Context, private val inputFrameBufferInfo: FramebufferInfo, private val pipeline: IPipeline): GLOutputStage(context, R.raw.vertex_shader, R.raw.shaderfun, pipeline) {
 
     // Texture data
     private lateinit var textureBuffer : ByteBuffer
