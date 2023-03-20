@@ -1,4 +1,4 @@
-package dk.scuffed.whiteboardapp.pipeline.StageCombinations
+package dk.scuffed.whiteboardapp.pipeline.stage_combinations
 
 import android.content.Context
 import android.graphics.Bitmap
