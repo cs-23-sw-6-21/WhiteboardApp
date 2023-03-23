@@ -27,4 +27,8 @@ class LineFloat(val startPoint: Vec2Float, val endPoint: Vec2Float) {
             Vec2Float(x, y)
         }
     }
+
+    fun toLineInt(): LineInt {
+        return LineInt(startPoint.toVec2Int(), endPoint.toVec2Int())
+    }
 }

@@ -8,27 +8,29 @@ import kotlin.math.sqrt
  * @property x the x coordinate for a point.
  * @property y the y coordinate for a point.
  */
-class Vec2Float(val x: Float, val y: Float){
-    fun subtact(vec: Vec2Float): Vec2Float{
-        return Vec2Float(this.x-vec.x, this.y-vec.y)
-    }
-    fun additon(vec: Vec2Float): Vec2Float{
-        return Vec2Float(this.x+vec.x, this.y+vec.y)
-    }
-    fun multiply(scale: Float): Vec2Float{
-        return Vec2Float(this.x*scale, this.y*scale)
-    }
-    fun returnArray():FloatArray{
-        return floatArrayOf(
-            this.x, this.y, 0.0f,
-        )
+class Vec2Float(val x: Float, val y: Float): IVec<Vec2Float, Float> {
+
+    override fun plus(other: Vec2Float): Vec2Float {
+        return Vec2Float(this.x+other.x, this.y+other.y)
     }
 
-    fun distance(to: Vec2Float): Float{
-        return sqrt((to.x - this.x).pow(2f) + (to.y - this.y).pow(2f))
+    override fun minus(other: Vec2Float): Vec2Float {
+        return Vec2Float(this.x-other.x, this.y-other.y)
     }
 
-    fun toVec2Int():Vec2Int{
+    override fun times(other: Float): Vec2Float {
+        return Vec2Float(this.x*other, this.y*other)
+    }
+
+    override fun div(other: Float): Vec2Float {
+        return Vec2Float(x/other, y/other)
+    }
+
+    override fun distance(other: Vec2Float): Float {
+        return sqrt((other.x - this.x).pow(2f) + (other.y - this.y).pow(2f))
+    }
+
+    fun toVec2Int():Vec2Int {
         return Vec2Int(this.x.toInt(), this.y.toInt())
     }
 
