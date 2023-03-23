@@ -443,6 +443,15 @@ fun glFramebufferTexture2D(attachment: Int, textureTarget: Int, texture: Int) {
     logErrorIfAny("glFramebufferTexture")
 }
 
+/**
+ * block until all GL execution is complete
+ * @see <a href="https://docs.gl/es2/glFinish">docs.gl - glFinish</a>
+ */
+fun glFinish() {
+    GLES20.glFinish()
+    logErrorIfAny("glFinish")
+}
+
 fun glUniform1f(location: Int, value: Float) {
     GLES20.glUniform1f(location, value)
     logErrorIfAny("glUniform1f")
