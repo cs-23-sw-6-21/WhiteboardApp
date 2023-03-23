@@ -6,12 +6,11 @@ import dk.scuffed.whiteboardapp.R
 import dk.scuffed.whiteboardapp.opengl.*
 import dk.scuffed.whiteboardapp.pipeline.FramebufferInfo
 import dk.scuffed.whiteboardapp.pipeline.IPipeline
-import dk.scuffed.whiteboardapp.pipeline.Pipeline
 import dk.scuffed.whiteboardapp.pipeline.stages.Stage
 import dk.scuffed.whiteboardapp.pipeline.readRawResource
 import dk.scuffed.whiteboardapp.pipeline.stages.LinesOutputStage
-import dk.scuffed.whiteboardapp.pipeline.stages.PointsOutputStage
 import dk.scuffed.whiteboardapp.utils.Color
+import dk.scuffed.whiteboardapp.utils.LineInt
 import dk.scuffed.whiteboardapp.utils.Vec2Float
 import dk.scuffed.whiteboardapp.utils.Vec2Int
 import java.nio.ByteBuffer
@@ -67,7 +66,7 @@ internal class DrawLinesStage(
      * Returns the angle between two vectors based on the x axe.
      */
     private fun angleBetweenTwoVec(vec1: Vec2Int, vec2: Vec2Int): Float{
-        val vec = vec2.subtact(vec1)
+        val vec = vec2 - vec1
         return (atan2(vec.y.toFloat(), vec.x.toFloat())+(PI/2.0f)).toFloat()
     }
 
@@ -83,22 +82,23 @@ internal class DrawLinesStage(
 
     /**
      * Returns the corners for the line in a float array.
-     * @param coordinate1 the line's starts point.
-     * @param coordinate2 the line's end point.
+     * @param line the line
      */
-    private fun arrayOfCorners(coordinate1: Vec2Int, coordinate2: Vec2Int): ArrayList<Float> {
+    private fun arrayOfCorners(line: LineInt): ArrayList<Float> {
         //The scaled unit vector
-        val scaledUnitVector: Vec2Float = getUnitVec(coordinate1, coordinate2).multiply(lineWidth)
+        val scaledUnitVector: Vec2Float = getUnitVec(line.startPoint, line.endpoint) * lineWidth
+
+        val lineFloat = line.toLineFloat()
 
         //The vector between the two points
-        val vecBetween: Vec2Float = coordinate2.subtact(coordinate1).vec2IntToFloat()
+        val vecBetween: Vec2Float = lineFloat.endPoint - lineFloat.startPoint
 
         // Top- and bottom left corners for the square
-        val topLeftCorner = scaledUnitVector.additon(coordinate1.vec2IntToFloat())
-        val bottomLeftCorner = coordinate1.vec2IntToFloat().subtact(scaledUnitVector)
+        val topLeftCorner = scaledUnitVector + lineFloat.startPoint
+        val bottomLeftCorner = lineFloat.startPoint - scaledUnitVector
         // Top- and bottom right corners for the square
-        val topRightCorner = topLeftCorner.additon(vecBetween)
-        val bottomRightCorner = bottomLeftCorner.additon(vecBetween)
+        val topRightCorner = topLeftCorner + vecBetween
+        val bottomRightCorner = bottomLeftCorner + vecBetween
 
         return arrayListOf(
             map(topLeftCorner.x, getResolution().width), map(topLeftCorner.y, getResolution().height), 0.0f,
@@ -212,10 +212,7 @@ internal class DrawLinesStage(
         val array: ArrayList<Float> = ArrayList()
 
         for (line in linesOutputStage.lines) {
-            val p1 = Vec2Int(line.startPoint.x.toInt(), line.startPoint.y.toInt())
-            val p2 = Vec2Int(line.endPoint.x.toInt(), line.endPoint.y.toInt())
-
-            array.addAll(arrayOfCorners(p1, p2))
+            array.addAll(arrayOfCorners(line.toLineInt()))
         }
 
         return array.toFloatArray()
