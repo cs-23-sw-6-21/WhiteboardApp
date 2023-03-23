@@ -1,7 +1,6 @@
 package dk.scuffed.whiteboardapp.pipeline.stages.points_stages
 
 import dk.scuffed.whiteboardapp.pipeline.IPipeline
-import dk.scuffed.whiteboardapp.pipeline.Pipeline
 import dk.scuffed.whiteboardapp.pipeline.stages.PointsOutputStage
 import dk.scuffed.whiteboardapp.utils.Vec2Int
 
@@ -11,11 +10,10 @@ import dk.scuffed.whiteboardapp.utils.Vec2Int
 internal class TestDynamicPointsStage(
     pipeline: IPipeline,
     vararg dynamicPoints: Vec2Int
-    ) : PointsOutputStage(pipeline, *dynamicPoints)
-{
+) : PointsOutputStage(pipeline, *dynamicPoints) {
 
     override fun update() {
-        for (i in 0..points.size-1) {
+        for (i in 0 until points.size) {
             points[i] = Vec2Int(points[i].x + 1, points[i].y + 1)
         }
     }

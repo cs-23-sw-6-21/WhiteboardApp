@@ -14,7 +14,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if(!OpenCVLoader.initDebug()) {
+        if (!OpenCVLoader.initDebug()) {
             Log.d("Whiteboard App", "Unable to load OpenCV")
         } else {
             Log.d("Whiteboard App", "OpenCV loaded")
@@ -22,9 +22,11 @@ class MainActivity : AppCompatActivity() {
 
         // Check and request camera permissions
         if (checkSelfPermission(android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
-            requestPermissions(arrayOf(android.Manifest.permission.CAMERA), CAMERA_PERMISSION_REQUEST_CODE)
-        }
-        else {
+            requestPermissions(
+                arrayOf(android.Manifest.permission.CAMERA),
+                CAMERA_PERMISSION_REQUEST_CODE
+            )
+        } else {
             setContentView(OpenGLView(this))
         }
     }
@@ -38,13 +40,11 @@ class MainActivity : AppCompatActivity() {
         if (requestCode == CAMERA_PERMISSION_REQUEST_CODE) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 setContentView(OpenGLView(this))
-            }
-            else {
-                Toast.makeText(this, "This app requires camera permission!", Toast.LENGTH_LONG).show()
+            } else {
+                Toast.makeText(this, "This app requires camera permission!", Toast.LENGTH_LONG)
+                    .show()
                 finish()
             }
         }
     }
-
-
 }

@@ -9,7 +9,6 @@ import dk.scuffed.whiteboardapp.opengl.glGetUniformLocation
 import dk.scuffed.whiteboardapp.opengl.glUniform1i
 import dk.scuffed.whiteboardapp.pipeline.FramebufferInfo
 import dk.scuffed.whiteboardapp.pipeline.IPipeline
-import dk.scuffed.whiteboardapp.pipeline.Pipeline
 import dk.scuffed.whiteboardapp.pipeline.stages.GLOutputStage
 
 /**
@@ -24,9 +23,6 @@ internal class OverlayStage(
 ) : GLOutputStage(context, R.raw.vertex_shader, R.raw.overlay_shader, pipeline) {
 
     init {
-        // FIXME: For now we only support framebuffers with the same size
-        //assert(backgroundFramebufferInfo.textureSize == foregroundFramebufferInfo.textureSize)
-
         setup()
     }
 
@@ -38,13 +34,19 @@ internal class OverlayStage(
         super.setupUniforms(program)
 
         val backgroundFramebufferHandle = glGetUniformLocation(program, "background_framebuffer")
-        glUniform1i(backgroundFramebufferHandle, backgroundFramebufferInfo.textureUnitPair.textureUnitIndex)
+        glUniform1i(
+            backgroundFramebufferHandle,
+            backgroundFramebufferInfo.textureUnitPair.textureUnitIndex
+        )
         glActiveTexture(backgroundFramebufferInfo.textureUnitPair.textureUnit)
         glBindTexture(GLES20.GL_TEXTURE_2D, backgroundFramebufferInfo.textureHandle)
 
 
         val foregroundFramebufferHandle = glGetUniformLocation(program, "foreground_framebuffer")
-        glUniform1i(foregroundFramebufferHandle, foregroundFramebufferInfo.textureUnitPair.textureUnitIndex)
+        glUniform1i(
+            foregroundFramebufferHandle,
+            foregroundFramebufferInfo.textureUnitPair.textureUnitIndex
+        )
         glActiveTexture(foregroundFramebufferInfo.textureUnitPair.textureUnit)
         glBindTexture(GLES20.GL_TEXTURE_2D, foregroundFramebufferInfo.textureHandle)
     }

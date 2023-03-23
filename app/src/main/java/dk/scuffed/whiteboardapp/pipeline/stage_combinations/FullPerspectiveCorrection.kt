@@ -11,7 +11,13 @@ import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.PerspectiveTransfo
 /**
  * Runs the entire perspective correction based on two sets of points and an input framebuffer
  */
-internal fun fullPerspectiveCorrection(context: Context, inputStage: GLOutputStage, pointsFrom: PointsOutputStage, pointsTo: PointsOutputStage, pipeline: IPipeline): GLOutputStage {
+internal fun fullPerspectiveCorrection(
+    context: Context,
+    inputStage: GLOutputStage,
+    pointsFrom: PointsOutputStage,
+    pointsTo: PointsOutputStage,
+    pipeline: IPipeline
+): GLOutputStage {
     val perspectiveTransformPointsStage = PerspectiveTransformPointsStage(
         pipeline,
         pointsFrom,
@@ -25,5 +31,5 @@ internal fun fullPerspectiveCorrection(context: Context, inputStage: GLOutputSta
         pipeline
     )
 
-    return  perspectiveCorrectionStage
+    return perspectiveCorrectionStage
 }

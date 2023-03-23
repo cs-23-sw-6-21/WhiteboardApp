@@ -9,7 +9,7 @@ import dk.scuffed.whiteboardapp.pipeline.stages.*
 import dk.scuffed.whiteboardapp.pipeline.stages.input_stages.CameraXStage
 import dk.scuffed.whiteboardapp.pipeline.stages.output_stages.DrawFramebufferStage
 
-internal class Pipeline(context: Context, private val initialResolution: Size): IPipeline {
+internal class Pipeline(context: Context, private val initialResolution: Size) : IPipeline {
 
     private var stages = mutableListOf<Stage>()
     private var nextTextureUnit: Int = 0
@@ -70,7 +70,11 @@ internal class Pipeline(context: Context, private val initialResolution: Size): 
         return initialResolution
     }
 
-    override fun allocateFramebuffer(stage: Stage, textureFormat: Int, width: Int, height: Int): FramebufferInfo {
+    override fun allocateFramebuffer(
+        stage: Stage,
+        textureFormat: Int,
+        size: Size
+    ): FramebufferInfo {
         val fboHandle = glGenFramebuffer()
 
         val textureHandle = glGenTexture()
@@ -79,7 +83,7 @@ internal class Pipeline(context: Context, private val initialResolution: Size): 
         glActiveTexture(textureUnitPair.textureUnit)
 
         glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle)
-        glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA, width, height, GLES20.GL_UNSIGNED_BYTE, null)
+        glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA, size, GLES20.GL_UNSIGNED_BYTE, null)
         glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR)
         glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR)
         glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE)
@@ -89,10 +93,10 @@ internal class Pipeline(context: Context, private val initialResolution: Size): 
         glBindFramebuffer(fboHandle)
         glFramebufferTexture2D(GLES20.GL_COLOR_ATTACHMENT0, GLES20.GL_TEXTURE_2D, textureHandle)
 
-        return FramebufferInfo(fboHandle, textureHandle, textureUnitPair, GLES20.GL_RGBA, Size(width, height))
+        return FramebufferInfo(fboHandle, textureHandle, textureUnitPair, GLES20.GL_RGBA, size)
     }
 
-    override fun addStage(stage: Stage){
+    override fun addStage(stage: Stage) {
         stages.add(stage)
     }
 

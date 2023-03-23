@@ -8,6 +8,11 @@ internal interface IPipeline {
     fun onResolutionChanged(resolution: Size)
     fun getInitialResolution(): Size
     fun addStage(stage: Stage)
-    fun allocateFramebuffer(stage: Stage, textureFormat: Int, width: Int, height: Int): FramebufferInfo
+    fun allocateFramebuffer(
+        stage: Stage,
+        textureFormat: Int,
+        size: Size
+    ): FramebufferInfo
+
     fun allocateTextureUnit(stage: Stage): TextureUnitPair
 }

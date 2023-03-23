@@ -12,13 +12,12 @@ import dk.scuffed.whiteboardapp.pipeline.stages.BitmapOutputStage
 /**
  * Writes the bitmap onto the framebuffer each update.
  */
-internal class BitmapToFramebufferStage(private val inputBitmap: BitmapOutputStage, private val pipeline: IPipeline) : Stage(pipeline) {
+internal class BitmapToFramebufferStage(
+    private val inputBitmap: BitmapOutputStage,
+    private val pipeline: IPipeline
+) : Stage(pipeline) {
 
-    var frameBufferInfo: FramebufferInfo
-
-    init {
-        frameBufferInfo = allocateTexture()
-    }
+    var frameBufferInfo = allocateTexture()
 
     override fun update() {
         glActiveTexture(frameBufferInfo.textureUnitPair.textureUnit)
@@ -26,7 +25,7 @@ internal class BitmapToFramebufferStage(private val inputBitmap: BitmapOutputSta
         GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, inputBitmap.outputBitmap, 0)
     }
 
-    private fun allocateTexture() : FramebufferInfo{
+    private fun allocateTexture(): FramebufferInfo {
         val textureUnitPair = pipeline.allocateTextureUnit(this)
         glActiveTexture(textureUnitPair.textureUnit)
 
@@ -38,6 +37,12 @@ internal class BitmapToFramebufferStage(private val inputBitmap: BitmapOutputSta
         glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE)
         GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, inputBitmap.outputBitmap, 0)
         glBindTexture(GLES20.GL_TEXTURE_2D, 0)
-        return FramebufferInfo(999, textureHandle, textureUnitPair, GLES20.GL_RGBA, Size(inputBitmap.outputBitmap.width, inputBitmap.outputBitmap.height))
+        return FramebufferInfo(
+            999,
+            textureHandle,
+            textureUnitPair,
+            GLES20.GL_RGBA,
+            Size(inputBitmap.outputBitmap.width, inputBitmap.outputBitmap.height)
+        )
     }
 }

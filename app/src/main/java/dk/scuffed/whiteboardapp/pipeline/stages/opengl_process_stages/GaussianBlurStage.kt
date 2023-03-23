@@ -12,7 +12,12 @@ import dk.scuffed.whiteboardapp.pipeline.Pipeline
 /**
  * Runs an optimized 5x5 gaussian blur with shader.
  */
-internal class GaussianBlurStage(context: Context, private val inputFramebufferInfo: FramebufferInfo, private val xDirection: Boolean, pipeline: IPipeline) : GLOutputStage(context, R.raw.vertex_shader, R.raw.gaussian_shader, pipeline) {
+internal class GaussianBlurStage(
+    context: Context,
+    private val inputFramebufferInfo: FramebufferInfo,
+    private val xDirection: Boolean,
+    pipeline: IPipeline
+) : GLOutputStage(context, R.raw.vertex_shader, R.raw.gaussian_shader, pipeline) {
 
     // https://www.rastergrid.com/blog/2010/09/efficient-gaussian-blur-with-linear-sampling/
     private val gaussianOffsets = floatArrayOf(0.0f, 1.3846153846f, 3.2307692308f)
@@ -46,6 +51,9 @@ internal class GaussianBlurStage(context: Context, private val inputFramebufferI
 
         // Direction
         val directionHandle = glGetUniformLocation(program, "direction")
-        glUniform2f(directionHandle, if (xDirection) {1.0f} else {0.0f}, if (xDirection) {0.0f} else {1.0f})
+        glUniform2f(
+            directionHandle,
+            if (xDirection) { 1.0f } else { 0.0f },
+            if (xDirection) { 0.0f } else { 1.0f })
     }
 }

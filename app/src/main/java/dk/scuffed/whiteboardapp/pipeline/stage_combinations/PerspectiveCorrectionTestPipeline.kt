@@ -12,7 +12,11 @@ import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.ScreenCornerPoints
 /**
  * Runs the entire perspective correction based on draggable points and screen points and an input framebuffer
  */
-internal fun perspectiveCorrectionTestPipeline(context: Context, inputStage: GLOutputStage, pipeline: IPipeline): GLOutputStage {
+internal fun perspectiveCorrectionTestPipeline(
+    context: Context,
+    inputStage: GLOutputStage,
+    pipeline: IPipeline
+): GLOutputStage {
     val draggablePoints = DraggablePointsStage(
         pipeline
     )
@@ -43,5 +47,5 @@ internal fun perspectiveCorrectionTestPipeline(context: Context, inputStage: GLO
         pipeline
     )
 
-    return  overlay
+    return overlay
 }

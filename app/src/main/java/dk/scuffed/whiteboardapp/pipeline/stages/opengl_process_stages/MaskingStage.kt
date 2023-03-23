@@ -17,7 +17,8 @@ internal class MaskingStage(
     private val inputFrameBufferInfo1: FramebufferInfo,
     private val inputFrameBufferInfo2: FramebufferInfo,
     private val maskFrameBufferInfo: FramebufferInfo,
-    pipeline: IPipeline): GLOutputStage(context, R.raw.vertex_shader, R.raw.masking_shader, pipeline) {
+    pipeline: IPipeline
+) : GLOutputStage(context, R.raw.vertex_shader, R.raw.masking_shader, pipeline) {
 
     init {
         setup()
@@ -26,7 +27,8 @@ internal class MaskingStage(
     override fun setupFramebufferInfo() {
         assert(inputFrameBufferInfo1.textureSize == inputFrameBufferInfo2.textureSize)
 
-        val resolution = Size(inputFrameBufferInfo1.textureSize.width, inputFrameBufferInfo1.textureSize.height)
+        val resolution =
+            Size(inputFrameBufferInfo1.textureSize.width, inputFrameBufferInfo1.textureSize.height)
         allocateFramebuffer(GLES20.GL_RGBA, resolution)
 
     }
@@ -36,20 +38,34 @@ internal class MaskingStage(
 
         // Input framebuffer resolution
         val framebufferResolutionHandle = glGetUniformLocation(program, "samplerResolution")
-        glUniform2f(framebufferResolutionHandle, inputFrameBufferInfo1.textureSize.width.toFloat(), inputFrameBufferInfo1.textureSize.height.toFloat())
+        glUniform2f(
+            framebufferResolutionHandle,
+            inputFrameBufferInfo1.textureSize.width.toFloat(),
+            inputFrameBufferInfo1.textureSize.height.toFloat()
+        )
 
         val maskResolutionHandle = glGetUniformLocation(program, "maskResolution")
-        glUniform2f(maskResolutionHandle, maskFrameBufferInfo.textureSize.width.toFloat(), maskFrameBufferInfo.textureSize.height.toFloat())
+        glUniform2f(
+            maskResolutionHandle,
+            maskFrameBufferInfo.textureSize.width.toFloat(),
+            maskFrameBufferInfo.textureSize.height.toFloat()
+        )
 
 
         // Input framebuffer
         val framebufferTextureHandle1 = glGetUniformLocation(program, "sampler1")
-        glUniform1i(framebufferTextureHandle1, inputFrameBufferInfo1.textureUnitPair.textureUnitIndex)
+        glUniform1i(
+            framebufferTextureHandle1,
+            inputFrameBufferInfo1.textureUnitPair.textureUnitIndex
+        )
         glActiveTexture(inputFrameBufferInfo1.textureUnitPair.textureUnit)
         glBindTexture(GLES20.GL_TEXTURE_2D, inputFrameBufferInfo1.textureHandle)
 
         val framebufferTextureHandle2 = glGetUniformLocation(program, "sampler2")
-        glUniform1i(framebufferTextureHandle2, inputFrameBufferInfo2.textureUnitPair.textureUnitIndex)
+        glUniform1i(
+            framebufferTextureHandle2,
+            inputFrameBufferInfo2.textureUnitPair.textureUnitIndex
+        )
         glActiveTexture(inputFrameBufferInfo2.textureUnitPair.textureUnit)
         glBindTexture(GLES20.GL_TEXTURE_2D, inputFrameBufferInfo2.textureHandle)
 

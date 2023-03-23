@@ -59,7 +59,7 @@ internal class CameraXStage(
                     .setTargetAspectRatio(RATIO_16_9)
                     .build()
 
-                preview.setSurfaceProvider{request ->
+                preview.setSurfaceProvider { request ->
                     val surface = Surface(cameraSurfaceTexture)
                     request.provideSurface(
                         surface,
@@ -96,19 +96,37 @@ internal class CameraXStage(
         glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, this.cameraTextureHandle)
 
         val camResolutionHandle = glGetUniformLocation(program, "camera_resolution")
-        glUniform2f(camResolutionHandle, cameraResolution.width.toFloat(), cameraResolution.height.toFloat())
+        glUniform2f(
+            camResolutionHandle,
+            cameraResolution.width.toFloat(),
+            cameraResolution.height.toFloat()
+        )
     }
 
     private fun createExternalOESTexture(): Int {
-        val textureHandleArray = intArrayOf(999)
-        glGenTextures(textureHandleArray.size, textureHandleArray, 0)
-        val textureHandle = textureHandleArray[0]
+        val textureHandle = glGenTexture()
 
         glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, textureHandle)
-        glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR)
-        glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR)
-        glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE)
-        glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE)
+        glTexParameteri(
+            GLES11Ext.GL_TEXTURE_EXTERNAL_OES,
+            GLES20.GL_TEXTURE_MIN_FILTER,
+            GLES20.GL_LINEAR
+        )
+        glTexParameteri(
+            GLES11Ext.GL_TEXTURE_EXTERNAL_OES,
+            GLES20.GL_TEXTURE_MAG_FILTER,
+            GLES20.GL_LINEAR
+        )
+        glTexParameteri(
+            GLES11Ext.GL_TEXTURE_EXTERNAL_OES,
+            GLES20.GL_TEXTURE_WRAP_S,
+            GLES20.GL_CLAMP_TO_EDGE
+        )
+        glTexParameteri(
+            GLES11Ext.GL_TEXTURE_EXTERNAL_OES,
+            GLES20.GL_TEXTURE_WRAP_T,
+            GLES20.GL_CLAMP_TO_EDGE
+        )
         glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, 0)
 
         return textureHandle

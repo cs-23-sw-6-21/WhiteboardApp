@@ -19,8 +19,7 @@ class PipelinedOpenGLRenderer(private val context: Context) : GLSurfaceView.Rend
         if (!pipelineInitialized) {
             pipeline = Pipeline(context, Size(width, height))
             pipelineInitialized = true
-        }
-        else {
+        } else {
             pipeline.onResolutionChanged(Size(width, height))
         }
     }

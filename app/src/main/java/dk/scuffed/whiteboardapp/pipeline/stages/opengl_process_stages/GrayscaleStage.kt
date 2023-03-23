@@ -7,12 +7,15 @@ import dk.scuffed.whiteboardapp.opengl.*
 import dk.scuffed.whiteboardapp.pipeline.FramebufferInfo
 import dk.scuffed.whiteboardapp.pipeline.IPipeline
 import dk.scuffed.whiteboardapp.pipeline.stages.GLOutputStage
-import dk.scuffed.whiteboardapp.pipeline.Pipeline
 
 /**
  * Greyscales using a shader.
  */
-internal class GrayscaleStage(context: Context, private val inputFramebufferInfo: FramebufferInfo, pipeline: IPipeline) : GLOutputStage(context, R.raw.vertex_shader, R.raw.grayscale_shader, pipeline) {
+internal class GrayscaleStage(
+    context: Context,
+    private val inputFramebufferInfo: FramebufferInfo,
+    pipeline: IPipeline
+) : GLOutputStage(context, R.raw.vertex_shader, R.raw.grayscale_shader, pipeline) {
     init {
         setup()
     }

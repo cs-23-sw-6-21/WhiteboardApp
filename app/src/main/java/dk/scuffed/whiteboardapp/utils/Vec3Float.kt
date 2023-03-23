@@ -8,28 +8,28 @@ import kotlin.math.sqrt
  * @property x the x coordinate for a point.
  * @property y the y coordinate for a point.
  */
-class Vec3Float(val x: Float, val y: Float, val z: Float): IVec<Vec3Float, Float> {
-    fun multiply(scale: Float): Vec3Float{
-        return Vec3Float(this.x*scale, this.y*scale, this.z*scale)
-    }
-
+class Vec3Float(val x: Float, val y: Float, val z: Float) : IVec<Vec3Float, Float> {
     override fun plus(other: Vec3Float): Vec3Float {
-        return Vec3Float(this.x+other.x, this.y+other.y, this.z+other.z)
+        return Vec3Float(this.x + other.x, this.y + other.y, this.z + other.z)
     }
 
     override fun minus(other: Vec3Float): Vec3Float {
-        return Vec3Float(this.x-other.x, this.y-other.y, this.z-other.z)
+        return Vec3Float(this.x - other.x, this.y - other.y, this.z - other.z)
     }
 
     override fun times(other: Float): Vec3Float {
-        return Vec3Float(x*other, y*other, z*other)
+        return Vec3Float(x * other, y * other, z * other)
     }
 
     override fun div(other: Float): Vec3Float {
-        return Vec3Float(x/other, y/other, z/other)
+        return Vec3Float(x / other, y / other, z / other)
     }
 
     override fun distance(other: Vec3Float): Float {
-        return sqrt((other.x - this.x).pow(2f) + (other.y - this.y).pow(2f) + (other.z - this.z).pow(2f))
+        return sqrt(
+            (other.x - this.x).pow(2f) + (other.y - this.y).pow(2f) + (other.z - this.z).pow(
+                2f
+            )
+        )
     }
 }

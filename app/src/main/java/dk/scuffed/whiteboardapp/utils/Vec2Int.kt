@@ -8,22 +8,21 @@ import kotlin.math.sqrt
  * @property x the x coordinate for a point.
  * @property y the y coordinate for a point.
  */
-class Vec2Int(val x: Int, val y: Int): IVec<Vec2Int, Int> {
-
+class Vec2Int(val x: Int, val y: Int) : IVec<Vec2Int, Int> {
     override fun plus(other: Vec2Int): Vec2Int {
-        return Vec2Int(this.x+other.x, this.y+other.y)
+        return Vec2Int(this.x + other.x, this.y + other.y)
     }
 
     override fun minus(other: Vec2Int): Vec2Int {
-        return Vec2Int(this.x-other.x, this.y-other.y)
+        return Vec2Int(this.x - other.x, this.y - other.y)
     }
 
     override fun times(other: Int): Vec2Int {
-        return Vec2Int(x*other, y*other)
+        return Vec2Int(x * other, y * other)
     }
 
     override fun div(other: Int): Vec2Int {
-        return Vec2Int(x/other, y/other)
+        return Vec2Int(x / other, y / other)
     }
 
     override fun distance(other: Vec2Int): Float {

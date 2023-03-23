@@ -13,9 +13,8 @@ internal abstract class BitmapOutputStage(
     pipeline: IPipeline,
     resolution: Size,
     config: Bitmap.Config
-    ) : Stage(pipeline)
-{
-    public var outputBitmap: Bitmap
+) : Stage(pipeline) {
+    var outputBitmap: Bitmap
 
     init {
         outputBitmap = Bitmap.createBitmap(resolution.width, resolution.height, config)
