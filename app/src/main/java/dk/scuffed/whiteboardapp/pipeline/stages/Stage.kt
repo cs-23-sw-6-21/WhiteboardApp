@@ -2,7 +2,10 @@ package dk.scuffed.whiteboardapp.pipeline.stages
 
 import android.util.Log
 import android.util.Size
+import dk.scuffed.whiteboardapp.opengl.glFinish
 import dk.scuffed.whiteboardapp.pipeline.IPipeline
+
+private val recordTimings = true
 
 /**
  * Baseclass for stages.
@@ -29,12 +32,17 @@ internal abstract class Stage(pipeline: IPipeline) {
     fun performUpdate() {
         val startTime = System.nanoTime()
         update()
+        if (recordTimings && this is GLOutputStage) {
+            glFinish()
+        }
         val endTime = System.nanoTime()
 
         //Calculate duration and convert to ms
         val duration = (endTime - startTime).toDouble() / 1000000.0
 
-        Log.d("Stages", "Stage: $name took $duration ms")
+        if (recordTimings) {
+            Log.d("Stages", "Stage: $name took $duration ms")
+        }
     }
 
     fun performOnResolutionChanged(resolution: Size) {
