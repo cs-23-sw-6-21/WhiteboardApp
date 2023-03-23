@@ -9,7 +9,8 @@ import dk.scuffed.whiteboardapp.pipeline.stages.Stage
 internal abstract class UpdateEveryXFramesStageBase(
     inputStageConstructor: (pipeline: IPipeline) -> Unit,
     private val framesToSkip: Int,
-    private val pipeline: IPipeline):
+    private val pipeline: IPipeline
+) :
     Stage(pipeline),
     IPipeline {
 
@@ -64,10 +65,9 @@ internal abstract class UpdateEveryXFramesStageBase(
     final override fun allocateFramebuffer(
         stage: Stage,
         textureFormat: Int,
-        width: Int,
-        height: Int
+        size: Size
     ): FramebufferInfo {
-        return pipeline.allocateFramebuffer(stage, textureFormat, width, height)
+        return pipeline.allocateFramebuffer(stage, textureFormat, size)
     }
 
     final override fun allocateTextureUnit(stage: Stage): TextureUnitPair {

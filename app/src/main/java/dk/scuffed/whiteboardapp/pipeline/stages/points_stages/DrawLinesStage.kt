@@ -2,6 +2,7 @@ package dk.scuffed.whiteboardapp.pipeline.stages.points_stages
 
 import android.content.Context
 import android.opengl.GLES20
+import android.util.Size
 import dk.scuffed.whiteboardapp.R
 import dk.scuffed.whiteboardapp.opengl.*
 import dk.scuffed.whiteboardapp.pipeline.FramebufferInfo
@@ -9,10 +10,8 @@ import dk.scuffed.whiteboardapp.pipeline.IPipeline
 import dk.scuffed.whiteboardapp.pipeline.stages.Stage
 import dk.scuffed.whiteboardapp.pipeline.readRawResource
 import dk.scuffed.whiteboardapp.pipeline.stages.LinesOutputStage
+import dk.scuffed.whiteboardapp.utils.*
 import dk.scuffed.whiteboardapp.utils.Color
-import dk.scuffed.whiteboardapp.utils.LineInt
-import dk.scuffed.whiteboardapp.utils.Vec2Float
-import dk.scuffed.whiteboardapp.utils.Vec2Int
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.FloatBuffer
@@ -29,6 +28,7 @@ internal class DrawLinesStage(
 
     //Half the line width
     private val lineWidth: Float = 5.0f
+
     //Number of vertexes
     private val cordsPerVertex = 3
 
@@ -39,7 +39,11 @@ internal class DrawLinesStage(
     val frameBufferInfo: FramebufferInfo
 
     init {
-        frameBufferInfo = pipeline.allocateFramebuffer(this, GLES20.GL_RGBA, getResolution().width, getResolution().height)
+        frameBufferInfo = pipeline.allocateFramebuffer(
+            this,
+            GLES20.GL_RGBA,
+            getResolution()
+        )
         setupGlProgram()
     }
 
@@ -63,49 +67,48 @@ internal class DrawLinesStage(
     }
 
     /**
-     * Returns the angle between two vectors based on the x axe.
+     * Returns the angle between two vectors based on the x axis.
      */
-    private fun angleBetweenTwoVec(vec1: Vec2Int, vec2: Vec2Int): Float{
+    private fun angleBetweenVectors(vec1: Vec2Float, vec2: Vec2Float): Float {
         val vec = vec2 - vec1
-        return (atan2(vec.y.toFloat(), vec.x.toFloat())+(PI/2.0f)).toFloat()
+        return (atan2(vec.y, vec.x) + (PI / 2.0f)).toFloat()
     }
 
     /**
-     * Returns the unit vector based on the angle between two vectors.
-     * @param vec1 the line's starts point.
-     * @param vec2 the line's end point.
+     * Returns the unit vector for vec2-vec1
      */
-    private fun getUnitVec(vec1:Vec2Int, vec2: Vec2Int):Vec2Float{
-        val angle: Float = angleBetweenTwoVec(vec1, vec2)
+    private fun getUnitVec(vec1: Vec2Float, vec2: Vec2Float): Vec2Float {
+        val angle = angleBetweenVectors(vec1, vec2)
         return Vec2Float(cos(angle), sin(angle))
     }
 
     /**
-     * Returns the corners for the line in a float array.
-     * @param line the line
+     * Expand a line into a quad using lineWidth
      */
-    private fun arrayOfCorners(line: LineInt): ArrayList<Float> {
+    private fun lineToQuad(line: LineFloat): QuadFloat {
         //The scaled unit vector
-        val scaledUnitVector: Vec2Float = getUnitVec(line.startPoint, line.endpoint) * lineWidth
-
-        val lineFloat = line.toLineFloat()
+        val scaledUnitVector = getUnitVec(line.startPoint, line.endPoint) * lineWidth
 
         //The vector between the two points
-        val vecBetween: Vec2Float = lineFloat.endPoint - lineFloat.startPoint
+        val vecBetween = line.endPoint - line.startPoint
 
         // Top- and bottom left corners for the square
-        val topLeftCorner = scaledUnitVector + lineFloat.startPoint
-        val bottomLeftCorner = lineFloat.startPoint - scaledUnitVector
+        val topLeftCorner = scaledUnitVector + line.startPoint
+        val bottomLeftCorner = line.startPoint - scaledUnitVector
         // Top- and bottom right corners for the square
         val topRightCorner = topLeftCorner + vecBetween
         val bottomRightCorner = bottomLeftCorner + vecBetween
 
-        return arrayListOf(
-            map(topLeftCorner.x, getResolution().width), map(topLeftCorner.y, getResolution().height), 0.0f,
-            map(bottomLeftCorner.x, getResolution().width), map(bottomLeftCorner.y, getResolution().height), 0.0f,
-            map(bottomRightCorner.x, getResolution().width), map(bottomRightCorner.y, getResolution().height), 0.0f,
-            map(topRightCorner.x, getResolution().width), map(topRightCorner.y, getResolution().height), 0.0f
+        return QuadFloat(
+            map(topLeftCorner, getResolution()),
+            map(bottomLeftCorner, getResolution()),
+            map(bottomRightCorner, getResolution()),
+            map(topRightCorner, getResolution())
         )
+    }
+
+    private fun map(point: Vec2Float, resolution: Size): Vec2Float {
+        return Vec2Float(map(point.x, resolution.width), map(point.y, resolution.height))
     }
 
     /**
@@ -126,10 +129,10 @@ internal class DrawLinesStage(
         val drawOrder = createDrawOrder(linesOutputStage.lines.size)
 
         //Sets the coordinates for the squares
-        val squareCoords = createArrayOfCorners()
+        val squareCoords = createVertices()
 
         // initialize byte buffer for the draw list
-       val drawListBuffer: ShortBuffer =
+        val drawListBuffer: ShortBuffer =
             // (# of coordinate values * 2 bytes per short)
             ByteBuffer.allocateDirect(drawOrder.size * 2).run {
                 order(ByteOrder.nativeOrder())
@@ -150,10 +153,8 @@ internal class DrawLinesStage(
             }
 
         glViewport(
-            0,
-            0,
-            getResolution().width,
-            getResolution().height
+            Vec2Int(0, 0),
+            getResolution()
         )
 
         // Render to our framebuffer
@@ -192,29 +193,32 @@ internal class DrawLinesStage(
      * @param squares The numbers of squares
      */
     private fun createDrawOrder(squares: Int): ShortArray {
-        val drawOrder: ShortArray = ShortArray(squares*6)
+        val drawOrder = ShortArray(squares * 6)
         //The specific draw order is set in the for loop
-        for (i: Int in 0 until squares){
-            drawOrder[i*6] = (i*4).toShort()
-            drawOrder[i*6+1] = (i*4+1).toShort()
-            drawOrder[i*6+2] = (i*4+2).toShort()
-            drawOrder[i*6+3] = (i*4).toShort()
-            drawOrder[i*6+4] = (i*4+2).toShort()
-            drawOrder[i*6+5] = (i*4+3).toShort()
+        for (i: Int in 0 until squares) {
+            drawOrder[i * 6] = (i * 4).toShort()
+            drawOrder[i * 6 + 1] = (i * 4 + 1).toShort()
+            drawOrder[i * 6 + 2] = (i * 4 + 2).toShort()
+            drawOrder[i * 6 + 3] = (i * 4).toShort()
+            drawOrder[i * 6 + 4] = (i * 4 + 2).toShort()
+            drawOrder[i * 6 + 5] = (i * 4 + 3).toShort()
         }
         return drawOrder
     }
-    
-    /**
-     * This function returns the full array of coordinates for every square based on the cornerPoints
-     */
-    private fun createArrayOfCorners(): FloatArray{
-        val array: ArrayList<Float> = ArrayList()
+
+    private fun createVertices(): FloatArray {
+        val vertices = ArrayList<Float>()
 
         for (line in linesOutputStage.lines) {
-            array.addAll(arrayOfCorners(line.toLineInt()))
+            val quad = lineToQuad(line)
+            val pointArray = quad.toVec2FloatArray()
+            for (point in pointArray) {
+                vertices.add(point.x)
+                vertices.add(point.y)
+                vertices.add(0f)
+            }
         }
 
-        return array.toFloatArray()
+        return vertices.toFloatArray()
     }
 }

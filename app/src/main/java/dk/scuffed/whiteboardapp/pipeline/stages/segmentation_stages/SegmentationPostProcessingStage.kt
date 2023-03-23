@@ -2,12 +2,10 @@ package dk.scuffed.whiteboardapp.pipeline.stages.segmentation_stages
 
 import android.content.Context
 import android.opengl.GLES20
-import android.util.Size
 import dk.scuffed.whiteboardapp.R
 import dk.scuffed.whiteboardapp.opengl.*
 import dk.scuffed.whiteboardapp.pipeline.FramebufferInfo
 import dk.scuffed.whiteboardapp.pipeline.IPipeline
-import dk.scuffed.whiteboardapp.pipeline.Pipeline
 import dk.scuffed.whiteboardapp.pipeline.stages.GLOutputStage
 
 /**

@@ -7,7 +7,6 @@ import dk.scuffed.whiteboardapp.opengl.*
 import dk.scuffed.whiteboardapp.pipeline.FramebufferInfo
 import dk.scuffed.whiteboardapp.pipeline.IPipeline
 import dk.scuffed.whiteboardapp.pipeline.stages.GLOutputStage
-import dk.scuffed.whiteboardapp.pipeline.Pipeline
 
 /**
  * Runs canny edge detection.
@@ -39,7 +38,10 @@ internal class CannyStage(
         glUniform1f(hardEdgeThresholdHandle, hardEdgeThreshold)
 
         val inputFramebufferHandle = glGetUniformLocation(program, "input_framebuffer")
-        glUniform1i(inputFramebufferHandle, inputSobelFramebufferInfo.textureUnitPair.textureUnitIndex)
+        glUniform1i(
+            inputFramebufferHandle,
+            inputSobelFramebufferInfo.textureUnitPair.textureUnitIndex
+        )
         glActiveTexture(inputSobelFramebufferInfo.textureUnitPair.textureUnit)
         glBindTexture(GLES20.GL_TEXTURE_2D, inputSobelFramebufferInfo.textureHandle)
     }

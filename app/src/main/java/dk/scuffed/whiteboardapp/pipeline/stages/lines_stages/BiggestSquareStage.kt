@@ -9,17 +9,21 @@ import dk.scuffed.whiteboardapp.utils.Vec2Float
 import dk.scuffed.whiteboardapp.utils.Vec2Int
 import java.util.*
 
-internal class BiggestSquareStage(private val horizontalLinesStage: LinesOutputStage, private val verticalLinesStage: LinesOutputStage, pipeline: IPipeline) :
-    PointsOutputStage(pipeline, Vec2Int(0, 0), Vec2Int(0, 0), Vec2Int(0,0), Vec2Int(0,0)) {
+internal class BiggestSquareStage(
+    private val horizontalLinesStage: LinesOutputStage,
+    private val verticalLinesStage: LinesOutputStage,
+    pipeline: IPipeline
+) :
+    PointsOutputStage(pipeline, Vec2Int(0, 0), Vec2Int(0, 0), Vec2Int(0, 0), Vec2Int(0, 0)) {
 
     override fun update() {
         var bestQuad = QuadFloat()
         var bestArea = 0f
 
         for (x1 in 0 until horizontalLinesStage.lines.size) {
-            for (x2 in x1+1 until horizontalLinesStage.lines.size) {
+            for (x2 in x1 + 1 until horizontalLinesStage.lines.size) {
                 for (y1 in 0 until verticalLinesStage.lines.size) {
-                    for (y2 in y1+1 until verticalLinesStage.lines.size) {
+                    for (y2 in y1 + 1 until verticalLinesStage.lines.size) {
                         val lx1 = horizontalLinesStage.lines[x1]
                         val lx2 = horizontalLinesStage.lines[x2]
                         val ly1 = verticalLinesStage.lines[y1]
@@ -64,8 +68,7 @@ internal class BiggestSquareStage(private val horizontalLinesStage: LinesOutputS
         for (point in points) {
             if (bottomLeftPoint == null) {
                 bottomLeftPoint = point
-            }
-            else if (point.x + point.y < bottomLeftPoint.x + bottomLeftPoint.y) {
+            } else if (point.x + point.y < bottomLeftPoint.x + bottomLeftPoint.y) {
                 bottomLeftPoint = point
             }
         }
@@ -76,8 +79,7 @@ internal class BiggestSquareStage(private val horizontalLinesStage: LinesOutputS
         for (point in points) {
             if (bottomRightPoint == null) {
                 bottomRightPoint = point
-            }
-            else if ((-point.x) + point.y < (-bottomRightPoint.x) + bottomRightPoint.y ) {
+            } else if ((-point.x) + point.y < (-bottomRightPoint.x) + bottomRightPoint.y) {
                 bottomRightPoint = point
             }
         }
@@ -88,8 +90,7 @@ internal class BiggestSquareStage(private val horizontalLinesStage: LinesOutputS
         for (point in points) {
             if (topRightPoint == null) {
                 topRightPoint = point
-            }
-            else if (point.x + point.y > topRightPoint.x + topRightPoint.y) {
+            } else if (point.x + point.y > topRightPoint.x + topRightPoint.y) {
                 topRightPoint = point
             }
         }

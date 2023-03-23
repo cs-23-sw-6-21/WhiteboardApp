@@ -6,9 +6,9 @@ import android.util.Size
 import dk.scuffed.whiteboardapp.opengl.*
 import dk.scuffed.whiteboardapp.pipeline.FramebufferInfo
 import dk.scuffed.whiteboardapp.pipeline.IPipeline
-import dk.scuffed.whiteboardapp.pipeline.Pipeline
 import dk.scuffed.whiteboardapp.pipeline.readRawResource
 import dk.scuffed.whiteboardapp.utils.Vec2Float
+import dk.scuffed.whiteboardapp.utils.Vec2Int
 import dk.scuffed.whiteboardapp.utils.Vec3Float
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -24,8 +24,7 @@ internal abstract class GLOutputStage(
     private val vertexShaderResource: Int,
     private val fragmentShaderResource: Int,
     private val pipeline: IPipeline
-) : Stage(pipeline)
-{
+) : Stage(pipeline) {
     private var program: Int = 999
 
     private val coordsPerVertex = 3
@@ -36,7 +35,7 @@ internal abstract class GLOutputStage(
         -1.0f, 1.0f, 0.0f,
         -1.0f, -1.0f, 0.0f,
         1.0f, -1.0f, 0.0f,
-        1.0f, 1.0f,0.0f
+        1.0f, 1.0f, 0.0f
     )
 
     // order to draw vertices
@@ -108,16 +107,17 @@ internal abstract class GLOutputStage(
     protected abstract fun setupFramebufferInfo()
 
     protected fun allocateFramebuffer(textureFormat: Int, resolution: Size) {
-        frameBufferInfo = pipeline.allocateFramebuffer(this, textureFormat, resolution.width, resolution.height)
+        frameBufferInfo =
+            pipeline.allocateFramebuffer(this, textureFormat, resolution)
     }
 
     protected open fun setupUniforms(program: Int) {
 
     }
 
-    final protected fun reassignVertices(vertices: ArrayList<Vec2Float>){
+    protected fun reassignVertices(vertices: ArrayList<Vec2Float>) {
         vertexBuffer.position(0)
-        for (v in vertices){
+        for (v in vertices) {
             vertexBuffer.put(v.x)
             vertexBuffer.put(v.y)
             vertexBuffer.put(0f)
@@ -126,9 +126,9 @@ internal abstract class GLOutputStage(
 
     }
 
-    final protected fun reassignTexCoord(vertices: ArrayList<Vec3Float>){
+    protected fun reassignTexCoord(vertices: ArrayList<Vec3Float>) {
         vertexTexCoordBuffer.position(0)
-        for (v in vertices){
+        for (v in vertices) {
             vertexTexCoordBuffer.put(v.x)
             vertexTexCoordBuffer.put(v.y)
             vertexTexCoordBuffer.put(v.z)
@@ -139,7 +139,7 @@ internal abstract class GLOutputStage(
 
     final override fun update() {
         val size = frameBufferInfo.textureSize
-        glViewport(0, 0, size.width, size.height)
+        glViewport(Vec2Int(0, 0), size)
 
         // Render to our framebuffer
         glBindFramebuffer(frameBufferInfo.fboHandle)
@@ -149,14 +149,27 @@ internal abstract class GLOutputStage(
 
         val positionHandle = glGetAttribLocation(program, "position")
         glEnableVertexAttribArray(positionHandle)
-        glVertexAttribPointer(positionHandle, coordsPerVertex, GLES20.GL_FLOAT, false, vertexStride, vertexBuffer)
+        glVertexAttribPointer(
+            positionHandle,
+            coordsPerVertex,
+            GLES20.GL_FLOAT,
+            false,
+            vertexStride,
+            vertexBuffer
+        )
 
         val textureCoordinateHandle = GLES20.glGetAttribLocation(program, "a_TexCoordinate")
         // Only set if it exists in the shader - only few of our shaders actually have texture coordinates
-        if (textureCoordinateHandle != -1){
+        if (textureCoordinateHandle != -1) {
             glEnableVertexAttribArray(textureCoordinateHandle)
-            glVertexAttribPointer(textureCoordinateHandle, texCoordsPerVertex, GLES20.GL_FLOAT, false, 0, vertexTexCoordBuffer)
-
+            glVertexAttribPointer(
+                textureCoordinateHandle,
+                texCoordsPerVertex,
+                GLES20.GL_FLOAT,
+                false,
+                0,
+                vertexTexCoordBuffer
+            )
         }
 
         // Always provide resolution
@@ -166,7 +179,12 @@ internal abstract class GLOutputStage(
         // Set up user uniforms
         setupUniforms(program)
 
-        glDrawElements(GLES20.GL_TRIANGLES, drawOrder.size, GLES20.GL_UNSIGNED_SHORT, drawListBuffer)
+        glDrawElements(
+            GLES20.GL_TRIANGLES,
+            drawOrder.size,
+            GLES20.GL_UNSIGNED_SHORT,
+            drawListBuffer
+        )
         glDisableVertexAttribArray(positionHandle)
     }
 }

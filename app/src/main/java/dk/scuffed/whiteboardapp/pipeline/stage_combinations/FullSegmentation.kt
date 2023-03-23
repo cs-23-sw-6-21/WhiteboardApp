@@ -17,7 +17,11 @@ import dk.scuffed.whiteboardapp.segmentation.PPSegmentation
 /**
  * Runs the entire perspective correction based on two sets of points and an input framebuffer
  */
-internal fun fullSegmentation(context: Context, inputFramebufferInfo: FramebufferInfo, pipeline: IPipeline): GLOutputStage {
+internal fun fullSegmentation(
+    context: Context,
+    inputFramebufferInfo: FramebufferInfo,
+    pipeline: IPipeline
+): GLOutputStage {
     val segPre = SegmentationPreProcessingStage(
         context,
         inputFramebufferInfo,
@@ -55,5 +59,5 @@ internal fun fullSegmentation(context: Context, inputFramebufferInfo: Framebuffe
         pipeline
     )
 
-    return  segPost
+    return segPost
 }

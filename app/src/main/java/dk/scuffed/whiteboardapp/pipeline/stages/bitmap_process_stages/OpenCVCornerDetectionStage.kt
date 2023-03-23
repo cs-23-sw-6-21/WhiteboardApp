@@ -12,10 +12,13 @@ import org.opencv.core.Scalar
 import org.opencv.features2d.FastFeatureDetector
 import org.opencv.features2d.Features2d
 
-internal class OpenCVCornerDetectionStage(private val bitmapOutputStage: BitmapOutputStage, pipeline: IPipeline, vararg initialPoints: Vec2Int) :
-    PointsOutputStage(pipeline, *initialPoints) {
+internal class OpenCVCornerDetectionStage(
+    private val bitmapOutputStage: BitmapOutputStage,
+    pipeline: IPipeline,
+    vararg initialPoints: Vec2Int
+) : PointsOutputStage(pipeline, *initialPoints) {
 
-    private val fastFeatureDetector= FastFeatureDetector.create(20)
+    private val fastFeatureDetector = FastFeatureDetector.create(20)
     private val img = Mat()
 
     override fun update() {

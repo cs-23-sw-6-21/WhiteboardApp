@@ -20,14 +20,13 @@ internal abstract class Stage(pipeline: IPipeline) {
         resolution = pipeline.getInitialResolution()
     }
 
-    protected fun getResolution() : Size {
+    protected fun getResolution(): Size {
         return resolution
     }
 
     protected abstract fun update()
 
-    fun performUpdate()
-    {
+    fun performUpdate() {
         val startTime = System.nanoTime()
         update()
         val endTime = System.nanoTime()

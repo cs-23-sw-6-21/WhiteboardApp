@@ -16,7 +16,11 @@ import dk.scuffed.whiteboardapp.pipeline.stages.lines_stages.LinesAngleDiscrimin
  * Preprocesses the image using canny edge detection.
  * @return points found
  */
-internal fun fullCornerDetection(context: Context, inputStage: GLOutputStage, pipeline: IPipeline): PointsOutputStage {
+internal fun fullCornerDetection(
+    context: Context,
+    inputStage: GLOutputStage,
+    pipeline: IPipeline
+): PointsOutputStage {
     val edges = fullCannyEdgeDetection(
         context,
         inputStage,

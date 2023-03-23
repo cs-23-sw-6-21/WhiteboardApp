@@ -7,16 +7,16 @@ import dk.scuffed.whiteboardapp.opengl.*
 import dk.scuffed.whiteboardapp.pipeline.FramebufferInfo
 import dk.scuffed.whiteboardapp.pipeline.IPipeline
 import dk.scuffed.whiteboardapp.pipeline.stages.GLOutputStage
-import dk.scuffed.whiteboardapp.pipeline.Pipeline
 
 /**
  * Does binarization using an adaptive threshold with a shader.
  */
-internal class BinarizationStage(context: Context,
-                                 private val inputFramebufferInfo: FramebufferInfo,
-                                 private val windowSize: Int,
-                                 private val thresholdValue: Float,
-                                 pipeline: IPipeline
+internal class BinarizationStage(
+    context: Context,
+    private val inputFramebufferInfo: FramebufferInfo,
+    private val windowSize: Int,
+    private val thresholdValue: Float,
+    pipeline: IPipeline
 ) : GLOutputStage(context, R.raw.vertex_shader, R.raw.binarization_shader, pipeline) {
 
     init {

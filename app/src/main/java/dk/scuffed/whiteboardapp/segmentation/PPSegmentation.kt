@@ -2,32 +2,32 @@ package dk.scuffed.whiteboardapp.segmentation
 
 import android.content.Context
 import android.graphics.Bitmap
-import androidx.core.graphics.scale
 import com.baidu.paddle.fastdeploy.LitePowerMode
 import com.baidu.paddle.fastdeploy.RuntimeOption
 import com.baidu.paddle.fastdeploy.vision.SegmentationResult
 import com.baidu.paddle.fastdeploy.vision.Visualize
 import com.baidu.paddle.fastdeploy.vision.segmentation.PaddleSegModel
 
-class PPSegmentation (context : Context, private val model : Model) {
-    enum class Model(val modelName : String, val width : Int, val height : Int) {
+class PPSegmentation(context: Context, private val model: Model) {
+    enum class Model(val modelName: String, val width: Int, val height: Int) {
         PORTRAIT("humansegv2portrait", 256, 144),
         GENERALLITE("humansegv2generallite", 192, 192),
         GENERALMOBILE("humansegv2generalmobile", 192, 192)
     }
 
-    private val segmentationModel : PaddleSegModel = PaddleSegModel()
-    private val segmentationResult : SegmentationResult = SegmentationResult()
+    private val segmentationModel: PaddleSegModel = PaddleSegModel()
+    private val segmentationResult: SegmentationResult = SegmentationResult()
 
-    fun segment(input : Bitmap) : Bitmap{
-        if (input.width !=  model.width || input.height !=  model.height){
-            throw Exception("Resolution of input bitmap to segmentor ("+input.width + "," + input.height +") doesnt match required resolution of("+model.width + "," + model.height +")")
+    fun segment(input: Bitmap): Bitmap {
+        if (input.width != model.width || input.height != model.height) {
+            throw Exception("Resolution of input bitmap to segmentor (" + input.width + "," + input.height + ") doesn't match required resolution of(" + model.width + "," + model.height + ")")
         }
 
         segmentationModel.predict(input, segmentationResult)
 
         // create and return a bitmap with result from prediction
-        val bitmapResult : Bitmap = Bitmap.createBitmap(model.width, model.height, Bitmap.Config.ARGB_8888)
+        val bitmapResult: Bitmap =
+            Bitmap.createBitmap(model.width, model.height, Bitmap.Config.ARGB_8888)
 
         Visualize.visSegmentation(bitmapResult, segmentationResult, 0.5f)
         return bitmapResult
@@ -58,5 +58,4 @@ class PPSegmentation (context : Context, private val model : Model) {
         // set up segmentation result to use as buffer
         segmentationResult.setCxxBufferFlag(true)
     }
-
 }

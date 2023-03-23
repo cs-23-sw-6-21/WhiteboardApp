@@ -12,16 +12,26 @@ import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.MaskingSta
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.OverlayStage
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.StoreStage
 import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.DrawCornersStage
+import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.DrawLinesStage
 import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.ScreenCornerPointsStage
 import dk.scuffed.whiteboardapp.utils.Vec2Int
 
 /**
  * Our canonical full pipeline that does everything except input/output
  */
-internal fun fullPipeline(context: Context, inputStage: GLOutputStage, pipeline: IPipeline): GLOutputStage {
+internal fun fullPipeline(
+    context: Context,
+    inputStage: GLOutputStage,
+    pipeline: IPipeline
+): GLOutputStage {
     val fullSegmentation = fullSegmentation(context, inputStage.frameBufferInfo, pipeline)
 
-    val storedFramebuffer: FramebufferInfo = pipeline.allocateFramebuffer(inputStage, GLES20.GL_RGBA, inputStage.frameBufferInfo.textureSize.width, inputStage.frameBufferInfo.textureSize.height)
+    val storedFramebuffer = pipeline.allocateFramebuffer(
+        inputStage,
+        GLES20.GL_RGBA,
+        inputStage.frameBufferInfo.textureSize
+    )
+
     val maskStage = MaskingStage(
         context,
         inputStage.frameBufferInfo,
@@ -37,9 +47,10 @@ internal fun fullPipeline(context: Context, inputStage: GLOutputStage, pipeline:
     )
 
 
-    val cornerDetectionEveryXFrames = UpdateEveryXFramesPointsStage({
-        fullCornerDetection(context, storeStage, it)
-    },
+    val cornerDetectionEveryXFrames = UpdateEveryXFramesPointsStage(
+        {
+            fullCornerDetection(context, storeStage, it)
+        },
         10,
         pipeline,
         Vec2Int(0, 0),
@@ -47,7 +58,7 @@ internal fun fullPipeline(context: Context, inputStage: GLOutputStage, pipeline:
         Vec2Int(0, 0),
         Vec2Int(0, 0)
     )
-    //val draggablePointsStage = DraggablePointsStage(pipeline)
+
     val drawCorners = DrawCornersStage(
         context,
         pipeline,
@@ -84,5 +95,5 @@ internal fun fullPipeline(context: Context, inputStage: GLOutputStage, pipeline:
         drawCorners.frameBufferInfo,
         pipeline
     )
-    return  overlay
+    return overlay
 }
