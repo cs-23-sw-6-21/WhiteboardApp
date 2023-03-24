@@ -40,6 +40,7 @@ internal fun fullCornerDetectionWithDebugDrawing(
     val openCVLineDetectionStage = OpenCVLineDetectionStage(
         edgesBitmapStage,
         150,
+        200,
         pipeline
     )
 
