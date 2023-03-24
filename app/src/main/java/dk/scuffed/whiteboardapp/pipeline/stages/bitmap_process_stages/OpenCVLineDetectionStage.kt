@@ -11,6 +11,7 @@ import org.opencv.android.Utils
 import org.opencv.core.CvType
 import org.opencv.core.Mat
 import org.opencv.imgproc.Imgproc
+import java.lang.Integer.min
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -18,6 +19,7 @@ import kotlin.math.sin
 internal class OpenCVLineDetectionStage(
     private val bitmapOutputStage: BitmapOutputStage,
     private val threshold: Int,
+    private val maxLines: Int,
     pipeline: IPipeline
 ) : LinesOutputStage(pipeline) {
 
@@ -33,7 +35,7 @@ internal class OpenCVLineDetectionStage(
         Imgproc.HoughLines(grayMat, linesMat, 1.0, Math.PI / 180.0, threshold)
 
         lines.clear()
-        for (x in 0 until linesMat.rows()) {
+        for (x in 0 until min(linesMat.rows(), maxLines)) {
             val rho = linesMat.get(x, 0)[0]
             val theta = linesMat.get(x, 0)[1]
             val a = cos(theta)
