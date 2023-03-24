@@ -8,11 +8,13 @@ import dk.scuffed.whiteboardapp.pipeline.stage_combinations.*
 import dk.scuffed.whiteboardapp.pipeline.stages.*
 import dk.scuffed.whiteboardapp.pipeline.stages.input_stages.CameraXStage
 import dk.scuffed.whiteboardapp.pipeline.stages.output_stages.DrawFramebufferStage
+import dk.scuffed.whiteboardapp.pipeline.stages.pipeline_stages.SwitchablePipelineStage
 
 internal class Pipeline(context: Context, private val initialResolution: Size) : IPipeline {
 
     private var stages = mutableListOf<Stage>()
     private var nextTextureUnit: Int = 0
+    private val switchablePipelineStage: SwitchablePipelineStage
 
     private val indexToTextureUnit = intArrayOf(
         GLES20.GL_TEXTURE0,
@@ -49,15 +51,21 @@ internal class Pipeline(context: Context, private val initialResolution: Size) :
         )
 
         val entirePipeline = fullPipeline(context, cameraXStage, this)
-
+        switchablePipelineStage = entirePipeline.first
         DrawFramebufferStage(
             context,
-            entirePipeline.frameBufferInfo,
+            entirePipeline.second.frameBufferInfo,
             this
         )
     }
 
-
+    /**
+     * Sets the switch variable to the inputted boolean.
+     * @param bool is a Boolean to changes the switches value.
+     */
+    fun switchStages(bool: Boolean){
+        switchablePipelineStage.setSwitch(bool)
+    }
     override fun draw() {
         stages.forEach { stage -> stage.performUpdate() }
     }
