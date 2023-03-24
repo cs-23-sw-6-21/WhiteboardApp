@@ -2,19 +2,15 @@ package dk.scuffed.whiteboardapp.pipeline.stage_combinations
 
 import android.content.Context
 import android.opengl.GLES20
-import dk.scuffed.whiteboardapp.pipeline.FramebufferInfo
 import dk.scuffed.whiteboardapp.pipeline.IPipeline
 import dk.scuffed.whiteboardapp.pipeline.stages.GLOutputStage
-import dk.scuffed.whiteboardapp.pipeline.stages.update_every_x_frames_stages.UpdateEveryXFramesPointsStage
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.*
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.BinarizationStage
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.MaskingStage
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.OverlayStage
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.StoreStage
 import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.DrawCornersStage
-import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.DrawLinesStage
 import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.ScreenCornerPointsStage
-import dk.scuffed.whiteboardapp.utils.Vec2Int
 
 /**
  * Our canonical full pipeline that does everything except input/output
@@ -47,22 +43,12 @@ internal fun fullPipeline(
     )
 
 
-    val cornerDetectionEveryXFrames = UpdateEveryXFramesPointsStage(
-        {
-            fullCornerDetection(context, storeStage, it)
-        },
-        10,
-        pipeline,
-        Vec2Int(0, 0),
-        Vec2Int(0, 0),
-        Vec2Int(0, 0),
-        Vec2Int(0, 0)
-    )
+    val cornerDetectionStage = fullCornerDetection(context, storeStage, pipeline)
 
     val drawCorners = DrawCornersStage(
         context,
         pipeline,
-        cornerDetectionEveryXFrames.getPointsOutputStage()
+        cornerDetectionStage
     )
 
 
@@ -70,7 +56,7 @@ internal fun fullPipeline(
     val perspectiveCorrection = fullPerspectiveCorrection(
         context,
         storeStage,
-        cornerDetectionEveryXFrames.getPointsOutputStage(),
+        cornerDetectionStage,
         screenPointsStage,
         pipeline
     )

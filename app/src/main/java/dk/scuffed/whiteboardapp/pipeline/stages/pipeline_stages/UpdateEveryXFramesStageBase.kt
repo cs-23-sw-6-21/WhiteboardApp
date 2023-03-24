@@ -1,4 +1,4 @@
-package dk.scuffed.whiteboardapp.pipeline.stages.update_every_x_frames_stages
+package dk.scuffed.whiteboardapp.pipeline.stages.pipeline_stages
 
 import android.util.Size
 import dk.scuffed.whiteboardapp.pipeline.FramebufferInfo

@@ -1,4 +1,4 @@
-package dk.scuffed.whiteboardapp.pipeline.stages.update_every_x_frames_stages
+package dk.scuffed.whiteboardapp.pipeline.stages.pipeline_stages
 
 import dk.scuffed.whiteboardapp.pipeline.IPipeline
 import dk.scuffed.whiteboardapp.pipeline.stages.PointsOutputStage
