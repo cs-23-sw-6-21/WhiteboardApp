@@ -10,6 +10,8 @@ import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.Framebuffe
 import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.OpenCVLineDetectionStage
 import dk.scuffed.whiteboardapp.pipeline.stages.lines_stages.BiggestSquareStage
 import dk.scuffed.whiteboardapp.pipeline.stages.lines_stages.LinesAngleDiscriminatorStage
+import dk.scuffed.whiteboardapp.pipeline.stages.pipeline_stages.ThreadedBitmapInputPointOutputStage
+import dk.scuffed.whiteboardapp.utils.Vec2Int
 
 /**
  * Does corner detection using hough line transforms and finding the biggest quadrilateral.
@@ -21,43 +23,54 @@ internal fun fullCornerDetection(
     inputStage: GLOutputStage,
     pipeline: IPipeline
 ): PointsOutputStage {
-    val edges = fullCannyEdgeDetection(
-        context,
-        inputStage,
-        pipeline
+
+    val threadedBitmapInputPointOutputStage = ThreadedBitmapInputPointOutputStage(
+        { pipeline ->
+            val edges = fullCannyEdgeDetection(
+                context,
+                inputStage,
+                pipeline
+            )
+
+            val edgesBitmapStage = FramebufferToBitmapStage(
+                edges.frameBufferInfo,
+                Bitmap.Config.ARGB_8888,
+                pipeline
+            )
+        },
+        { inputBitmapStage, pipeline ->
+            val openCVLineDetectionStage = OpenCVLineDetectionStage(
+                inputBitmapStage,
+                150,
+                pipeline
+            )
+
+            val verticalLinesAngleDiscriminatorStage = LinesAngleDiscriminatorStage(
+                openCVLineDetectionStage,
+                -(Math.PI / 4.0f).toFloat(),
+                (Math.PI / 4.0f).toFloat(),
+                pipeline
+            )
+
+            val horizontalLinesAngleDiscriminatorStage = LinesAngleDiscriminatorStage(
+                openCVLineDetectionStage,
+                (Math.PI / 4.0f).toFloat(),
+                (Math.PI / 2.0f + Math.PI / 4.0f).toFloat(),
+                pipeline
+            )
+
+            val biggestSquareStage = BiggestSquareStage(
+                horizontalLinesAngleDiscriminatorStage,
+                verticalLinesAngleDiscriminatorStage,
+                pipeline
+            )
+        },
+        pipeline,
+        Vec2Int(0,0),
+        Vec2Int(0,0),
+        Vec2Int(0,0),
+        Vec2Int(0,0)
     )
 
-    val edgesBitmapStage = FramebufferToBitmapStage(
-        edges.frameBufferInfo,
-        Bitmap.Config.ARGB_8888,
-        pipeline
-    )
-
-    val openCVLineDetectionStage = OpenCVLineDetectionStage(
-        edgesBitmapStage,
-        150,
-        pipeline
-    )
-
-    val verticalLinesAngleDiscriminatorStage = LinesAngleDiscriminatorStage(
-        openCVLineDetectionStage,
-        -(Math.PI / 4.0f).toFloat(),
-        (Math.PI / 4.0f).toFloat(),
-        pipeline
-    )
-
-    val horizontalLinesAngleDiscriminatorStage = LinesAngleDiscriminatorStage(
-        openCVLineDetectionStage,
-        (Math.PI / 4.0f).toFloat(),
-        (Math.PI / 2.0f + Math.PI / 4.0f).toFloat(),
-        pipeline
-    )
-
-    val biggestSquareStage = BiggestSquareStage(
-        horizontalLinesAngleDiscriminatorStage,
-        verticalLinesAngleDiscriminatorStage,
-        pipeline
-    )
-
-    return biggestSquareStage
+    return threadedBitmapInputPointOutputStage.myOutputPointsStage
 }
