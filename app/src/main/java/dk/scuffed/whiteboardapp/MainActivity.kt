@@ -3,9 +3,7 @@ package dk.scuffed.whiteboardapp
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
-import android.view.ViewGroup
 import android.widget.Button
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -31,9 +29,10 @@ class MainActivity : AppCompatActivity() {
         else {
             setContentView(R.layout.activity_main)
             val buttonView = findViewById<ConstraintLayout>(R.id.button_view)
-            buttonView.addView(OpenGLView(this))
+            val openGLView = OpenGLView(this)
+            buttonView.addView(openGLView)
             findViewById<Button>(R.id.round_button).setOnClickListener {
-                Log.d("BUTTONS", "User tapped the Supabutton")
+                openGLView.toggleAutoCornerDetection()
             }
         }
     }
