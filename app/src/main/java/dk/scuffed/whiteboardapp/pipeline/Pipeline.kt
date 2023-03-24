@@ -9,7 +9,7 @@ import dk.scuffed.whiteboardapp.pipeline.stages.*
 import dk.scuffed.whiteboardapp.pipeline.stages.input_stages.CameraXStage
 import dk.scuffed.whiteboardapp.pipeline.stages.output_stages.DrawFramebufferStage
 
-class Pipeline(context: Context, internal val initialResolution: Size) {
+internal class Pipeline(context: Context, private val initialResolution: Size) : IPipeline {
 
     private var stages = mutableListOf<Stage>()
     private var nextTextureUnit: Int = 0
@@ -58,15 +58,23 @@ class Pipeline(context: Context, internal val initialResolution: Size) {
     }
 
 
-    fun draw() {
+    override fun draw() {
         stages.forEach { stage -> stage.performUpdate() }
     }
 
-    fun onResolutionChanged(resolution: Size) {
+    override fun onResolutionChanged(resolution: Size) {
         stages.forEach { stage -> stage.performOnResolutionChanged(resolution) }
     }
 
-    internal fun allocateFramebuffer(stage: Stage, textureFormat: Int, width: Int, height: Int): FramebufferInfo {
+    override fun getInitialResolution(): Size {
+        return initialResolution
+    }
+
+    override fun allocateFramebuffer(
+        stage: Stage,
+        textureFormat: Int,
+        size: Size
+    ): FramebufferInfo {
         val fboHandle = glGenFramebuffer()
 
         val textureHandle = glGenTexture()
@@ -75,7 +83,7 @@ class Pipeline(context: Context, internal val initialResolution: Size) {
         glActiveTexture(textureUnitPair.textureUnit)
 
         glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle)
-        glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA, width, height, GLES20.GL_UNSIGNED_BYTE, null)
+        glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA, size, GLES20.GL_UNSIGNED_BYTE, null)
         glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR)
         glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR)
         glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE)
@@ -85,14 +93,14 @@ class Pipeline(context: Context, internal val initialResolution: Size) {
         glBindFramebuffer(fboHandle)
         glFramebufferTexture2D(GLES20.GL_COLOR_ATTACHMENT0, GLES20.GL_TEXTURE_2D, textureHandle)
 
-        return FramebufferInfo(fboHandle, textureHandle, textureUnitPair, GLES20.GL_RGBA, Size(width, height))
+        return FramebufferInfo(fboHandle, textureHandle, textureUnitPair, GLES20.GL_RGBA, size)
     }
 
-    internal fun addStage(stage: Stage){
+    override fun addStage(stage: Stage) {
         stages.add(stage)
     }
 
-    internal fun allocateTextureUnit(stage: Stage): TextureUnitPair {
+    override fun allocateTextureUnit(stage: Stage): TextureUnitPair {
         val textureUnitIndex = nextTextureUnit++
         val textureUnit = indexToTextureUnit[textureUnitIndex]
         return TextureUnitPair(textureUnit, textureUnitIndex)

@@ -1,6 +1,6 @@
 package dk.scuffed.whiteboardapp.pipeline.stages
 
-import dk.scuffed.whiteboardapp.pipeline.Pipeline
+import dk.scuffed.whiteboardapp.pipeline.IPipeline
 import dk.scuffed.whiteboardapp.utils.Vec2Int
 
 /**
@@ -8,10 +8,9 @@ import dk.scuffed.whiteboardapp.utils.Vec2Int
  * @property points allows to read and write these points.
  */
 internal abstract class PointsOutputStage(
-    pipeline: Pipeline,
+    pipeline: IPipeline,
     vararg initialPoints: Vec2Int
-    ) : Stage(pipeline)
-{
+) : Stage(pipeline) {
     val points: ArrayList<Vec2Int> = ArrayList()
 
     init {

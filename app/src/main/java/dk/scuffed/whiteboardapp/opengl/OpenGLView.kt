@@ -21,7 +21,7 @@ class OpenGLView(context: Context) : GLSurfaceView(context) {
             DrawPipelineStage.next()
         }
         if (event?.action == MotionEvent.ACTION_MOVE) {
-            DraggablePointsStage.dragPoint(Vec2Int(event.x.toInt(), height-event.y.toInt()))
+            DraggablePointsStage.dragPoint(Vec2Int(event.x.toInt(), height - event.y.toInt()))
         }
         return true
     }

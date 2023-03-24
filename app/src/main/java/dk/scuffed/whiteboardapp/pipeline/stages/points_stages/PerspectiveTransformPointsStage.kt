@@ -1,12 +1,10 @@
 package dk.scuffed.whiteboardapp.pipeline.stages.points_stages
 
-import android.util.Log
-import dk.scuffed.whiteboardapp.pipeline.Pipeline
+import dk.scuffed.whiteboardapp.pipeline.IPipeline
 import dk.scuffed.whiteboardapp.pipeline.stages.PointsOutputStage
 import dk.scuffed.whiteboardapp.utils.Vec2Int
 import org.opencv.core.*
 import org.opencv.imgproc.Imgproc
-import kotlin.math.round
 
 
 /**
@@ -17,11 +15,10 @@ import kotlin.math.round
  * @returns the points of the quad that will ensure pointsFrom is distorted so they are at pointsTo.
  */
 internal class PerspectiveTransformPointsStage(
-    pipeline: Pipeline,
+    pipeline: IPipeline,
     private val pointsFrom: PointsOutputStage,
     private val pointsTo: PointsOutputStage
-    ) : PointsOutputStage(pipeline)
-{
+) : PointsOutputStage(pipeline) {
     init {
         setInitialPoints()
     }
@@ -35,7 +32,7 @@ internal class PerspectiveTransformPointsStage(
             Point(pointsFrom.points[1].x.toDouble(), pointsFrom.points[1].y.toDouble()),
             Point(pointsFrom.points[2].x.toDouble(), pointsFrom.points[2].y.toDouble()),
             Point(pointsFrom.points[3].x.toDouble(), pointsFrom.points[3].y.toDouble()),
-            )
+        )
 
         val dst = MatOfPoint2f(
             Point(pointsTo.points[0].x.toDouble(), pointsTo.points[0].y.toDouble()),
@@ -50,10 +47,10 @@ internal class PerspectiveTransformPointsStage(
 
         Core.perspectiveTransform(dst, result, perspectiveTransformMatrix)
 
-        val newpoints = result.toArray()
+        val newPoints = result.toArray()
 
         for (i in points.indices) {
-            points[i] = Vec2Int(newpoints[i].x.toInt(), newpoints[i].y.toInt())
+            points[i] = Vec2Int(newPoints[i].x.toInt(), newPoints[i].y.toInt())
         }
 
         perspectiveTransformMatrix.release()
@@ -61,12 +58,15 @@ internal class PerspectiveTransformPointsStage(
         src.release()
         dst.release()
     }
+
     private fun setInitialPoints() {
-        points.addAll(arrayOf(
-            Vec2Int(200, 200),
-            Vec2Int(800, 200),
-            Vec2Int(800, 800),
-            Vec2Int(200, 800),
-        ))
+        points.addAll(
+            arrayOf(
+                Vec2Int(200, 200),
+                Vec2Int(800, 200),
+                Vec2Int(800, 800),
+                Vec2Int(200, 800),
+            )
+        )
     }
 }

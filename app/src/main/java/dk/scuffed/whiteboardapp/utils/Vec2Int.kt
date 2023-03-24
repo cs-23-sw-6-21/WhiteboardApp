@@ -1,21 +1,39 @@
 package dk.scuffed.whiteboardapp.utils
 
+import kotlin.math.pow
+import kotlin.math.sqrt
+
 /**
  * This class is used to store coordinates in a vector2 integer.
  * @property x the x coordinate for a point.
  * @property y the y coordinate for a point.
  */
-class Vec2Int(val x: Int, val y: Int){
-    fun subtact(vec: Vec2Int): Vec2Int{
-        return Vec2Int(this.x-vec.x, this.y-vec.y)
+class Vec2Int(val x: Int, val y: Int) : IVec<Vec2Int, Int> {
+    override fun plus(other: Vec2Int): Vec2Int {
+        return Vec2Int(this.x + other.x, this.y + other.y)
     }
-    fun additon(vec: Vec2Int): Vec2Int{
-        return Vec2Int(this.x+vec.x, this.y+vec.y)
+
+    override fun minus(other: Vec2Int): Vec2Int {
+        return Vec2Int(this.x - other.x, this.y - other.y)
     }
-    fun multiply(scale: Int): Vec2Int{
-        return Vec2Int(this.x*scale, this.y*scale)
+
+    override fun times(other: Int): Vec2Int {
+        return Vec2Int(x * other, y * other)
     }
-    fun vec2IntToFloat():Vec2Float{
-        return Vec2Float(this.x.toFloat(), this.y.toFloat())
+
+    override fun div(other: Int): Vec2Int {
+        return Vec2Int(x / other, y / other)
+    }
+
+    override fun distance(other: Vec2Int): Float {
+        return sqrt((other.x - this.x).toFloat().pow(2f) + (other.y - this.y).toFloat().pow(2f))
+    }
+
+    fun toVec2Float(): Vec2Float {
+        return Vec2Float(x.toFloat(), y.toFloat())
+    }
+
+    override fun toString(): String {
+        return "($x, $y)"
     }
 }

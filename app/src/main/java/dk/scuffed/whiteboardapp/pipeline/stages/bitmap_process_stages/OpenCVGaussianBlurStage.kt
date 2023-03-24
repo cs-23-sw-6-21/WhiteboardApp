@@ -1,6 +1,5 @@
 package dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages
 
-import android.graphics.Bitmap
 import android.util.Size
 import dk.scuffed.whiteboardapp.pipeline.*
 import dk.scuffed.whiteboardapp.pipeline.stages.BitmapOutputStage
@@ -15,8 +14,12 @@ import org.opencv.imgproc.Imgproc
  */
 internal class OpenCVGaussianBlurStage(
     private val bitmapStage: BitmapOutputStage,
-    pipeline: Pipeline) : BitmapOutputStage(pipeline, Size(bitmapStage.outputBitmap.width, bitmapStage.outputBitmap.height), bitmapStage.outputBitmap.config)
-{
+    pipeline: IPipeline
+) : BitmapOutputStage(
+    pipeline,
+    Size(bitmapStage.outputBitmap.width, bitmapStage.outputBitmap.height),
+    bitmapStage.outputBitmap.config
+) {
     private var img = Mat()
 
     override fun update() {
@@ -24,7 +27,7 @@ internal class OpenCVGaussianBlurStage(
 
         val blurredImg = Mat(img.size(), CvType.CV_8UC1)
 
-        Imgproc.GaussianBlur(img, blurredImg, org.opencv.core.Size(5.0,5.0), 1.0, 1.0)
+        Imgproc.GaussianBlur(img, blurredImg, org.opencv.core.Size(5.0, 5.0), 1.0, 1.0)
 
         Utils.matToBitmap(blurredImg, outputBitmap)
 

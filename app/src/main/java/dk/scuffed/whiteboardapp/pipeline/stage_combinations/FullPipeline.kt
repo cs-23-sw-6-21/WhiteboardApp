@@ -2,8 +2,7 @@ package dk.scuffed.whiteboardapp.pipeline.stage_combinations
 
 import android.content.Context
 import android.opengl.GLES20
-import dk.scuffed.whiteboardapp.pipeline.FramebufferInfo
-import dk.scuffed.whiteboardapp.pipeline.Pipeline
+import dk.scuffed.whiteboardapp.pipeline.IPipeline
 import dk.scuffed.whiteboardapp.pipeline.stages.GLOutputStage
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.*
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.BinarizationStage
@@ -16,10 +15,19 @@ import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.ScreenCornerPoints
 /**
  * Our canonical full pipeline that does everything except input/output
  */
-internal fun fullPipeline(context: Context, inputStage: GLOutputStage, pipeline: Pipeline): GLOutputStage {
+internal fun fullPipeline(
+    context: Context,
+    inputStage: GLOutputStage,
+    pipeline: IPipeline
+): GLOutputStage {
     val fullSegmentation = fullSegmentation(context, inputStage.frameBufferInfo, pipeline)
 
-    val storedFramebuffer: FramebufferInfo = pipeline.allocateFramebuffer(inputStage, GLES20.GL_RGBA, inputStage.frameBufferInfo.textureSize.width, inputStage.frameBufferInfo.textureSize.height)
+    val storedFramebuffer = pipeline.allocateFramebuffer(
+        inputStage,
+        GLES20.GL_RGBA,
+        inputStage.frameBufferInfo.textureSize
+    )
+
     val maskStage = MaskingStage(
         context,
         inputStage.frameBufferInfo,
@@ -35,12 +43,12 @@ internal fun fullPipeline(context: Context, inputStage: GLOutputStage, pipeline:
     )
 
 
-    val cornerDetection = fullCornerDetection(context, storeStage, pipeline)
-    //val draggablePointsStage = DraggablePointsStage(pipeline)
+    val cornerDetectionStage = fullCornerDetection(context, storeStage, pipeline)
+
     val drawCorners = DrawCornersStage(
         context,
         pipeline,
-        cornerDetection
+        cornerDetectionStage
     )
 
 
@@ -48,7 +56,7 @@ internal fun fullPipeline(context: Context, inputStage: GLOutputStage, pipeline:
     val perspectiveCorrection = fullPerspectiveCorrection(
         context,
         storeStage,
-        cornerDetection,
+        cornerDetectionStage,
         screenPointsStage,
         pipeline
     )
@@ -62,8 +70,8 @@ internal fun fullPipeline(context: Context, inputStage: GLOutputStage, pipeline:
     val binarizationStage = BinarizationStage(
         context,
         grayscaleStage.frameBufferInfo,
-        10,
-        20f,
+        3,
+        40f,
         pipeline
     )
 
@@ -73,5 +81,5 @@ internal fun fullPipeline(context: Context, inputStage: GLOutputStage, pipeline:
         drawCorners.frameBufferInfo,
         pipeline
     )
-    return  overlay
+    return overlay
 }

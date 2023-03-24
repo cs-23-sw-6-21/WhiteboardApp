@@ -5,8 +5,8 @@ import android.opengl.GLES20
 import dk.scuffed.whiteboardapp.R
 import dk.scuffed.whiteboardapp.opengl.*
 import dk.scuffed.whiteboardapp.pipeline.FramebufferInfo
+import dk.scuffed.whiteboardapp.pipeline.IPipeline
 import dk.scuffed.whiteboardapp.pipeline.stages.GLOutputStage
-import dk.scuffed.whiteboardapp.pipeline.Pipeline
 
 /**
  * Runs canny edge detection.
@@ -17,7 +17,7 @@ internal class CannyStage(
     private val inputSobelFramebufferInfo: FramebufferInfo,
     private val weakEdgeThreshold: Float,
     private val hardEdgeThreshold: Float,
-    pipeline: Pipeline
+    pipeline: IPipeline
 ) : GLOutputStage(context, R.raw.vertex_shader, R.raw.canny_shader, pipeline) {
 
     init {
@@ -38,7 +38,10 @@ internal class CannyStage(
         glUniform1f(hardEdgeThresholdHandle, hardEdgeThreshold)
 
         val inputFramebufferHandle = glGetUniformLocation(program, "input_framebuffer")
-        glUniform1i(inputFramebufferHandle, inputSobelFramebufferInfo.textureUnitPair.textureUnitIndex)
+        glUniform1i(
+            inputFramebufferHandle,
+            inputSobelFramebufferInfo.textureUnitPair.textureUnitIndex
+        )
         glActiveTexture(inputSobelFramebufferInfo.textureUnitPair.textureUnit)
         glBindTexture(GLES20.GL_TEXTURE_2D, inputSobelFramebufferInfo.textureHandle)
     }

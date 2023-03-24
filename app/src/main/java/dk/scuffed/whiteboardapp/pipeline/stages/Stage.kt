@@ -2,13 +2,16 @@ package dk.scuffed.whiteboardapp.pipeline.stages
 
 import android.util.Log
 import android.util.Size
-import dk.scuffed.whiteboardapp.pipeline.Pipeline
+import dk.scuffed.whiteboardapp.opengl.glFinish
+import dk.scuffed.whiteboardapp.pipeline.IPipeline
+
+private val recordTimings = true
 
 /**
  * Baseclass for stages.
  * Manages updates and connection to the pipeline.
  */
-internal abstract class Stage(pipeline: Pipeline) {
+internal abstract class Stage(pipeline: IPipeline) {
 
     private val name: String
 
@@ -17,33 +20,37 @@ internal abstract class Stage(pipeline: Pipeline) {
     init {
         pipeline.addStage(this)
         name = this.javaClass.name
-        resolution = pipeline.initialResolution
+        resolution = pipeline.getInitialResolution()
     }
 
-    protected fun getResolution() : Size {
+    protected fun getResolution(): Size {
         return resolution
     }
 
     protected abstract fun update()
 
-    fun performUpdate()
-    {
+    fun performUpdate() {
         val startTime = System.nanoTime()
         update()
+        if (recordTimings && this is GLOutputStage) {
+            glFinish()
+        }
         val endTime = System.nanoTime()
 
         //Calculate duration and convert to ms
         val duration = (endTime - startTime).toDouble() / 1000000.0
 
-        Log.d("Stages", "Stage: $name took $duration ms")
+        if (recordTimings) {
+            Log.d("Stages", "Stage: $name took $duration ms")
+        }
     }
 
     fun performOnResolutionChanged(resolution: Size) {
         this.resolution = resolution
-        onResolutionChanged(resolution)
+        whenResolutionChanged(resolution)
     }
 
-    protected open fun onResolutionChanged(resolution: Size) {
+    protected open fun whenResolutionChanged(resolution: Size) {
         // Intentionally left blank :^)
     }
 }

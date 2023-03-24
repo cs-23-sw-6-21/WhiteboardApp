@@ -7,5 +7,5 @@ internal class FramebufferInfo(
     val textureHandle: Int,
     val textureUnitPair: TextureUnitPair,
     val textureFormat: Int,
-    val textureSize: Size) {
-}
+    val textureSize: Size
+)

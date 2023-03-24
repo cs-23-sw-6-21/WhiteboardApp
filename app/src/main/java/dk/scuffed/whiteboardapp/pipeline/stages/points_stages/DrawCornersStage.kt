@@ -2,10 +2,11 @@ package dk.scuffed.whiteboardapp.pipeline.stages.points_stages
 
 import android.content.Context
 import android.opengl.GLES20
+import android.util.Size
 import dk.scuffed.whiteboardapp.R
 import dk.scuffed.whiteboardapp.opengl.*
 import dk.scuffed.whiteboardapp.pipeline.FramebufferInfo
-import dk.scuffed.whiteboardapp.pipeline.Pipeline
+import dk.scuffed.whiteboardapp.pipeline.IPipeline
 import dk.scuffed.whiteboardapp.pipeline.stages.Stage
 import dk.scuffed.whiteboardapp.pipeline.readRawResource
 import dk.scuffed.whiteboardapp.pipeline.stages.PointsOutputStage
@@ -23,7 +24,7 @@ import java.nio.ShortBuffer
  */
 internal class DrawCornersStage(
     private val context: Context,
-    pipeline: Pipeline,
+    pipeline: IPipeline,
     private val pointsStage: PointsOutputStage
 ) : Stage(pipeline) {
     //The radius of the circle
@@ -35,10 +36,10 @@ internal class DrawCornersStage(
 
     //XYZ Coordinates for the square we are drawing on.
     private val squareCoords = floatArrayOf(
-    -1.0f, 1.0f, 0.0f,
-    -1.0f, -1.0f, 0.0f,
-    1.0f, -1.0f, 0.0f,
-    1.0f, 1.0f,0.0f
+        -1.0f, 1.0f, 0.0f,
+        -1.0f, -1.0f, 0.0f,
+        1.0f, -1.0f, 0.0f,
+        1.0f, 1.0f, 0.0f
     )
 
     // order to draw vertices
@@ -72,7 +73,11 @@ internal class DrawCornersStage(
     val frameBufferInfo: FramebufferInfo
 
     init {
-        frameBufferInfo = pipeline.allocateFramebuffer(this, GLES20.GL_RGBA, getResolution().width, getResolution().height)
+        frameBufferInfo = pipeline.allocateFramebuffer(
+            this,
+            GLES20.GL_RGBA,
+            getResolution()
+        )
         setupGlProgram()
     }
 
@@ -93,11 +98,11 @@ internal class DrawCornersStage(
 
     override fun update() {
         glBindFramebuffer(frameBufferInfo.fboHandle)
-        glViewport(0, 0, frameBufferInfo.textureSize.width, frameBufferInfo.textureSize.height)
+        glViewport(Vec2Int(0, 0), frameBufferInfo.textureSize)
         glClearColorClear()
         glClear(GLES20.GL_COLOR_BUFFER_BIT)
         glClearColorError() // set back to error color for future stages
-        for (point in pointsStage.points){
+        for (point in pointsStage.points) {
             drawPoint(point)
         }
 
@@ -113,7 +118,9 @@ internal class DrawCornersStage(
         // Calculates the top right corner for the viewport
         val topRightCorner = Vec2Int(point.x + circleRadius, point.y + circleRadius)
 
-        glViewport(bottomLeftCorner.x, bottomLeftCorner.y, topRightCorner.x-bottomLeftCorner.x, topRightCorner.y-bottomLeftCorner.y)
+        val size = topRightCorner - bottomLeftCorner
+
+        glViewport(bottomLeftCorner, Size(size.x, size.y))
 
         // Render to our framebuffer
         glBindFramebuffer(frameBufferInfo.fboHandle)
@@ -136,8 +143,8 @@ internal class DrawCornersStage(
         val resolutionHandle = glGetUniformLocation(program, "resolution")
         glUniform2f(
             resolutionHandle,
-            circleRadius*2.toFloat(),
-            circleRadius*2.toFloat()
+            circleRadius * 2.toFloat(),
+            circleRadius * 2.toFloat()
         )
         // To know the viewport's start point is placed
         val offsetHandle = glGetUniformLocation(program, "offset")

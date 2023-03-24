@@ -5,7 +5,7 @@ import android.opengl.GLES20
 import dk.scuffed.whiteboardapp.R
 import dk.scuffed.whiteboardapp.opengl.*
 import dk.scuffed.whiteboardapp.pipeline.FramebufferInfo
-import dk.scuffed.whiteboardapp.pipeline.Pipeline
+import dk.scuffed.whiteboardapp.pipeline.IPipeline
 import dk.scuffed.whiteboardapp.pipeline.stages.GLOutputStage
 import dk.scuffed.whiteboardapp.pipeline.stages.PointsOutputStage
 import dk.scuffed.whiteboardapp.utils.LineFloat
@@ -22,10 +22,12 @@ internal class PerspectiveCorrectionStage(
     context: Context,
     private val inputFramebufferInfo: FramebufferInfo,
     private val inputVertices: PointsOutputStage,
-    pipeline: Pipeline)
-    : GLOutputStage(context,
+    pipeline: IPipeline
+) : GLOutputStage(
+    context,
     R.raw.vertex_perspective_correction_shader,
-    R.raw.texture_distortable, pipeline) {
+    R.raw.texture_distortable, pipeline
+) {
     init {
         setup()
     }
@@ -63,9 +65,12 @@ internal class PerspectiveCorrectionStage(
 
     // Uses projective transformation to get the correctly distorted texture coordinates for the quad
     // See https://www.reedbeta.com/blog/quadrilateral-interpolation-part-1/ for indepth explanation
-    private fun calculateProjectedTexcoords(convertedPoints: ArrayList<Vec2Float>) : ArrayList<Vec3Float>?{
+    private fun calculateProjectedTexcoords(convertedPoints: ArrayList<Vec2Float>): ArrayList<Vec3Float>? {
 
-        val intersection = LineFloat(convertedPoints[0], convertedPoints[2]).intersect(LineFloat(convertedPoints[1], convertedPoints[3]))
+        val intersection = LineFloat(
+            convertedPoints[0],
+            convertedPoints[2]
+        ).intersect(LineFloat(convertedPoints[1], convertedPoints[3]))
             ?: return null
 
         val distances = arrayListOf(
@@ -83,10 +88,10 @@ internal class PerspectiveCorrectionStage(
         )
 
         val texCoords = arrayListOf(
-            Vec3Float(0f, 1f, 1f).multiply(zValues[0]),
-            Vec3Float(0f, 0f, 1f).multiply(zValues[1]),
-            Vec3Float(1f, 0f, 1f).multiply(zValues[2]),
-            Vec3Float(1f, 1f, 1f).multiply(zValues[3]),
+            Vec3Float(0f, 1f, 1f) * zValues[0],
+            Vec3Float(0f, 0f, 1f) * zValues[1],
+            Vec3Float(1f, 0f, 1f) * zValues[2],
+            Vec3Float(1f, 1f, 1f) * zValues[3],
         )
 
         return texCoords
@@ -94,7 +99,7 @@ internal class PerspectiveCorrectionStage(
 
     // Calculate some kind of pseudo depth used for the projection
     // See details at https://www.reedbeta.com/blog/quadrilateral-interpolation-part-1/
-    private fun calculateZValue(d: Float, dOpp: Float): Float{
+    private fun calculateZValue(d: Float, dOpp: Float): Float {
         return (d + dOpp) / dOpp
     }
 
@@ -102,6 +107,7 @@ internal class PerspectiveCorrectionStage(
     private fun convertToVertexSpace(v: Vec2Int): Vec2Float {
         return (Vec2Float(
             ((v.x / getResolution().width.toFloat()) - 0.5f) * 2f,
-            ((v.y / getResolution().height.toFloat()) - 0.5f) * 2f))
+            ((v.y / getResolution().height.toFloat()) - 0.5f) * 2f
+        ))
     }
 }

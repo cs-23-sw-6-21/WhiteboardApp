@@ -3,6 +3,7 @@ package dk.scuffed.whiteboardapp.pipeline.stage_combinations
 import android.content.Context
 import android.graphics.Bitmap
 import dk.scuffed.whiteboardapp.pipeline.FramebufferInfo
+import dk.scuffed.whiteboardapp.pipeline.IPipeline
 import dk.scuffed.whiteboardapp.pipeline.Pipeline
 import dk.scuffed.whiteboardapp.pipeline.stages.GLOutputStage
 import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.BitmapToFramebufferStage
@@ -16,7 +17,11 @@ import dk.scuffed.whiteboardapp.segmentation.PPSegmentation
 /**
  * Runs the entire perspective correction based on two sets of points and an input framebuffer
  */
-internal fun fullSegmentation(context: Context, inputFramebufferInfo: FramebufferInfo, pipeline: Pipeline): GLOutputStage {
+internal fun fullSegmentation(
+    context: Context,
+    inputFramebufferInfo: FramebufferInfo,
+    pipeline: IPipeline
+): GLOutputStage {
     val segPre = SegmentationPreProcessingStage(
         context,
         inputFramebufferInfo,
@@ -54,5 +59,5 @@ internal fun fullSegmentation(context: Context, inputFramebufferInfo: Framebuffe
         pipeline
     )
 
-    return  segPost
+    return segPost
 }

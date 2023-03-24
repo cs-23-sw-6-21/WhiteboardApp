@@ -1,6 +1,7 @@
 package dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages
 
 import android.util.Log
+import dk.scuffed.whiteboardapp.pipeline.IPipeline
 import dk.scuffed.whiteboardapp.pipeline.Pipeline
 import dk.scuffed.whiteboardapp.pipeline.stages.BitmapOutputStage
 import dk.scuffed.whiteboardapp.pipeline.stages.LinesOutputStage
@@ -14,7 +15,11 @@ import kotlin.math.cos
 import kotlin.math.sin
 
 
-internal class OpenCVLineDetectionStage(private val bitmapOutputStage: BitmapOutputStage, private val threshold: Int, pipeline: Pipeline) : LinesOutputStage(pipeline) {
+internal class OpenCVLineDetectionStage(
+    private val bitmapOutputStage: BitmapOutputStage,
+    private val threshold: Int,
+    pipeline: IPipeline
+) : LinesOutputStage(pipeline) {
 
     private val inputMat = Mat()
     override fun update() {
@@ -25,7 +30,7 @@ internal class OpenCVLineDetectionStage(private val bitmapOutputStage: BitmapOut
         inputMat.release()
 
         val linesMat = Mat(grayMat.size(), CvType.CV_8UC1)
-        Imgproc.HoughLines(grayMat, linesMat, 1.0, Math.PI/180.0, threshold)
+        Imgproc.HoughLines(grayMat, linesMat, 1.0, Math.PI / 180.0, threshold)
 
         lines.clear()
         for (x in 0 until linesMat.rows()) {

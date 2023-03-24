@@ -14,9 +14,13 @@ import org.opencv.imgproc.Imgproc
  * Runs OpenCVs sobel edge detection on bitmap.
  */
 internal class OpenCVSobelStage(
-    private val bitmapStage : BitmapOutputStage,
-    pipeline: Pipeline) : BitmapOutputStage(pipeline, Size(bitmapStage.outputBitmap.width, bitmapStage.outputBitmap.height), bitmapStage.outputBitmap.config)
-{
+    private val bitmapStage: BitmapOutputStage,
+    pipeline: IPipeline
+) : BitmapOutputStage(
+    pipeline,
+    Size(bitmapStage.outputBitmap.width, bitmapStage.outputBitmap.height),
+    bitmapStage.outputBitmap.config
+) {
     private var img = Mat()
 
     override fun update() {
@@ -26,8 +30,8 @@ internal class OpenCVSobelStage(
         val sobelEdgesY = Mat(img.size(), CvType.CV_8UC1)
         val edges = Mat(img.size(), CvType.CV_8UC1)
 
-        Imgproc.Sobel(img, sobelEdgesX, CvType.CV_8UC1,1, 0, 3)
-        Imgproc.Sobel(img, sobelEdgesY, CvType.CV_8UC1,0, 1, 3)
+        Imgproc.Sobel(img, sobelEdgesX, CvType.CV_8UC1, 1, 0, 3)
+        Imgproc.Sobel(img, sobelEdgesY, CvType.CV_8UC1, 0, 1, 3)
 
         Core.addWeighted(sobelEdgesX, 0.5, sobelEdgesY, 0.5, 0.0, edges)
 

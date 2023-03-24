@@ -1,6 +1,7 @@
 package dk.scuffed.whiteboardapp.pipeline.stage_combinations
 
 import android.content.Context
+import dk.scuffed.whiteboardapp.pipeline.IPipeline
 import dk.scuffed.whiteboardapp.pipeline.Pipeline
 import dk.scuffed.whiteboardapp.pipeline.stages.GLOutputStage
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.GaussianBlurStage
@@ -8,7 +9,11 @@ import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.GaussianBl
 /**
  * Runs an efficient 5x5 gaussian blur
  */
-internal fun fullGaussian(context: Context, inputStage: GLOutputStage, pipeline: Pipeline): GLOutputStage {
+internal fun fullGaussian(
+    context: Context,
+    inputStage: GLOutputStage,
+    pipeline: IPipeline
+): GLOutputStage {
     val gaussianx = GaussianBlurStage(
         context,
         inputStage.frameBufferInfo,
@@ -23,5 +28,5 @@ internal fun fullGaussian(context: Context, inputStage: GLOutputStage, pipeline:
         pipeline,
     )
 
-    return  gaussiany
+    return gaussiany
 }
