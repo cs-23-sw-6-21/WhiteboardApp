@@ -13,7 +13,16 @@ import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.sin
 
-
+/**
+ * Finds distinct lines in the input image.
+ * @param bitmapOutputStage is the input framebuffer lines will be found in
+ * @param threshold is the amount of votes a line needs in order to be included
+ * @param maxLines limits the amount of distinct lines that are at most output.
+ * @param rhoResolution is the resolution of the distances of lines in the Hough Line Transform
+ * @param thetaResolution is the resolution of the angles of the lines in the Hough Line Transform
+ * @param rhoResolution is the distance where two lines are seen as not distinct
+ * @param thetaResolution is the angle where two lines are seen as not distinct
+ */
 internal class OpenCVLineDetectionStage(
     private val bitmapOutputStage: BitmapOutputStage,
     private val threshold: Int,
