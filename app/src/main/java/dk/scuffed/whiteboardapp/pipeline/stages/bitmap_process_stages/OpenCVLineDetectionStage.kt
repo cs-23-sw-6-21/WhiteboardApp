@@ -12,6 +12,7 @@ import org.opencv.core.CvType
 import org.opencv.core.Mat
 import org.opencv.imgproc.Imgproc
 import java.lang.Integer.min
+import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -20,7 +21,11 @@ internal class OpenCVLineDetectionStage(
     private val bitmapOutputStage: BitmapOutputStage,
     private val threshold: Int,
     private val maxLines: Int,
-    pipeline: IPipeline
+    pipeline: IPipeline,
+    private val rhoResolution: Double = 1.0,
+    private val thetaResolution: Double = Math.PI / 180.0,
+    private val rhoThreshold: Double = 0.0,
+    private val thetaThreshold: Double = 0.0
 ) : LinesOutputStage(pipeline) {
 
     private val inputMat = Mat()
@@ -32,12 +37,14 @@ internal class OpenCVLineDetectionStage(
         inputMat.release()
 
         val linesMat = Mat(grayMat.size(), CvType.CV_8UC1)
-        Imgproc.HoughLines(grayMat, linesMat, 1.0, Math.PI / 180.0, threshold)
+        Imgproc.HoughLines(grayMat, linesMat, rhoResolution, thetaResolution, threshold)
+
+        val distinctLinesData = findDistinctLines(linesMat)
 
         lines.clear()
-        for (x in 0 until min(linesMat.rows(), maxLines)) {
-            val rho = linesMat.get(x, 0)[0]
-            val theta = linesMat.get(x, 0)[1]
+        for (l in distinctLinesData) {
+            val rho = l.first
+            val theta = l.second
             val a = cos(theta)
             val b = sin(theta)
             val x0 = a * rho
@@ -50,5 +57,35 @@ internal class OpenCVLineDetectionStage(
 
         linesMat.release()
         grayMat.release()
+    }
+    
+    private fun findDistinctLines(linesMat: Mat): ArrayList<Pair<Double, Double>> {
+
+        val distinctLines: ArrayList<Pair<Double, Double>> = arrayListOf()
+
+        for (x in 0 until linesMat.rows()) {
+            val rho = linesMat.get(x, 0)[0]
+            val theta = linesMat.get(x, 0)[1]
+
+            val line = Pair(rho, theta)
+
+            if (isDistinct(line, distinctLines)) {
+                distinctLines.add(line)
+                if (distinctLines.size >= maxLines){
+                    return distinctLines
+                }
+            }
+        }
+        return distinctLines
+
+    }
+
+    private fun isDistinct(line: Pair<Double, Double>, lines: ArrayList<Pair<Double, Double>>): Boolean {
+        for (l in lines) {
+            if (abs(l.first - line.first) <= rhoThreshold && abs(l.second - line.second) <= thetaThreshold) {
+                return false
+            }
+        }
+        return true
     }
 }

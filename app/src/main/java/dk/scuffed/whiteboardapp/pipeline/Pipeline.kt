@@ -48,11 +48,13 @@ internal class Pipeline(context: Context, private val initialResolution: Size) :
             this
         )
 
-        val entirePipeline = fullPipeline(context, cameraXStage, this)
+        //val entirePipeline = fullPipeline(context, cameraXStage, this)
+
+        val lines = lineDetectionDebugOverlayDraw(context, cameraXStage, this)
 
         DrawFramebufferStage(
             context,
-            entirePipeline.frameBufferInfo,
+            lines.frameBufferInfo,
             this
         )
     }
