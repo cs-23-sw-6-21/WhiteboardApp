@@ -1,8 +1,6 @@
 package dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages
 
-import android.util.Log
 import dk.scuffed.whiteboardapp.pipeline.IPipeline
-import dk.scuffed.whiteboardapp.pipeline.Pipeline
 import dk.scuffed.whiteboardapp.pipeline.stages.BitmapOutputStage
 import dk.scuffed.whiteboardapp.pipeline.stages.LinesOutputStage
 import dk.scuffed.whiteboardapp.utils.LineFloat
@@ -11,7 +9,6 @@ import org.opencv.android.Utils
 import org.opencv.core.CvType
 import org.opencv.core.Mat
 import org.opencv.imgproc.Imgproc
-import java.lang.Integer.min
 import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.sin
@@ -45,12 +42,12 @@ internal class OpenCVLineDetectionStage(
         for (l in distinctLinesData) {
             val rho = l.first
             val theta = l.second
-            val a = cos(theta)
-            val b = sin(theta)
-            val x0 = a * rho
-            val y0 = b * rho
-            val pt1 = Vec2Float((x0 + 2000.0f * -b).toFloat(), (y0 + 2000.0f * a).toFloat())
-            val pt2 = Vec2Float((x0 - 2000.0f * -b).toFloat(), (y0 - 2000.0f * a).toFloat())
+            val directionX = cos(theta)
+            val directionY = sin(theta)
+            val x0 = directionX * rho
+            val y0 = directionY * rho
+            val pt1 = Vec2Float((x0 + 2000.0f * -directionY).toFloat(), (y0 + 2000.0f * directionX).toFloat())
+            val pt2 = Vec2Float((x0 - 2000.0f * -directionY).toFloat(), (y0 - 2000.0f * directionX).toFloat())
 
             lines.add(LineFloat(pt1, pt2))
         }
@@ -58,7 +55,7 @@ internal class OpenCVLineDetectionStage(
         linesMat.release()
         grayMat.release()
     }
-    
+
     private fun findDistinctLines(linesMat: Mat): ArrayList<Pair<Double, Double>> {
 
         val distinctLines: ArrayList<Pair<Double, Double>> = arrayListOf()
