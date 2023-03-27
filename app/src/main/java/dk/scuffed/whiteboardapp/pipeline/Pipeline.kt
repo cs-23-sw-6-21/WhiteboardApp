@@ -49,7 +49,7 @@ internal class Pipeline(context: Context, private val initialResolution: Size) :
         )
 
         val entirePipeline = fullPipeline(context, cameraXStage, this)
-
+        
         DrawFramebufferStage(
             context,
             entirePipeline.frameBufferInfo,
