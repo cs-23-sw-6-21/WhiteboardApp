@@ -79,11 +79,19 @@ internal fun fullPipeline(
         pipeline
     )
 
+    val adjusted = HSVAdjustmentsStage(
+        context,
+        perspectiveCorrection.frameBufferInfo,
+        pipeline
+    )
+
     val overlay = OverlayStage(
         context,
         binarizationStage.frameBufferInfo,
         drawCorners.frameBufferInfo,
         pipeline
     )
+
+
     return Pair(switchablePointPipeline, overlay)
 }
