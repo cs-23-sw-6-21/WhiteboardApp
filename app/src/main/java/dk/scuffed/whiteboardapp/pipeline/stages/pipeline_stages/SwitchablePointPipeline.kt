@@ -8,7 +8,7 @@ import dk.scuffed.whiteboardapp.pipeline.stages.PointsOutputStage
 import dk.scuffed.whiteboardapp.pipeline.stages.Stage
 import dk.scuffed.whiteboardapp.utils.Vec2Int
 
-internal class SwitchablePipelineStage(
+internal class SwitchablePointPipeline(
     firstStageConstructor: (pipeline: IPipeline) -> Unit,
     secondStageConstructor: (pipeline: IPipeline) -> Unit,
     private val pipeline: IPipeline,

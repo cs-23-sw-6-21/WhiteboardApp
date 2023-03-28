@@ -9,7 +9,7 @@ import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.Binarizati
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.MaskingStage
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.OverlayStage
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.StoreStage
-import dk.scuffed.whiteboardapp.pipeline.stages.pipeline_stages.SwitchablePipelineStage
+import dk.scuffed.whiteboardapp.pipeline.stages.pipeline_stages.SwitchablePointPipeline
 import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.DraggablePointsStage
 import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.DrawCornersStage
 import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.ScreenCornerPointsStage
@@ -21,7 +21,7 @@ internal fun fullPipeline(
     context: Context,
     inputStage: GLOutputStage,
     pipeline: IPipeline
-): Pair<SwitchablePipelineStage, GLOutputStage> {
+): Pair<SwitchablePointPipeline, GLOutputStage> {
     val fullSegmentation = fullSegmentation(context, inputStage.frameBufferInfo, pipeline)
 
     val storedFramebuffer = pipeline.allocateFramebuffer(
@@ -44,7 +44,7 @@ internal fun fullPipeline(
         pipeline
     )
 
-    val switchablePipelineStage = SwitchablePipelineStage({pipeline->
+    val switchablePointPipeline = SwitchablePointPipeline({ pipeline->
         fullCornerDetection(context, storeStage, pipeline)
     }, {pipeline -> DraggablePointsStage(pipeline)}, pipeline)
 
@@ -52,7 +52,7 @@ internal fun fullPipeline(
     val drawCorners = DrawCornersStage(
         context,
         pipeline,
-        switchablePipelineStage.pointsOutputStage
+        switchablePointPipeline.pointsOutputStage
     )
 
 
@@ -60,7 +60,7 @@ internal fun fullPipeline(
     val perspectiveCorrection = fullPerspectiveCorrection(
         context,
         storeStage,
-        switchablePipelineStage.pointsOutputStage,
+        switchablePointPipeline.pointsOutputStage,
         screenPointsStage,
         pipeline
     )
@@ -85,5 +85,5 @@ internal fun fullPipeline(
         drawCorners.frameBufferInfo,
         pipeline
     )
-    return Pair(switchablePipelineStage, overlay)
+    return Pair(switchablePointPipeline, overlay)
 }
