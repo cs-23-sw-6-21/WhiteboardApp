@@ -27,4 +27,7 @@ class PipelinedOpenGLRenderer(private val context: Context) : GLSurfaceView.Rend
     override fun onDrawFrame(p0: GL10?) {
         pipeline.draw()
     }
+    fun switchStage(bool: Boolean){
+        pipeline.switchStages(bool)
+    }
 }

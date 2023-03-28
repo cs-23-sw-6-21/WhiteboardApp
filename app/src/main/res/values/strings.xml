@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Whiteboard app</string>
+    <string name="toggle_corner_detection">Toggle Corner Detection</string>
 </resources>

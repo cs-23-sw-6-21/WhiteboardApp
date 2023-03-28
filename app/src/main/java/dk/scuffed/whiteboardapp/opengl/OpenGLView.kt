@@ -8,10 +8,11 @@ import dk.scuffed.whiteboardapp.pipeline.stages.output_stages.DrawPipelineStage
 import dk.scuffed.whiteboardapp.utils.Vec2Int
 
 class OpenGLView(context: Context) : GLSurfaceView(context) {
+    private val renderer: PipelinedOpenGLRenderer
     init {
         setEGLContextClientVersion(2)
 
-        val renderer = PipelinedOpenGLRenderer(context)
+        renderer = PipelinedOpenGLRenderer(context)
 
         setRenderer(renderer)
     }
@@ -24,5 +25,13 @@ class OpenGLView(context: Context) : GLSurfaceView(context) {
             DraggablePointsStage.dragPoint(Vec2Int(event.x.toInt(), height - event.y.toInt()))
         }
         return true
+    }
+
+    /**
+     * Switches the switchablePipelineStage
+     * @param bool is a Boolean to changes the switches value.
+     */
+    fun switchStage(bool: Boolean){
+        renderer.switchStage(bool)
     }
 }
