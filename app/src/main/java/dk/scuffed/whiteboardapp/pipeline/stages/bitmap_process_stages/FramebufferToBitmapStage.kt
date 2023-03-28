@@ -39,6 +39,7 @@ internal class FramebufferToBitmapStage(
     private fun readFrameBuffer(bitmap: Bitmap, framebufferInfo: FramebufferInfo) {
         byteBuffer.position(0)
 
+        glBindFramebuffer(inputFramebufferInfo.fboHandle)
         glActiveTexture(inputFramebufferInfo.textureUnitPair.textureUnit)
         glReadPixels(Vec2Int(0, 0), inputFramebufferInfo.textureSize, GLES20.GL_RGBA, byteBuffer)
 
