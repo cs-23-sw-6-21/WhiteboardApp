@@ -79,11 +79,20 @@ internal fun fullPipeline(
         pipeline
     )
 
+    val readdedColour = addColour(
+        context,
+        perspectiveCorrection,
+        binarizationStage,
+        pipeline
+    )
+
     val overlay = OverlayStage(
         context,
-        binarizationStage.frameBufferInfo,
+        readdedColour.frameBufferInfo,
         drawCorners.frameBufferInfo,
         pipeline
     )
+
+
     return Pair(switchablePointPipeline, overlay)
 }
