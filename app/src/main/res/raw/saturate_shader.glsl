@@ -4,20 +4,6 @@ precision mediump float;
 uniform vec2 resolution;
 uniform sampler2D framebuffer;
 
-void main() {
-    vec2 uv = gl_FragCoord.xy / resolution;
-
-    vec4 color = texture2D(framebuffer, uv);
-
-    vec3 hsv = rgb2hsv(color.xyz);
-
-    hsv.y *= 3.0;
-
-    vec3 back = hsv2rgb(hsv);
-
-    gl_FragColor = vec4(back, color.a);
-}
-
 
 /* From (unsafe and unstable) lolengine.net/blog/2013/07/27/rgb-to-hsv-in-glsl originally
 also mirrored here https://gist.github.com/983/e170a24ae8eba2cd174f */
@@ -38,3 +24,19 @@ vec3 hsv2rgb(vec3 c)
     vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
     return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
 }
+
+void main() {
+    vec2 uv = gl_FragCoord.xy / resolution;
+
+    vec4 color = texture2D(framebuffer, uv);
+
+    vec3 hsv = rgb2hsv(color.xyz);
+
+    hsv.y = 1.0;
+
+    vec3 back = hsv2rgb(hsv);
+
+    gl_FragColor = vec4(back, color.a);
+}
+
+

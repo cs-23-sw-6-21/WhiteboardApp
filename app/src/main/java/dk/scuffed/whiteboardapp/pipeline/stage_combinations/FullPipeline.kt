@@ -85,9 +85,17 @@ internal fun fullPipeline(
         pipeline
     )
 
+    val colourApply = MaskingStage(
+        context,
+        adjusted.frameBufferInfo,
+        binarizationStage.frameBufferInfo,
+        binarizationStage.frameBufferInfo,
+        pipeline
+    )
+
     val overlay = OverlayStage(
         context,
-        binarizationStage.frameBufferInfo,
+        colourApply.frameBufferInfo,
         drawCorners.frameBufferInfo,
         pipeline
     )
