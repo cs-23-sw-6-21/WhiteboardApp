@@ -16,10 +16,6 @@ internal class BiggestSquareStage(
 ) :
     PointsOutputStage(pipeline, Vec2Int(0, 0), Vec2Int(0, 0), Vec2Int(0, 0), Vec2Int(0, 0)) {
 
-    private var OldPoints = Array<Array<Vec2Int>>(4) {Array<Vec2Int>(20) { Vec2Int(0, 0) } }
-    private var pointIndex = 0
-
-
     override fun update() {
         var bestQuad = QuadFloat()
         var bestArea = 0f
@@ -56,52 +52,11 @@ internal class BiggestSquareStage(
         if (bestArea != 0f) {
             val fixedQuad = fixupQuad(bestQuad)
 
-            OldPoints[0][pointIndex] = fixedQuad.a.toVec2Int()
-            OldPoints[1][pointIndex] = fixedQuad.b.toVec2Int()
-            OldPoints[2][pointIndex] = fixedQuad.c.toVec2Int()
-            OldPoints[3][pointIndex] = fixedQuad.d.toVec2Int()
-
-            pointIndex += 1
-
-            if (pointIndex >= 20) {
-                pointIndex = 0
-            }
-
-            points[0] = weightedAvgPoint(OldPoints[0])
-            points[1] = weightedAvgPoint(OldPoints[1])
-            points[2] = weightedAvgPoint(OldPoints[2])
-            points[3] = weightedAvgPoint(OldPoints[3])
-
+            points[0] = fixedQuad.a.toVec2Int()
+            points[1] = fixedQuad.b.toVec2Int()
+            points[2] = fixedQuad.c.toVec2Int()
+            points[3] = fixedQuad.d.toVec2Int()
         }
-    }
-
-    private fun weightedAvgPoint(pointList: Array<Vec2Int>) : Vec2Int
-    {
-        var sumX = 0.0
-        var sumY = 0.0
-
-        for (point in pointList)
-        {
-            sumX += point.x
-            sumY += point.y
-        }
-
-        var meanX = sumX / pointList.size
-        var meanY = sumY / pointList.size
-
-        var weightSum = 0.0
-        sumX = 0.0
-        sumY = 0.0
-
-        for (point in pointList){
-            val distFromMean = point.toVec2Float().distance(Vec2Float(meanX.toFloat(), meanY.toFloat()))
-            val weight = if (distFromMean <= 5.0) 1.0 else 1.0 / distFromMean
-            sumX += weight * point.x.toDouble()
-            sumY += weight * point.y.toDouble()
-            weightSum += weight
-        }
-
-        return Vec2Int(round(sumX/weightSum).toInt(), round(sumY/weightSum).toInt())
     }
 
     // The point a should be the top left corner
