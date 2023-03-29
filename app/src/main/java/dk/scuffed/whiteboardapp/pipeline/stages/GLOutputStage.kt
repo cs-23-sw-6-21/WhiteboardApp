@@ -115,6 +115,14 @@ internal abstract class GLOutputStage(
 
     }
 
+    protected open fun clear() {
+        glClear(0)
+    }
+
+    protected open fun viewport() {
+        glViewport(Vec2Int(0, 0), frameBufferInfo.textureSize)
+    }
+
     protected fun reassignVertices(vertices: ArrayList<Vec2Float>) {
         vertexBuffer.position(0)
         for (v in vertices) {
@@ -139,12 +147,11 @@ internal abstract class GLOutputStage(
 
     final override fun update() {
         val size = frameBufferInfo.textureSize
-        glViewport(Vec2Int(0, 0), size)
+        viewport()
 
         // Render to our framebuffer
         glBindFramebuffer(frameBufferInfo.fboHandle)
-        glClear(0)
-
+        clear()
         glUseProgram(program)
 
         val positionHandle = glGetAttribLocation(program, "position")

@@ -1,7 +1,11 @@
 package dk.scuffed.whiteboardapp.pipeline.stages.points_stages
 
+import android.util.Size
+import com.google.common.primitives.Floats
 import dk.scuffed.whiteboardapp.pipeline.IPipeline
 import dk.scuffed.whiteboardapp.pipeline.stages.PointsOutputStage
+import dk.scuffed.whiteboardapp.utils.QuadFloat
+import dk.scuffed.whiteboardapp.utils.Vec2Float
 import dk.scuffed.whiteboardapp.utils.Vec2Int
 import org.opencv.core.*
 import org.opencv.imgproc.Imgproc
@@ -23,9 +27,16 @@ internal class PerspectiveTransformPointsStage(
         setInitialPoints()
     }
 
+    var scaledResolution = Size(1080, 1920)
+
     override fun update() {
         assert(pointsFrom.points.size == 4)
         assert(pointsTo.points.size == 4)
+
+        val boundingBox = boundingBox(QuadFloat(pointsFrom.points[0].toVec2Float(), pointsFrom.points[1].toVec2Float(), pointsFrom.points[2].toVec2Float(), pointsFrom.points[3].toVec2Float()))
+        val width = (boundingBox.b.x - boundingBox.a.x).toInt()
+        val height = (boundingBox.d.y - boundingBox.a.y).toInt()
+        scaledResolution = scaleResolution(Size(width, height), getResolution())
 
         val src = MatOfPoint2f(
             Point(pointsFrom.points[0].x.toDouble(), pointsFrom.points[0].y.toDouble()),
@@ -68,5 +79,38 @@ internal class PerspectiveTransformPointsStage(
                 Vec2Int(200, 800),
             )
         )
+    }
+
+    private fun boundingBox(quad: QuadFloat): QuadFloat {
+        val xMin = Floats.min(quad.a.x, quad.b.x, quad.c.x, quad.d.x)
+        val xMax = Floats.max(quad.a.x, quad.b.x, quad.c.x, quad.d.x)
+        val yMin = Floats.min(quad.a.y, quad.b.y, quad.c.y, quad.d.y)
+        val yMax = Floats.max(quad.a.y, quad.b.y, quad.c.y, quad.d.y)
+
+        val bottomLeft = Vec2Float(xMin, yMin)
+        val bottomRight = Vec2Float(xMax, yMin)
+        val topRight = Vec2Float(xMax, yMax)
+        val topLeft = Vec2Float(xMin, yMax)
+
+
+        return QuadFloat(bottomLeft, bottomRight, topRight, topLeft)
+    }
+
+    private fun scaleResolution(inputResolution: Size, targetResolution: Size): Size {
+        val widthFactor = targetResolution.width.toDouble() / inputResolution.width.toDouble()
+        val heightFactor = targetResolution.height.toDouble() / inputResolution.height.toDouble()
+        if (widthFactor < heightFactor) {
+            // Width is the limiting factor
+            val width = inputResolution.width.toDouble() * widthFactor
+            val height = inputResolution.height.toDouble() * widthFactor
+
+            return Size(width.toInt(), height.toInt())
+        } else {
+            // Height is the limiting factor
+            val width = inputResolution.width.toDouble() * heightFactor
+            val height = inputResolution.height.toDouble() * heightFactor
+
+            return Size(width.toInt(), height.toInt())
+        }
     }
 }
