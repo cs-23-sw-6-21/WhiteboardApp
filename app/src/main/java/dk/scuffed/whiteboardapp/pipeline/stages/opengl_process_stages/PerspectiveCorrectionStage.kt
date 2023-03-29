@@ -2,16 +2,15 @@ package dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages
 
 import android.content.Context
 import android.opengl.GLES20
+import android.util.Size
 import dk.scuffed.whiteboardapp.R
 import dk.scuffed.whiteboardapp.opengl.*
 import dk.scuffed.whiteboardapp.pipeline.FramebufferInfo
 import dk.scuffed.whiteboardapp.pipeline.IPipeline
 import dk.scuffed.whiteboardapp.pipeline.stages.GLOutputStage
 import dk.scuffed.whiteboardapp.pipeline.stages.PointsOutputStage
-import dk.scuffed.whiteboardapp.utils.LineFloat
-import dk.scuffed.whiteboardapp.utils.Vec2Float
-import dk.scuffed.whiteboardapp.utils.Vec2Int
-import dk.scuffed.whiteboardapp.utils.Vec3Float
+import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.PerspectiveTransformPointsStage
+import dk.scuffed.whiteboardapp.utils.*
 
 /**
  * Distorts the input image by rendering with the inputVertices so that it appears as if it has been distorted in 3D
@@ -21,7 +20,7 @@ import dk.scuffed.whiteboardapp.utils.Vec3Float
 internal class PerspectiveCorrectionStage(
     context: Context,
     private val inputFramebufferInfo: FramebufferInfo,
-    private val inputVertices: PointsOutputStage,
+    private val inputVertices: PerspectiveTransformPointsStage,
     pipeline: IPipeline
 ) : GLOutputStage(
     context,
@@ -61,6 +60,19 @@ internal class PerspectiveCorrectionStage(
         if (projected != null) {
             reassignTexCoord(projected)
         }
+    }
+
+    override fun viewport() {
+        // Calculate the bottom left corner so that the view is centralized.
+        val offsetX = (getResolution().width - inputVertices.scaledResolution.width) / 2
+        val offsetY = (getResolution().height - inputVertices.scaledResolution.height) / 2
+        glViewport(Vec2Int(offsetX, offsetY), Size(inputVertices.scaledResolution.width, inputVertices.scaledResolution.height))
+    }
+
+    override fun clear() {
+        glClearColor(Color(1f, 1f, 1f, 1f))
+        glClear(GLES20.GL_COLOR_BUFFER_BIT)
+        glClearColorError()
     }
 
     // Uses projective transformation to get the correctly distorted texture coordinates for the quad

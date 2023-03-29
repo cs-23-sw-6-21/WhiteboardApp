@@ -10,6 +10,7 @@ import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.Framebuffe
 import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.OpenCVLineDetectionStage
 import dk.scuffed.whiteboardapp.pipeline.stages.lines_stages.BiggestSquareStage
 import dk.scuffed.whiteboardapp.pipeline.stages.lines_stages.LinesAngleDiscriminatorStage
+import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.LetterboxingStage
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.OverlayStage
 import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.DrawCornersStage
 import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.DrawLinesStage
@@ -39,13 +40,13 @@ internal fun fullCornerDetectionWithDebugDrawing(
 
     val openCVLineDetectionStage = OpenCVLineDetectionStage(
         edgesBitmapStage,
-        325,
-        10,
+        150,
+        50,
         pipeline,
-        3.0,
-        Math.PI / 135,
-        100.0,
-        Math.PI / 15
+        1.0,
+        Math.PI / 180.0,
+        15.0,
+        Math.PI / 75.0
     )
 
     val verticalLinesAngleDiscriminatorStage = LinesAngleDiscriminatorStage(
@@ -76,10 +77,16 @@ internal fun fullCornerDetectionWithDebugDrawing(
         pipeline
     )
 
+    val letterboxedStage = LetterboxingStage(
+        context,
+        inputStage.frameBufferInfo,
+        pipeline
+    )
+
 
     val verticalOverlayStage = OverlayStage(
         context,
-        inputStage.frameBufferInfo,
+        letterboxedStage.frameBufferInfo,
         verticalDrawLinesStage.frameBufferInfo,
         pipeline
     )
