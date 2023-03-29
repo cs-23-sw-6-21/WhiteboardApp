@@ -79,23 +79,16 @@ internal fun fullPipeline(
         pipeline
     )
 
-    val adjusted = HSVAdjustmentsStage(
+    val readdedColour = addColour(
         context,
-        perspectiveCorrection.frameBufferInfo,
-        pipeline
-    )
-
-    val colourApply = MaskingStage(
-        context,
-        adjusted.frameBufferInfo,
-        binarizationStage.frameBufferInfo,
-        binarizationStage.frameBufferInfo,
+        perspectiveCorrection,
+        binarizationStage,
         pipeline
     )
 
     val overlay = OverlayStage(
         context,
-        colourApply.frameBufferInfo,
+        readdedColour.frameBufferInfo,
         drawCorners.frameBufferInfo,
         pipeline
     )
