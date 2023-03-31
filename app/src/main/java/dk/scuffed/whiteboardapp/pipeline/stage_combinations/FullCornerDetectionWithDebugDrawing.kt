@@ -60,6 +60,7 @@ internal fun fullCornerDetectionWithDebugDrawing(
         context,
         verticalLinesAngleDiscriminatorStage,
         Color(1.0f, 0.0f, 0.0f, 1.0f),
+        inputStage.frameBufferInfo.textureSize,
         pipeline
     )
 
@@ -74,6 +75,7 @@ internal fun fullCornerDetectionWithDebugDrawing(
         context,
         horizontalLinesAngleDiscriminatorStage,
         Color(0.0f, 1.0f, 0.0f, 1.0f),
+        inputStage.frameBufferInfo.textureSize,
         pipeline
     )
 
