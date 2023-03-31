@@ -5,6 +5,7 @@ import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.opengl.GLES20
+import android.util.Log
 import android.util.Size
 import dk.scuffed.whiteboardapp.R
 import dk.scuffed.whiteboardapp.opengl.*
@@ -93,7 +94,11 @@ internal class Pipeline(context: Context, private val initialResolution: Size) :
         switchablePointPipeline.setSwitch(bool)
     }
     override fun draw() {
+        val startTime = System.nanoTime()
         stages.forEach { stage -> stage.performUpdate() }
+        val endTime = System.nanoTime()
+        val duration = (endTime - startTime).toDouble() / 1000000.0
+        Log.i("Pipeline", "Frame took ${duration}ms")
     }
 
     override fun onResolutionChanged(resolution: Size) {
