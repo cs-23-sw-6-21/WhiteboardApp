@@ -9,7 +9,7 @@ import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.Binarizati
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.GrayscaleStage
 
 /**
- * Adds colour from camera back in the binarization
+ * Binarizes a coloured image using adaptive thresholding.
  */
 internal fun binarize(
     context: Context,

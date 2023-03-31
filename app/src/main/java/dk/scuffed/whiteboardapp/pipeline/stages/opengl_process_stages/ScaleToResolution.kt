@@ -10,7 +10,8 @@ import dk.scuffed.whiteboardapp.pipeline.stages.GLOutputStage
 import android.util.Size
 
 /**
- * Downscales 2x, taking the average of groups of 4 texels(check if pixel or texel?).
+ * Scales to target resolution. Beware that loss may occur if exceeding 2x downscaling.
+ * Useful for debugging.
  */
 internal class ScaleToResolution(
     context: Context,

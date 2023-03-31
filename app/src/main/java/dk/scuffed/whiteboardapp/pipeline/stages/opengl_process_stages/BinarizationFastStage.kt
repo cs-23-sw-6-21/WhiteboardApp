@@ -42,10 +42,6 @@ internal class BinarizationFastStage(
         glActiveTexture(downscaledInputFramebufferInfo.textureUnitPair.textureUnit)
         glBindTexture(GLES20.GL_TEXTURE_2D, downscaledInputFramebufferInfo.textureHandle)
 
-        // Downscaled resolution
-        val resolutionHandle = glGetUniformLocation(program, "downscaledResolution")
-        glUniform2f(resolutionHandle, downscaledInputFramebufferInfo.textureSize.width.toFloat(), downscaledInputFramebufferInfo.textureSize.height.toFloat())
-
         // threshold
         val thresholdHandle = glGetUniformLocation(program, "threshold")
         glUniform1f(thresholdHandle, threshold)
