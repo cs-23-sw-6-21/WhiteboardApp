@@ -9,10 +9,10 @@ uniform float threshold;
 void main() {
     vec2 uv = gl_FragCoord.xy / resolution;
 
-    vec4 binarized = texture2D(framebuffer, uv);
+    vec4 greyscaled = texture2D(framebuffer, uv);
     vec4 avg = texture2D(downscaledFramebuffer, uv);
 
     float thresholdedAvg = avg.x * (100.0-threshold)/100.0;
 
-    gl_FragColor = vec4(vec3(step(thresholdedAvg, binarized.x)), 1.0);
+    gl_FragColor = vec4(vec3(step(thresholdedAvg, greyscaled.x)), 1.0);
 }
