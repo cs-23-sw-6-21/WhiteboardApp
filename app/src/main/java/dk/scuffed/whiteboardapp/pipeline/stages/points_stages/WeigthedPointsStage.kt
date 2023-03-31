@@ -13,7 +13,7 @@ internal class WeigthedPointsStage(
     pipeline: IPipeline)
     : PointsOutputStage(pipeline, Vec2Int(0, 0), Vec2Int(0, 0), Vec2Int(0, 0), Vec2Int(0, 0))
 {
-    private var OldPoints = Array<Array<Vec2Int>>(4) {Array<Vec2Int>(historySize) { Vec2Int(0, 0) } }
+    private var oldPoints = Array<Array<Vec2Int>>(4) {Array<Vec2Int>(historySize) { Vec2Int(0, 0) } }
     private var pointIndex = 0
 
 
