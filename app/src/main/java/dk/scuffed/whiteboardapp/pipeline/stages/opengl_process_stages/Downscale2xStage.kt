@@ -11,7 +11,8 @@ import android.util.Size
 import kotlin.math.ceil
 
 /**
- * Downscales 2x, taking the average of groups of 4 texels(check if pixel or texel?).
+ * Downscales 2x, taking the average of groups of 4 pixels.
+ * Expects the input texture is sampled with linear filtering.
  */
 internal class Downscale2xStage(
     context: Context,
