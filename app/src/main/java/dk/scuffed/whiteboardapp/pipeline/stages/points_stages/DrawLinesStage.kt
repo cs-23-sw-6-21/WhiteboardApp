@@ -22,6 +22,7 @@ internal class DrawLinesStage(
     private val context: Context,
     private val linesOutputStage: LinesOutputStage,
     private val color: Color,
+    resolution: Size,
     pipeline: IPipeline,
 ) : Stage(pipeline) {
     private var program: Int = 999
@@ -42,7 +43,7 @@ internal class DrawLinesStage(
         frameBufferInfo = pipeline.allocateFramebuffer(
             this,
             GLES20.GL_RGBA,
-            getResolution()
+            resolution
         )
         setupGlProgram()
     }
