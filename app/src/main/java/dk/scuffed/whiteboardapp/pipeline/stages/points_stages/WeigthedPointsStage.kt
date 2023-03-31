@@ -18,10 +18,10 @@ internal class WeigthedPointsStage(
 
 
     override fun update() {
-        OldPoints[0][pointIndex] = inputPoints.points[0]
-        OldPoints[1][pointIndex] = inputPoints.points[1]
-        OldPoints[2][pointIndex] = inputPoints.points[2]
-        OldPoints[3][pointIndex] = inputPoints.points[3]
+        oldPoints[0][pointIndex] = inputPoints.points[0]
+        oldPoints[1][pointIndex] = inputPoints.points[1]
+        oldPoints[2][pointIndex] = inputPoints.points[2]
+        oldPoints[3][pointIndex] = inputPoints.points[3]
 
         pointIndex += 1
 
