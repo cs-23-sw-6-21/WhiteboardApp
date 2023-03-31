@@ -1,14 +1,24 @@
 package dk.scuffed.whiteboardapp.pipeline
 
 import android.content.Context
+import android.content.res.Resources
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.opengl.GLES20
 import android.util.Size
+import dk.scuffed.whiteboardapp.R
 import dk.scuffed.whiteboardapp.opengl.*
 import dk.scuffed.whiteboardapp.pipeline.stage_combinations.*
 import dk.scuffed.whiteboardapp.pipeline.stages.*
 import dk.scuffed.whiteboardapp.pipeline.stages.input_stages.CameraXStage
+import dk.scuffed.whiteboardapp.pipeline.stages.input_stages.TextureStage
+import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.BinarizationFastStage
+import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.Downscale2xStage
+import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.GrayscaleStage
+import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.ScaleToResolution
 import dk.scuffed.whiteboardapp.pipeline.stages.output_stages.DrawFramebufferStage
 import dk.scuffed.whiteboardapp.pipeline.stages.pipeline_stages.SwitchablePointPipeline
+import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.DraggablePointsStage
 
 internal class Pipeline(context: Context, private val initialResolution: Size) : IPipeline {
 
@@ -37,21 +47,37 @@ internal class Pipeline(context: Context, private val initialResolution: Size) :
         GLES20.GL_TEXTURE17,
         GLES20.GL_TEXTURE18,
         GLES20.GL_TEXTURE19,
-    )
+        GLES20.GL_TEXTURE20,
+        GLES20.GL_TEXTURE21,
+        GLES20.GL_TEXTURE22,
+        GLES20.GL_TEXTURE23,
+        GLES20.GL_TEXTURE24,
+        GLES20.GL_TEXTURE25,
+        GLES20.GL_TEXTURE26,
+        GLES20.GL_TEXTURE27,
+
+        )
 
     init {
         glDisable(GLES20.GL_BLEND)
         glDisable(GLES20.GL_CULL_FACE)
         glDisable(GLES20.GL_DEPTH_TEST)
         glClearColorError()
-
-        val cameraXStage = CameraXStage(
+/*
+        val opt = BitmapFactory.Options()
+        opt.inScaled = false
+        val textureStage = TextureStage(
             context,
+            BitmapFactory.decodeResource(context.resources, R.drawable.binarizetest, opt),
             this
         )
+        */
+
+        val cameraXStage = CameraXStage(context, this)
 
         val entirePipeline = fullPipeline(context, cameraXStage, this)
         switchablePointPipeline = entirePipeline.first
+
         DrawFramebufferStage(
             context,
             entirePipeline.second.frameBufferInfo,

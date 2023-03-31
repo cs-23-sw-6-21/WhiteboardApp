@@ -65,24 +65,12 @@ internal fun fullPipeline(
         pipeline
     )
 
-    val grayscaleStage = GrayscaleStage(
-        context,
-        perspectiveCorrection.frameBufferInfo,
-        pipeline
-    )
-
-    val binarizationStage = BinarizationStage(
-        context,
-        grayscaleStage.frameBufferInfo,
-        3,
-        40f,
-        pipeline
-    )
+    val binarized = binarize(context, perspectiveCorrection, 10f, pipeline)
 
     val readdedColour = addColour(
         context,
         perspectiveCorrection,
-        binarizationStage,
+        binarized,
         pipeline
     )
 
