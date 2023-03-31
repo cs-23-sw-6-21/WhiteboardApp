@@ -1,13 +1,13 @@
 package dk.scuffed.whiteboardapp.pipeline.stages.lines_stages
 
 import dk.scuffed.whiteboardapp.pipeline.IPipeline
-import dk.scuffed.whiteboardapp.pipeline.Pipeline
 import dk.scuffed.whiteboardapp.pipeline.stages.LinesOutputStage
 import dk.scuffed.whiteboardapp.pipeline.stages.PointsOutputStage
 import dk.scuffed.whiteboardapp.utils.QuadFloat
 import dk.scuffed.whiteboardapp.utils.Vec2Float
 import dk.scuffed.whiteboardapp.utils.Vec2Int
 import java.util.*
+import kotlin.math.round
 
 internal class BiggestSquareStage(
     private val horizontalLinesStage: LinesOutputStage,

@@ -3,7 +3,6 @@ package dk.scuffed.whiteboardapp.pipeline.stage_combinations
 import android.content.Context
 import android.graphics.Bitmap
 import dk.scuffed.whiteboardapp.pipeline.IPipeline
-import dk.scuffed.whiteboardapp.pipeline.Pipeline
 import dk.scuffed.whiteboardapp.pipeline.stages.GLOutputStage
 import dk.scuffed.whiteboardapp.pipeline.stages.PointsOutputStage
 import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.FramebufferToBitmapStage
@@ -11,6 +10,7 @@ import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.OpenCVLine
 import dk.scuffed.whiteboardapp.pipeline.stages.lines_stages.BiggestSquareStage
 import dk.scuffed.whiteboardapp.pipeline.stages.lines_stages.LinesAngleDiscriminatorStage
 import dk.scuffed.whiteboardapp.pipeline.stages.pipeline_stages.ThreadedBitmapInputPointOutputStage
+import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.WeightedPointsStage
 import dk.scuffed.whiteboardapp.utils.Vec2Int
 
 /**
@@ -67,6 +67,13 @@ internal fun fullCornerDetection(
             val biggestSquareStage = BiggestSquareStage(
                 horizontalLinesAngleDiscriminatorStage,
                 verticalLinesAngleDiscriminatorStage,
+                pipeline
+            )
+
+            val weightedCornerStage = WeightedPointsStage(
+                biggestSquareStage,
+                20,
+                5.0f,
                 pipeline
             )
         },
