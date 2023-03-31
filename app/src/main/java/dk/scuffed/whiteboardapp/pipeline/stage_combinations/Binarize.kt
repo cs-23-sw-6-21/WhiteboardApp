@@ -15,6 +15,7 @@ internal fun binarize(
     context: Context,
     input: GLOutputStage,
     threshold: Float,
+    downscaleFactor: Int,
     pipeline: IPipeline
 ): GLOutputStage {
     val grayscaleStage = GrayscaleStage(
@@ -23,14 +24,12 @@ internal fun binarize(
         pipeline
     )
 
-    val downscale = Downscale2xStage(context, grayscaleStage.frameBufferInfo, pipeline)
-    val downscale1 = Downscale2xStage(context, downscale.frameBufferInfo, pipeline)
-    val downscale2 = Downscale2xStage(context, downscale1.frameBufferInfo, pipeline)
-    val downscale3 = Downscale2xStage(context, downscale2.frameBufferInfo, pipeline)
-    val downscale4 = Downscale2xStage(context, downscale3.frameBufferInfo, pipeline)
-    val downscale5 = Downscale2xStage(context, downscale4.frameBufferInfo, pipeline)
+    var prevStage: GLOutputStage = grayscaleStage
+    for (i in 0 until downscaleFactor){
+        prevStage = Downscale2xStage(context, prevStage.frameBufferInfo, pipeline)
+    }
 
-    val binarizeFast = BinarizationFastStage(context, grayscaleStage.frameBufferInfo, downscale5.frameBufferInfo, threshold, pipeline)
+    val binarizeFast = BinarizationFastStage(context, grayscaleStage.frameBufferInfo, prevStage.frameBufferInfo, threshold, pipeline)
 
     return binarizeFast
 }
