@@ -32,7 +32,7 @@ internal class PerspectiveCorrectionStage(
     }
 
     override fun setupFramebufferInfo() {
-        allocateFramebuffer(GLES20.GL_RGBA, inputFramebufferInfo.textureSize)
+        allocateFramebuffer(GLES20.GL_RGBA, getResolution())
     }
 
     override fun setupUniforms(program: Int) {
@@ -118,8 +118,8 @@ internal class PerspectiveCorrectionStage(
     // Converts the input vertices from screenspace (resolution) to vertex space (-1 to 1)
     private fun convertToVertexSpace(v: Vec2Int): Vec2Float {
         return (Vec2Float(
-            ((v.x / getResolution().width.toFloat()) - 0.5f) * 2f,
-            ((v.y / getResolution().height.toFloat()) - 0.5f) * 2f
+            ((v.x / inputFramebufferInfo.textureSize.width.toFloat()) - 0.5f) * 2f,
+            ((v.y / inputFramebufferInfo.textureSize.height.toFloat()) - 0.5f) * 2f
         ))
     }
 }

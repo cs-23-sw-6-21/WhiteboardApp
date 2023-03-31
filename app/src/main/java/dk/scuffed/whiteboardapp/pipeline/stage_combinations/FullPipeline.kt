@@ -10,6 +10,7 @@ import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.MaskingSta
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.OverlayStage
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.StoreStage
 import dk.scuffed.whiteboardapp.pipeline.stages.pipeline_stages.SwitchablePointPipeline
+import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.CornersFromResolutionStage
 import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.DraggablePointsStage
 import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.DrawCornersStage
 import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.ScreenCornerPointsStage
@@ -44,9 +45,11 @@ internal fun fullPipeline(
         pipeline
     )
 
-    val switchablePointPipeline = SwitchablePointPipeline({ pipeline->
-        fullCornerDetection(context, storeStage, pipeline)
-    }, {pipeline -> DraggablePointsStage(pipeline)}, pipeline)
+    val switchablePointPipeline = SwitchablePointPipeline(
+        { pipeline -> DraggablePointsStage(pipeline) },
+        { pipeline -> fullCornerDetection(context, storeStage, pipeline) },
+        pipeline
+    )
 
 
     val drawCorners = DrawCornersStage(
@@ -56,12 +59,13 @@ internal fun fullPipeline(
     )
 
 
-    val screenPointsStage = ScreenCornerPointsStage(pipeline)
+    val cameraPointsStage =
+        CornersFromResolutionStage(inputStage.frameBufferInfo.textureSize, pipeline)
     val perspectiveCorrection = fullPerspectiveCorrection(
         context,
         storeStage,
         switchablePointPipeline.pointsOutputStage,
-        screenPointsStage,
+        cameraPointsStage,
         pipeline
     )
 
@@ -74,8 +78,8 @@ internal fun fullPipeline(
     val binarizationStage = BinarizationStage(
         context,
         grayscaleStage.frameBufferInfo,
-        3,
-        40f,
+        5,
+        25f,
         pipeline
     )
 

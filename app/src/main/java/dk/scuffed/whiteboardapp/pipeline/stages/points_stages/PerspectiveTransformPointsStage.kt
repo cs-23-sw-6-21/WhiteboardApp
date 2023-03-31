@@ -36,7 +36,7 @@ internal class PerspectiveTransformPointsStage(
         val boundingBox = boundingBox(QuadFloat(pointsFrom.points[0].toVec2Float(), pointsFrom.points[1].toVec2Float(), pointsFrom.points[2].toVec2Float(), pointsFrom.points[3].toVec2Float()))
         val width = (boundingBox.b.x - boundingBox.a.x).toInt()
         val height = (boundingBox.d.y - boundingBox.a.y).toInt()
-        scaledResolution = scaleResolution(Size(width, height), getResolution())
+        scaledResolution = scaleResolution(Size(width, height), Size(pointsTo.points[3].x, pointsTo.points[3].y))
 
         val src = MatOfPoint2f(
             Point(pointsFrom.points[0].x.toDouble(), pointsFrom.points[0].y.toDouble()),
