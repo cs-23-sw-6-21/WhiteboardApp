@@ -29,10 +29,10 @@ internal class WeigthedPointsStage(
             pointIndex = 0
         }
 
-        points[0] = weightedAvgPoint(OldPoints[0])
-        points[1] = weightedAvgPoint(OldPoints[1])
-        points[2] = weightedAvgPoint(OldPoints[2])
-        points[3] = weightedAvgPoint(OldPoints[3])
+        points[0] = weightedAvgPoint(oldPoints[0])
+        points[1] = weightedAvgPoint(oldPoints[1])
+        points[2] = weightedAvgPoint(oldPoints[2])
+        points[3] = weightedAvgPoint(oldPoints[3])
     }
 
     private fun weightedAvgPoint(pointList: Array<Vec2Int>) : Vec2Int
