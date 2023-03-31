@@ -33,8 +33,8 @@ internal fun fullPipeline(
 
     val maskStage = MaskingStage(
         context,
-        inputStage.frameBufferInfo,
         storedFramebuffer,
+        inputStage.frameBufferInfo,
         fullSegmentation.frameBufferInfo,
         pipeline
     )
