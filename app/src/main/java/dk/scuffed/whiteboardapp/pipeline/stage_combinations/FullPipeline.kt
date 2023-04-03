@@ -71,16 +71,25 @@ internal fun fullPipeline(
 
     val binarized = binarize(context, perspectiveCorrection, 10f, 6, pipeline)
 
+    //val accumulator = pipeline.allocateFramebuffer(binarized, binarized.frameBufferInfo.textureFormat, binarized.frameBufferInfo.textureSize)
+
+    //val accumulate = AccumulationStage(context, binarized.frameBufferInfo, accumulator, pipeline)
+
+    //val storeAccumulator = StoreStage(context, accumulate.frameBufferInfo, accumulator, pipeline)
+/*
     val readdedColour = addColour(
         context,
         perspectiveCorrection,
         binarized,
         pipeline
     )
+*/
+
+    val thresholded = StepStage(context, accumulate.frameBufferInfo, pipeline)
 
     val overlay = OverlayStage(
         context,
-        readdedColour.frameBufferInfo,
+        perspectiveCorrection.frameBufferInfo,
         drawCorners.frameBufferInfo,
         pipeline
     )
