@@ -25,6 +25,14 @@ class Vec2Int(val x: Int, val y: Int) : IVec<Vec2Int, Int> {
         return Vec2Int(x / other, y / other)
     }
 
+    override fun length(): Float {
+        return sqrt((x*x + y*y).toFloat())
+    }
+
+    override fun dot(other: Vec2Int): Float {
+        return this.x.toFloat()*other.x.toFloat() + this.y.toFloat()*other.y.toFloat()
+    }
+
     override fun distance(other: Vec2Int): Float {
         return sqrt((other.x - this.x).toFloat().pow(2f) + (other.y - this.y).toFloat().pow(2f))
     }

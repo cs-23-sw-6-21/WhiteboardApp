@@ -25,6 +25,14 @@ class Vec3Float(val x: Float, val y: Float, val z: Float) : IVec<Vec3Float, Floa
         return Vec3Float(x / other, y / other, z / other)
     }
 
+    override fun length(): Float {
+        return sqrt(x*x + y*y + z*z)
+    }
+
+    override fun dot(other: Vec3Float): Float {
+        return this.x * other.x + this.y * other.y + this.z * other.z
+    }
+
     override fun distance(other: Vec3Float): Float {
         return sqrt(
             (other.x - this.x).pow(2f) + (other.y - this.y).pow(2f) + (other.z - this.z).pow(

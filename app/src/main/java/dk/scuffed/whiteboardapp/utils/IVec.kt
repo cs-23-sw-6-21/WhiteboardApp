@@ -6,5 +6,7 @@ interface IVec<TVec, TUnderlying> {
     operator fun times(other: TUnderlying): TVec
     operator fun div(other: TUnderlying): TVec
 
+    fun length(): Float
     fun distance(other: TVec): Float
+    fun dot(other: TVec): Float
 }

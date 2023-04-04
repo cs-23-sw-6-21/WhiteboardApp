@@ -1,5 +1,6 @@
 package dk.scuffed.whiteboardapp.pipeline.stages.lines_stages
 
+import android.util.Log
 import dk.scuffed.whiteboardapp.pipeline.IPipeline
 import dk.scuffed.whiteboardapp.pipeline.stages.LinesOutputStage
 import dk.scuffed.whiteboardapp.pipeline.stages.PointsOutputStage
@@ -7,6 +8,7 @@ import dk.scuffed.whiteboardapp.utils.QuadFloat
 import dk.scuffed.whiteboardapp.utils.Vec2Float
 import dk.scuffed.whiteboardapp.utils.Vec2Int
 import java.util.*
+import kotlin.math.acos
 import kotlin.math.round
 
 internal class BiggestSquareStage(
@@ -52,11 +54,64 @@ internal class BiggestSquareStage(
         if (bestArea != 0f) {
             val fixedQuad = fixupQuad(bestQuad)
 
-            points[0] = fixedQuad.a.toVec2Int()
-            points[1] = fixedQuad.b.toVec2Int()
-            points[2] = fixedQuad.c.toVec2Int()
-            points[3] = fixedQuad.d.toVec2Int()
+            // LIMITATION: If the biggest quad is not perspective correctable we don't go to the
+            // biggest perspective correctable quad.
+            // To fix this we would have to run fixupQuad and isPerspectiveCorrectable on all found
+            // quads
+            if (isPerspectiveCorrectable(bestQuad)) {
+                points[0] = fixedQuad.a.toVec2Int()
+                points[1] = fixedQuad.b.toVec2Int()
+                points[2] = fixedQuad.c.toVec2Int()
+                points[3] = fixedQuad.d.toVec2Int()
+            }
+            else {
+                Log.d("BiggestSquare", "Quad is not perspective correctable")
+            }
         }
+    }
+
+    // Expects a quad from fixupQuad
+    private fun isPerspectiveCorrectable(quad: QuadFloat): Boolean {
+        val maxAngle = (130.0 * Math.PI) / 180.0
+        val minAngle = (60.0 * Math.PI) / 180.0
+
+        val checkAngle = {centerPoint: Vec2Float, beforePoint: Vec2Float, afterPoint: Vec2Float ->
+            val angle = angleBetweenThreePoints(centerPoint, beforePoint, afterPoint)
+            angle in minAngle..maxAngle
+        }
+
+        // Check top left corner angle
+        if (!checkAngle(quad.a, quad.d, quad.b)) {
+            return false
+        }
+
+        // Check bottom left corner angle
+        if (!checkAngle(quad.b, quad.a, quad.c)) {
+            return false
+        }
+
+        // Check bottom right corner angle
+        if (!checkAngle(quad.c, quad.b, quad.d)) {
+            return false
+        }
+
+        // Check top right corner angle
+        if (!checkAngle(quad.d, quad.c, quad.a)) {
+            return false
+        }
+
+        return true
+    }
+
+    private fun angleBetweenThreePoints(centerPoint: Vec2Float, beforePoint: Vec2Float, afterPoint: Vec2Float): Float {
+        val a = centerPoint - beforePoint
+        val b = centerPoint - afterPoint
+
+        val dot = a.dot(b)
+        val mag = a.length() * b.length()
+        val angle = acos(dot/mag)
+
+        return angle
     }
 
     // The point a should be the top left corner
