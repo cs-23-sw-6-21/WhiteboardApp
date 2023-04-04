@@ -69,6 +69,13 @@ internal fun fullPipeline(
         pipeline
     )
 
+    val whitebalance = whiteBalance(
+        context,
+        perspectiveCorrection,
+        5,
+        pipeline
+    )
+/*
     val binarized = binarize(
         context,
         perspectiveCorrection,
@@ -82,10 +89,10 @@ internal fun fullPipeline(
         binarized,
         pipeline
     )
-
+*/
     val overlay = OverlayStage(
         context,
-        readdedColour.frameBufferInfo,
+        whitebalance.frameBufferInfo,
         drawCorners.frameBufferInfo,
         pipeline
     )

@@ -79,6 +79,9 @@ internal class Pipeline(context: Context, private val initialResolution: Size) :
         val entirePipeline = fullPipeline(context, cameraXStage, this)
         switchablePointPipeline = entirePipeline.first
 
+
+        //val colour = whiteBalance(context, cameraXStage, 5, this)
+
         DrawFramebufferStage(
             context,
             entirePipeline.second.frameBufferInfo,
