@@ -11,5 +11,5 @@ void main() {
 
     float value = 1.0 - step(0.5, color.a);
 
-    gl_FragColor = vec4(color.xyz, 1.0);
+    gl_FragColor = vec4(color.xyz * value + vec3(1.0 - value), 1.0);
 }

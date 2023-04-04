@@ -78,7 +78,7 @@ internal class Pipeline(context: Context, private val initialResolution: Size) :
 
         val cameraXStage = CameraXStage(context, this)
 
-        val entirePipeline = alternativePipeline(context, cameraXStage, this)
+        val entirePipeline = fullPipeline(context, cameraXStage, this)
         switchablePointPipeline = entirePipeline.first
 
         DrawFramebufferStage(

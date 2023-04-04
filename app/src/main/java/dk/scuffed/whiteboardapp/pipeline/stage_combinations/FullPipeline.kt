@@ -23,8 +23,11 @@ internal fun fullPipeline(
     inputStage: GLOutputStage,
     pipeline: IPipeline
 ): Pair<SwitchablePointPipeline, GLOutputStage> {
+
+
     val fullSegmentation = fullSegmentation(context, inputStage.frameBufferInfo, pipeline)
 
+    // ------------------ LINE DETECTION STUFF START --------------
     val storedFramebuffer = pipeline.allocateFramebuffer(
         inputStage,
         GLES20.GL_RGBA,
@@ -51,36 +54,59 @@ internal fun fullPipeline(
         pipeline
     )
 
-
     val drawCorners = DrawCornersStage(
         context,
         pipeline,
         switchablePointPipeline.pointsOutputStage
     )
 
+    // --------------- LINE DETECTION STUFF END
+
 
     val cameraPointsStage =
         CornersFromResolutionStage(inputStage.frameBufferInfo.textureSize, pipeline)
-    val perspectiveCorrection = fullPerspectiveCorrection(
+    val cameraCorrected = fullPerspectiveCorrection(
         context,
-        storeStage,
+        inputStage,
+        switchablePointPipeline.pointsOutputStage,
+        cameraPointsStage,
+        pipeline
+    )
+    val maskCorrected = fullPerspectiveCorrection(
+        context,
+        fullSegmentation,
         switchablePointPipeline.pointsOutputStage,
         cameraPointsStage,
         pipeline
     )
 
-    val binarized = binarize(context, perspectiveCorrection, 10f, 6, pipeline)
+
+    val binarized = binarize(context, cameraCorrected, 10f, 6, pipeline)
+
+
+    val oldAccumulator = pipeline.allocateFramebuffer(binarized, binarized.frameBufferInfo.textureFormat, binarized.frameBufferInfo.textureSize)
 
     val readdedColour = addColour(
         context,
-        perspectiveCorrection,
+        cameraCorrected,
         binarized,
         pipeline
     )
 
+
+    val maskedAccumulation = MaskedAccumulationStage(context, readdedColour.frameBufferInfo, oldAccumulator, maskCorrected.frameBufferInfo, pipeline)
+
+    val storeAccumulator = StoreStage(context, maskedAccumulation.frameBufferInfo, oldAccumulator, pipeline)
+
+    // INSERT MASKED ACCUMULATOR HERE
+
+    val thresholded = StepStage(context, maskedAccumulation.frameBufferInfo, pipeline)
+
+
+
     val overlay = OverlayStage(
         context,
-        readdedColour.frameBufferInfo,
+        thresholded.frameBufferInfo,
         drawCorners.frameBufferInfo,
         pipeline
     )
