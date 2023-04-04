@@ -9,7 +9,7 @@ void main() {
 
     vec4 color = texture2D(framebuffer, uv);
 
-    vec3 value = step(vec3(0.5), color.xyz);
+    float value = 1.0 - step(0.5, color.a);
 
-    gl_FragColor = vec4(value, color.a);
+    gl_FragColor = vec4(color.xyz, 1.0);
 }

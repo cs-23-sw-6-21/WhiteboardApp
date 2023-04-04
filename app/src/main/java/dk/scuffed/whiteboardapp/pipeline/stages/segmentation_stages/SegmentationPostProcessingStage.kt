@@ -2,6 +2,7 @@ package dk.scuffed.whiteboardapp.pipeline.stages.segmentation_stages
 
 import android.content.Context
 import android.opengl.GLES20
+import android.util.Size
 import dk.scuffed.whiteboardapp.R
 import dk.scuffed.whiteboardapp.opengl.*
 import dk.scuffed.whiteboardapp.pipeline.FramebufferInfo
@@ -14,6 +15,7 @@ import dk.scuffed.whiteboardapp.pipeline.stages.GLOutputStage
 internal class SegmentationPostProcessingStage(
     context: Context,
     private val inputFramebufferInfo: FramebufferInfo,
+    private val outputResolution: Size,
     pipeline: IPipeline,
 ) : GLOutputStage(context, R.raw.vertex_shader, R.raw.segment_postprocess_shader, pipeline) {
     init {
@@ -21,7 +23,7 @@ internal class SegmentationPostProcessingStage(
     }
 
     override fun setupFramebufferInfo() {
-        allocateFramebuffer(GLES20.GL_RGBA, getResolution())
+        allocateFramebuffer(GLES20.GL_RGBA, outputResolution)
     }
 
     override fun setupUniforms(program: Int) {

@@ -48,7 +48,7 @@ internal fun fullSegmentation(
 
     val dilation = OpenCVDilateStage(
         seg,
-        2.0,
+        4.0,
         pipeline
     )
 
@@ -81,6 +81,7 @@ internal fun fullSegmentation(
     val segPost = SegmentationPostProcessingStage(
         context,
         storeAccumulatorStage.frameBufferInfo,
+        inputFramebufferInfo.textureSize,
         pipeline
     )
 
