@@ -17,7 +17,7 @@ internal class MaskedAccumulationStage(
     private val inputFramebuffer: FramebufferInfo,
     private val oldAccumulator: FramebufferInfo,
     private val maskFramebuffer: FramebufferInfo,
-
+    private val accumulationFactor: Float,
     pipeline: IPipeline
 ) : GLOutputStage(context, R.raw.vertex_shader, R.raw.masked_accumulation_shader, pipeline) {
 
@@ -50,6 +50,8 @@ internal class MaskedAccumulationStage(
         glActiveTexture(maskFramebuffer.textureUnitPair.textureUnit)
         glBindTexture(GLES20.GL_TEXTURE_2D, maskFramebuffer.textureHandle)
 
-
+        // Input accumulation factor
+        val accumulationFactorHandle = glGetUniformLocation(program, "accumulation_factor")
+        glUniform1f(accumulationFactorHandle, accumulationFactor)
     }
 }

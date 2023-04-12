@@ -3,6 +3,8 @@ precision mediump float;
 
 uniform vec2 resolution;
 
+uniform float accumulation_factor;
+
 uniform sampler2D framebuffer;
 uniform sampler2D oldAccumulator;
 uniform sampler2D mask;
@@ -17,7 +19,7 @@ void main() {
     float binaryInput = step(0.99, col1.x);
     float maskValue = step(0.99, mask.x);
 
-    float add = (col2.a + (maskValue) * (0.2 * binaryInput - 0.2 * (1.0-binaryInput)));
+    float add = (col2.a + (maskValue) * (accumulation_factor * binaryInput - accumulation_factor * (1.0-binaryInput)));
     //float add = step(0.99, mask.x);
 
     gl_FragColor = vec4(col1.xyz * maskValue + col2.xyz * (1.0-maskValue), add);

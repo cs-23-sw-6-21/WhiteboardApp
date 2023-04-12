@@ -14,6 +14,7 @@ import dk.scuffed.whiteboardapp.pipeline.stages.GLOutputStage
 internal class StepStage(
     context: Context,
     private val inputFramebufferInfo: FramebufferInfo,
+    private val edge: Float,
     pipeline: IPipeline
 ) : GLOutputStage(context, R.raw.vertex_shader, R.raw.step_shader, pipeline) {
     init {
@@ -34,5 +35,9 @@ internal class StepStage(
         glUniform1i(framebufferTextureHandle, inputFramebufferInfo.textureUnitPair.textureUnitIndex)
         glActiveTexture(inputFramebufferInfo.textureUnitPair.textureUnit)
         glBindTexture(GLES20.GL_TEXTURE_2D, inputFramebufferInfo.textureHandle)
+
+        // Input framebuffer
+        val edgeHandle = glGetUniformLocation(program, "edge")
+        glUniform1f(edgeHandle, edge)
     }
 }
