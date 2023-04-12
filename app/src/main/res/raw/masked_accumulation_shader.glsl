@@ -20,8 +20,6 @@ void main() {
     float maskValue = step(0.99, mask.x);
 
     float add = (col2.a + (maskValue) * (accumulation_factor * binaryInput - accumulation_factor * (1.0-binaryInput)));
-    //float add = step(0.99, mask.x);
 
     gl_FragColor = vec4(col1.xyz * maskValue + col2.xyz * (1.0-maskValue), add);
-    //gl_FragColor = vec4(vec3(maskValue), 1.0);
 }

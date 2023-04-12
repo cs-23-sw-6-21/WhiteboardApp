@@ -68,6 +68,7 @@ internal fun fullSegmentation(
         context,
         segFramebuffer.frameBufferInfo,
         lastAccumulator,
+        0.2f,
         pipeline
     )
 

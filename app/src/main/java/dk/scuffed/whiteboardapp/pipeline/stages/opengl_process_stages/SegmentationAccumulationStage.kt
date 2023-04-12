@@ -16,6 +16,7 @@ internal class SegmentationAccumulationStage(
     context: Context,
     private val segmentationFramebuffer: FramebufferInfo,
     private val oldAccumulator: FramebufferInfo,
+    private val accumulationFactor: Float,
     pipeline: IPipeline
 ) : GLOutputStage(context, R.raw.vertex_shader, R.raw.segmentation_accumulation_shader, pipeline) {
 
@@ -41,6 +42,11 @@ internal class SegmentationAccumulationStage(
         glUniform1i(oldAccumulatorHandle, oldAccumulator.textureUnitPair.textureUnitIndex)
         glActiveTexture(oldAccumulator.textureUnitPair.textureUnit)
         glBindTexture(GLES20.GL_TEXTURE_2D, oldAccumulator.textureHandle)
+
+        // Input old accumulator framebuffer
+        val accumulationFactorHandle = glGetUniformLocation(program, "accumulation_factor")
+        glUniform1f(accumulationFactorHandle, accumulationFactor)
+
 
     }
 }

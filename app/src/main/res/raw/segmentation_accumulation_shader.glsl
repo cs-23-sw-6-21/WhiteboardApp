@@ -3,6 +3,8 @@ precision mediump float;
 
 uniform vec2 resolution;
 
+uniform float accumulation_factor;
+
 uniform sampler2D segmentation;
 uniform sampler2D oldAccumulator;
 
@@ -16,7 +18,7 @@ void main() {
     float segmentMap = 1.0 - step(0.05, col1.z);
 
 
-    float add = (col2.x + 0.1) * segmentMap;
+    float add = (col2.x + accumulation_factor) * segmentMap;
 
 
     // annoying hack because the segmentor outputs a slightly blue color for no reason at all.
