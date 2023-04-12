@@ -9,14 +9,14 @@ import dk.scuffed.whiteboardapp.pipeline.IPipeline
 import dk.scuffed.whiteboardapp.pipeline.stages.GLOutputStage
 
 /**
- * Does the operation framebuffer1 - framebuffer2.
+ * Performs whitebalancing on input1 based on input2, which should represent the background color of the whiteboard.
  */
-internal class SubtractStage(
+internal class WhitebalanceStage(
     context: Context,
     private val inputFramebufferInfo1: FramebufferInfo,
     private val inputFramebufferInfo2: FramebufferInfo,
     pipeline: IPipeline
-) : GLOutputStage(context, R.raw.vertex_shader, R.raw.subtract_shader, pipeline) {
+) : GLOutputStage(context, R.raw.vertex_shader, R.raw.whitebalance_shader, pipeline) {
     init {
         setup()
     }
