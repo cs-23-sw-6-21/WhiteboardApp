@@ -2,6 +2,7 @@
 precision mediump float;
 
 uniform vec2 resolution;
+uniform float accumulation_factor;
 
 uniform sampler2D framebuffer;
 uniform sampler2D oldAccumulator;
@@ -9,11 +10,12 @@ uniform sampler2D oldAccumulator;
 void main() {
     vec2 samplersUV = gl_FragCoord.xy / resolution;
 
-    vec4 col1 = texture2D(framebuffer, samplersUV);
-    vec4 col2 = texture2D(oldAccumulator, samplersUV);
+    vec4 input = texture2D(framebuffer, samplersUV);
+    vec4 oldAccumulator = texture2D(oldAccumulator, samplersUV);
 
+    accumulation_factor = 0.0;
 
-    float add = col2.x + 0.2 * col1.x - 0.2 * (1.0-col1.x);
+    float add = oldAccumulator.x + accumulation_factor * input.x - accumulation_factor * (1.0 - input.x);
 
 
     gl_FragColor = vec4(add, add, add, 1.0);
