@@ -9,7 +9,7 @@ import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.Binarizati
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.GrayscaleStage
 
 /**
- * Binarizes a coloured image using adaptive thresholding.
+ * Applies the fast white balancing, by downscaling the image and using it as the background color.
  */
 internal fun whiteBalance(
     context: Context,
