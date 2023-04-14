@@ -13,8 +13,8 @@ import dk.scuffed.whiteboardapp.pipeline.stages.GLOutputStage
  */
 internal class WhitebalanceStage(
     context: Context,
-    private val RawInputFrameBuffer: FramebufferInfo,
-    private val BackgroundColorFrameBuffer: FramebufferInfo,
+    private val rawInputFrameBuffer: FramebufferInfo,
+    private val backgroundColorFrameBuffer: FramebufferInfo,
     pipeline: IPipeline
 ) : GLOutputStage(context, R.raw.vertex_shader, R.raw.whitebalance_shader, pipeline) {
     init {
@@ -22,7 +22,7 @@ internal class WhitebalanceStage(
     }
 
     override fun setupFramebufferInfo() {
-        allocateFramebuffer(GLES20.GL_RGBA, BackgroundColorFrameBuffer.textureSize)
+        allocateFramebuffer(GLES20.GL_RGBA, backgroundColorFrameBuffer.textureSize)
     }
 
     override fun setupUniforms(program: Int) {
@@ -32,15 +32,15 @@ internal class WhitebalanceStage(
 
         // Input framebuffer
         val rawInputFrameBufferTextureHandle = glGetUniformLocation(program, "rawInput")
-        glUniform1i(rawInputFrameBufferTextureHandle, RawInputFrameBuffer.textureUnitPair.textureUnitIndex)
-        glActiveTexture(RawInputFrameBuffer.textureUnitPair.textureUnit)
-        glBindTexture(GLES20.GL_TEXTURE_2D, RawInputFrameBuffer.textureHandle)
+        glUniform1i(rawInputFrameBufferTextureHandle, rawInputFrameBuffer.textureUnitPair.textureUnitIndex)
+        glActiveTexture(rawInputFrameBuffer.textureUnitPair.textureUnit)
+        glBindTexture(GLES20.GL_TEXTURE_2D, rawInputFrameBuffer.textureHandle)
 
         // Input framebuffer
         val backgroundColorTextureHandle = glGetUniformLocation(program, "backgroundColor")
-        glUniform1i(backgroundColorTextureHandle, BackgroundColorFrameBuffer.textureUnitPair.textureUnitIndex)
-        glActiveTexture(BackgroundColorFrameBuffer.textureUnitPair.textureUnit)
-        glBindTexture(GLES20.GL_TEXTURE_2D, BackgroundColorFrameBuffer.textureHandle)
+        glUniform1i(backgroundColorTextureHandle, backgroundColorFrameBuffer.textureUnitPair.textureUnitIndex)
+        glActiveTexture(backgroundColorFrameBuffer.textureUnitPair.textureUnit)
+        glBindTexture(GLES20.GL_TEXTURE_2D, backgroundColorFrameBuffer.textureHandle)
 
     }
 }
