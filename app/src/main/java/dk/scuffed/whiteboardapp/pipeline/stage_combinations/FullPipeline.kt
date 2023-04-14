@@ -72,6 +72,7 @@ internal fun fullPipeline(
         cameraPointsStage,
         pipeline
     )
+    
     val maskCorrected = fullPerspectiveCorrection(
         context,
         fullSegmentation,
@@ -80,12 +81,24 @@ internal fun fullPipeline(
         pipeline
     )
 
+    val whitebalance = whiteBalance(
+        context,
+        cameraCorrected,
+        5,
+        pipeline
+    )
 
-    val binarized = binarize(context, cameraCorrected, 10f, 6, pipeline)
+    val binarized = binarize(
+        context,
+        cameraCorrected,
+        perspectiveCorrection,
+        7.5f,
+        5,
+        pipeline)
 
     val readdedColour = addColour(
         context,
-        cameraCorrected,
+        whitebalance,
         binarized,
         pipeline
     )
