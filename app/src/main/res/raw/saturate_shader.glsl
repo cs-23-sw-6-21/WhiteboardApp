@@ -32,19 +32,7 @@ void main() {
 
     vec3 hsv = rgb2hsv(color.xyz);
 
-
-    /*
-    TURNS BLACKS FULLY BLACK
-    float isblack = smoothstep(0.05, 0.15, hsv.y);
-
-    float iswhite = step(hsv.z, 0.96);
-
-
-    if (iswhite > 0.5){
-        hsv.z *= isblack;
-    }
-*/
-    hsv.y *= 4.0;
+    hsv.y *= 3.0;
     
     vec3 back = hsv2rgb(hsv);
 
