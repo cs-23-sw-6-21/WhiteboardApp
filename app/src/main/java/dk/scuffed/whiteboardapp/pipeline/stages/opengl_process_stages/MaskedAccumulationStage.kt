@@ -39,7 +39,7 @@ internal class MaskedAccumulationStage(
         glBindTexture(GLES20.GL_TEXTURE_2D, inputFramebuffer.textureHandle)
 
         // Input old accumulator framebuffer
-        val oldAccumulatorHandle = glGetUniformLocation(program, "oldAccumulator")
+        val oldAccumulatorHandle = glGetUniformLocation(program, "old_accumulator_framebuffer")
         glUniform1i(oldAccumulatorHandle, oldAccumulator.textureUnitPair.textureUnitIndex)
         glActiveTexture(oldAccumulator.textureUnitPair.textureUnit)
         glBindTexture(GLES20.GL_TEXTURE_2D, oldAccumulator.textureHandle)

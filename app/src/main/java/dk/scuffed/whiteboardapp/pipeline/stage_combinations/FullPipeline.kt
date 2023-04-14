@@ -83,9 +83,6 @@ internal fun fullPipeline(
 
     val binarized = binarize(context, cameraCorrected, 10f, 6, pipeline)
 
-
-    val oldAccumulator = pipeline.allocateFramebuffer(binarized, binarized.frameBufferInfo.textureFormat, binarized.frameBufferInfo.textureSize)
-
     val readdedColour = addColour(
         context,
         cameraCorrected,
@@ -93,6 +90,7 @@ internal fun fullPipeline(
         pipeline
     )
 
+    val oldAccumulator = pipeline.allocateFramebuffer(binarized, binarized.frameBufferInfo.textureFormat, binarized.frameBufferInfo.textureSize)
 
     val maskedAccumulation = MaskedAccumulationStage(context, readdedColour.frameBufferInfo, oldAccumulator, maskCorrected.frameBufferInfo, 0.2f, pipeline)
 
