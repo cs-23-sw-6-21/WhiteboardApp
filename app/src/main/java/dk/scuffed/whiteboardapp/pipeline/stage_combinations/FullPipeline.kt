@@ -104,7 +104,7 @@ internal fun fullPipeline(
 
     val oldAccumulator = pipeline.allocateFramebuffer(binarized, binarized.frameBufferInfo.textureFormat, binarized.frameBufferInfo.textureSize)
 
-    val maskedAccumulation = MaskedAccumulationStage(context, readdedColour.frameBufferInfo, oldAccumulator, maskCorrected.frameBufferInfo, 0.2f, pipeline)
+    val maskedAccumulation = MaskedAccumulationStage(context, readdedColour.frameBufferInfo, oldAccumulator, maskCorrected.frameBufferInfo, 1f, pipeline)
 
     val storeAccumulator = StoreStage(context, maskedAccumulation.frameBufferInfo, oldAccumulator, pipeline)
 
