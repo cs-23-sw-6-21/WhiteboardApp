@@ -48,7 +48,7 @@ internal fun fullSegmentation(
 
     val dilation = OpenCVDilateStage(
         seg,
-        4.0,
+        2.0,
         pipeline
     )
 

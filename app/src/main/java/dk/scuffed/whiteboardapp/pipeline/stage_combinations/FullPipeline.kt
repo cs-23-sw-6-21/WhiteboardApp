@@ -91,7 +91,6 @@ internal fun fullPipeline(
     val binarized = binarize(
         context,
         cameraCorrected,
-        perspectiveCorrection,
         7.5f,
         5,
         pipeline)
