@@ -69,16 +69,23 @@ internal fun fullPipeline(
         pipeline
     )
 
+    val whitebalance = whiteBalance(
+        context,
+        perspectiveCorrection,
+        5,
+        pipeline
+    )
+
     val binarized = binarize(
         context,
         perspectiveCorrection,
         7.5f,
-        3,
+        5,
         pipeline)
 
     val readdedColour = addColour(
         context,
-        perspectiveCorrection,
+        whitebalance,
         binarized,
         pipeline
     )

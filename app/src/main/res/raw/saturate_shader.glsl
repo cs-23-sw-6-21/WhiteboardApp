@@ -32,8 +32,8 @@ void main() {
 
     vec3 hsv = rgb2hsv(color.xyz);
 
-    hsv.y = 1.0;
-
+    hsv.y *= 3.0;
+    
     vec3 back = hsv2rgb(hsv);
 
     gl_FragColor = vec4(back, color.a);
