@@ -9,9 +9,8 @@ uniform float threshold;
 void main() {
     float w = 1.0 / resolution.x;
     float h = 1.0 / resolution.y;
-    vec2 d = vec2(w, h);
 
-    vec2 uv = gl_FragCoord.xy / resolution + d/2.0;
+    vec2 uv = gl_FragCoord.xy / resolution;
 
 
     vec4 binarized = texture2D(framebuffer, uv);
@@ -21,7 +20,7 @@ void main() {
     {
         for (int j = -windowSize; j <= windowSize; j++)
         {
-            subImageSum += texture2D(framebuffer, uv + h*float(i) + w*float(j)).x;
+            subImageSum += texture2D(framebuffer, uv + vec2(w*float(i), h*float(j))).x;
         }
     }
 
