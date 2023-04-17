@@ -20,10 +20,6 @@ void main() {
 
     // Set pixels to zero where it is segmented. Otherwise, increment pixels back towards to 1.
     float add = (oldAccumulator.x + accumulation_factor) * inverseSegmentMap;
-
-
-    // annoying hack because the segmentor outputs a slightly blue color for no reason at all.
-    //float actualmask = step(0.1, mask.x + mask.y + mask.z);
-
+    
     gl_FragColor = vec4(add, 0.0, 0.0, add);
 }
