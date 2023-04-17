@@ -12,9 +12,7 @@ void main() {
 
     vec4 input = texture2D(framebuffer, samplersUV);
     vec4 oldAccumulator = texture2D(oldAccumulator, samplersUV);
-
-    accumulation_factor = 0.0;
-
+    
     float add = oldAccumulator.x + accumulation_factor * input.x - accumulation_factor * (1.0 - input.x);
 
 
