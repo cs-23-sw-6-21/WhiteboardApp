@@ -101,7 +101,7 @@ internal fun fullPipeline(
         context,
         perspectiveCorrected,
         7.5f,
-        5,
+        3,
         pipeline)
 
     val readdedColour = addColour(
