@@ -10,61 +10,51 @@ internal class WeightedPointsStage(
     private val inputPoints: PointsOutputStage,
     private val historySize: Int,
     private val weightThreshold: Float,
-    pipeline: IPipeline)
-    : PointsOutputStage(pipeline, Vec2Int(0, 0), Vec2Int(0, 0), Vec2Int(0, 0), Vec2Int(0, 0))
-{
-    private var oldPoints = Array<Array<Vec2Int>>(4) {Array<Vec2Int>(historySize) { Vec2Int(0, 0) } }
+    pipeline: IPipeline
+) : PointsOutputStage(pipeline, inputPoints.points[0], inputPoints.points[1], inputPoints.points[2], inputPoints.points[3]) {
+    private var pointHistories =
+        arrayOf(
+            Array(historySize) { inputPoints.points[0] },
+            Array(historySize) { inputPoints.points[1] },
+            Array(historySize) { inputPoints.points[2] },
+            Array(historySize) { inputPoints.points[3] }
+        )
     private var pointIndex = 0
 
 
     override fun update() {
-        oldPoints[0][pointIndex] = inputPoints.points[0]
-        oldPoints[1][pointIndex] = inputPoints.points[1]
-        oldPoints[2][pointIndex] = inputPoints.points[2]
-        oldPoints[3][pointIndex] = inputPoints.points[3]
+        pointHistories[0][pointIndex] = inputPoints.points[0]
+        pointHistories[1][pointIndex] = inputPoints.points[1]
+        pointHistories[2][pointIndex] = inputPoints.points[2]
+        pointHistories[3][pointIndex] = inputPoints.points[3]
 
-        pointIndex += 1
+        pointIndex = (pointIndex + 1) % historySize
 
-        if (pointIndex >= historySize) {
-            pointIndex = 0
-        }
-
-        points[0] = weightedAvgPoint(oldPoints[0])
-        points[1] = weightedAvgPoint(oldPoints[1])
-        points[2] = weightedAvgPoint(oldPoints[2])
-        points[3] = weightedAvgPoint(oldPoints[3])
+        points[0] = weightedAvgPoint(pointHistories[0])
+        points[1] = weightedAvgPoint(pointHistories[1])
+        points[2] = weightedAvgPoint(pointHistories[2])
+        points[3] = weightedAvgPoint(pointHistories[3])
     }
 
-    private fun weightedAvgPoint(pointList: Array<Vec2Int>) : Vec2Int
-    {
-        var sumX = 0.0
-        var sumY = 0.0
+    private fun weightedAvgPoint(pointHistory: Array<Vec2Int>): Vec2Int {
+        val meanSum = pointHistory.reduce { sum, element -> sum + element }.toVec2Float()
 
-        for (point in pointList)
-        {
-            sumX += point.x
-            sumY += point.y
-        }
+        val mean = meanSum / pointHistory.size.toFloat()
 
-        var meanX = sumX / pointList.size
-        var meanY = sumY / pointList.size
-
-        var weightSum = 0.0
-        sumX = 0.0
-        sumY = 0.0
+        var weightSum = 0f
+        var sum = Vec2Float(0f, 0f)
 
         // Loop goes through a list of points and calculates their distance from the mean position of the list.
         // The distance is compared to a threshold and used to calculate a weight, it its not within the threshold.
         // weighted-XY and total-weight values are summed to be used for calculating the new weighted average of all the points.
-        for (point in pointList){
-            val distFromMean = point.toVec2Float().distance(Vec2Float(meanX.toFloat(), meanY.toFloat()))
-            val weight = if (distFromMean <= weightThreshold) 1.0 else 1.0 / distFromMean
-            sumX += weight * point.x.toDouble()
-            sumY += weight * point.y.toDouble()
+        for (point in pointHistory) {
+            val distFromMean = point.toVec2Float().distance(mean)
+            val weight = if (distFromMean <= weightThreshold) 1.0f else 1.0f / distFromMean
+            sum += point.toVec2Float() * weight
             weightSum += weight
         }
 
-        return Vec2Int(round(sumX/weightSum).toInt(), round(sumY/weightSum).toInt())
+        val result = sum / weightSum
+        return Vec2Float(round(result.x), round(result.y)).toVec2Int()
     }
-
 }
