@@ -16,7 +16,13 @@ internal class BiggestSquareStage(
     private val verticalLinesStage: LinesOutputStage,
     pipeline: IPipeline
 ) :
-    PointsOutputStage(pipeline, Vec2Int(0, 0), Vec2Int(0, 0), Vec2Int(0, 0), Vec2Int(0, 0)) {
+    PointsOutputStage(
+        pipeline,
+        Vec2Int(0, pipeline.getInitialResolution().height),
+        Vec2Int(0, 0),
+        Vec2Int(pipeline.getInitialResolution().width, 0),
+        Vec2Int(pipeline.getInitialResolution().width, pipeline.getInitialResolution().height))
+{
 
     override fun update() {
         var bestQuad = QuadFloat()
