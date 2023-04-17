@@ -7,7 +7,7 @@ import dk.scuffed.whiteboardapp.pipeline.stages.GLOutputStage
 import dk.scuffed.whiteboardapp.pipeline.stages.PointsOutputStage
 import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.FramebufferToBitmapStage
 import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.OpenCVLineDetectionStage
-import dk.scuffed.whiteboardapp.pipeline.stages.lines_stages.BiggestSquareStage
+import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.BiggestQuadStage
 import dk.scuffed.whiteboardapp.pipeline.stages.lines_stages.LinesAngleDiscriminatorStage
 import dk.scuffed.whiteboardapp.pipeline.stages.pipeline_stages.ThreadedBitmapInputPointOutputStage
 import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.WeightedPointsStage
@@ -64,14 +64,14 @@ internal fun fullCornerDetection(
                 pipeline
             )
 
-            val biggestSquareStage = BiggestSquareStage(
+            val biggestQuadStage = BiggestQuadStage(
                 horizontalLinesAngleDiscriminatorStage,
                 verticalLinesAngleDiscriminatorStage,
                 pipeline
             )
 
             val weightedCornerStage = WeightedPointsStage(
-                biggestSquareStage,
+                biggestQuadStage,
                 20,
                 5.0f,
                 pipeline
