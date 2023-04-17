@@ -79,8 +79,8 @@ internal fun fullPipeline(
     val binarized = binarize(
         context,
         perspectiveCorrection,
-        7.5f,
-        5,
+        10.0f,
+        3,
         pipeline)
 
     val readdedColour = addColour(
