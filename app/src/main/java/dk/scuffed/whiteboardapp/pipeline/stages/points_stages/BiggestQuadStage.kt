@@ -1,4 +1,4 @@
-package dk.scuffed.whiteboardapp.pipeline.stages.lines_stages
+package dk.scuffed.whiteboardapp.pipeline.stages.points_stages
 
 import android.util.Log
 import dk.scuffed.whiteboardapp.pipeline.IPipeline
@@ -9,9 +9,8 @@ import dk.scuffed.whiteboardapp.utils.Vec2Float
 import dk.scuffed.whiteboardapp.utils.Vec2Int
 import java.util.*
 import kotlin.math.acos
-import kotlin.math.round
 
-internal class BiggestSquareStage(
+internal class BiggestQuadStage(
     private val horizontalLinesStage: LinesOutputStage,
     private val verticalLinesStage: LinesOutputStage,
     pipeline: IPipeline
@@ -25,8 +24,8 @@ internal class BiggestSquareStage(
 {
 
     override fun update() {
-        var bestQuad = QuadFloat()
-        var bestArea = 0f
+        var biggestQuad = QuadFloat()
+        var biggestQuadArea = 0f
 
         for (x1 in 0 until horizontalLinesStage.lines.size) {
             for (x2 in x1 + 1 until horizontalLinesStage.lines.size) {
@@ -46,9 +45,9 @@ internal class BiggestSquareStage(
                             val quad = makeQuadConvex(QuadFloat(p1, p2, p3, p4))
 
                             val area = quad.area()
-                            if (area > bestArea) {
-                                bestQuad = quad
-                                bestArea = area
+                            if (area > biggestQuadArea) {
+                                biggestQuad = quad
+                                biggestQuadArea = area
                             }
                         }
                     }
@@ -57,14 +56,14 @@ internal class BiggestSquareStage(
         }
 
         // Use the last found quad if we don't detect any
-        if (bestArea != 0f) {
-            val fixedQuad = fixupQuad(bestQuad)
+        if (biggestQuadArea != 0f) {
+            val fixedQuad = fixupQuad(biggestQuad)
 
             // LIMITATION: If the biggest quad is not perspective correctable we don't go to the
             // biggest perspective correctable quad.
             // To fix this we would have to run fixupQuad and isPerspectiveCorrectable on all found
             // quads
-            if (isPerspectiveCorrectable(bestQuad)) {
+            if (isPerspectiveCorrectable(biggestQuad)) {
                 points[0] = fixedQuad.a.toVec2Int()
                 points[1] = fixedQuad.b.toVec2Int()
                 points[2] = fixedQuad.c.toVec2Int()
@@ -125,42 +124,18 @@ internal class BiggestSquareStage(
     private fun fixupQuad(quad: QuadFloat): QuadFloat {
         val points = ArrayList(listOf(*quad.toVec2FloatArray()))
 
-        var bottomLeftPoint: Vec2Float? = null
-        for (point in points) {
-            if (bottomLeftPoint == null) {
-                bottomLeftPoint = point
-            } else if (point.x + point.y < bottomLeftPoint.x + bottomLeftPoint.y) {
-                bottomLeftPoint = point
-            }
-        }
-
+        val bottomLeftPoint = points.reduce {acc, point -> if (point.x + point.y < acc.x + acc.y) { point } else { acc } }
         points.remove(bottomLeftPoint)
 
-        var bottomRightPoint: Vec2Float? = null
-        for (point in points) {
-            if (bottomRightPoint == null) {
-                bottomRightPoint = point
-            } else if ((-point.x) + point.y < (-bottomRightPoint.x) + bottomRightPoint.y) {
-                bottomRightPoint = point
-            }
-        }
-
+        val bottomRightPoint = points.reduce {acc, point -> if ((-point.x) + point.y < (-acc.x) + acc.y) { point } else { acc } }
         points.remove(bottomRightPoint)
 
-        var topRightPoint: Vec2Float? = null
-        for (point in points) {
-            if (topRightPoint == null) {
-                topRightPoint = point
-            } else if (point.x + point.y > topRightPoint.x + topRightPoint.y) {
-                topRightPoint = point
-            }
-        }
-
+        val topRightPoint = points.reduce {acc, point -> if (point.x + point.y > acc.x + acc.y) { point } else { acc } }
         points.remove(topRightPoint)
 
         val topLeftPoint = points[0]
 
-        return QuadFloat(topLeftPoint, bottomLeftPoint!!, bottomRightPoint!!, topRightPoint!!)
+        return QuadFloat(topLeftPoint, bottomLeftPoint, bottomRightPoint, topRightPoint)
     }
 
     private fun makeQuadConvex(quad: QuadFloat): QuadFloat {

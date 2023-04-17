@@ -3,12 +3,11 @@ package dk.scuffed.whiteboardapp.pipeline.stage_combinations
 import android.content.Context
 import android.graphics.Bitmap
 import dk.scuffed.whiteboardapp.pipeline.IPipeline
-import dk.scuffed.whiteboardapp.pipeline.Pipeline
 import dk.scuffed.whiteboardapp.pipeline.stages.GLOutputStage
 import dk.scuffed.whiteboardapp.pipeline.stages.PointsOutputStage
 import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.FramebufferToBitmapStage
 import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.OpenCVLineDetectionStage
-import dk.scuffed.whiteboardapp.pipeline.stages.lines_stages.BiggestSquareStage
+import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.BiggestQuadStage
 import dk.scuffed.whiteboardapp.pipeline.stages.lines_stages.LinesAngleDiscriminatorStage
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.LetterboxingStage
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.OverlayStage
@@ -100,7 +99,7 @@ internal fun fullCornerDetectionWithDebugDrawing(
         pipeline
     )
 
-    val biggestSquareStage = BiggestSquareStage(
+    val biggestQuadStage = BiggestQuadStage(
         horizontalLinesAngleDiscriminatorStage,
         verticalLinesAngleDiscriminatorStage,
         pipeline
@@ -109,7 +108,7 @@ internal fun fullCornerDetectionWithDebugDrawing(
     val drawCornersStage = DrawCornersStage(
         context,
         pipeline,
-        biggestSquareStage
+        biggestQuadStage
     )
 
     val debugOverlay = OverlayStage(
@@ -119,5 +118,5 @@ internal fun fullCornerDetectionWithDebugDrawing(
         pipeline
     )
 
-    return Pair(biggestSquareStage, debugOverlay)
+    return Pair(biggestQuadStage, debugOverlay)
 }
