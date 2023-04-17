@@ -7,7 +7,10 @@ uniform sampler2D framebuffer;
 void main() {
     vec2 uv = gl_FragCoord.xy / resolution;
 
-    vec4 color = texture2D(framebuffer, uv.yx).xxxz;
+    // manipulate UVs so it is correctly oriented in the segmentor
+    // TODO: take phone orientation into account. Right now it is harcoded for left handed landscape orientation.
+    vec2 uvFlipped = vec2(uv.y, uv.x);
 
-    gl_FragColor = vec4(color.xxx, 1.0);
+    // Put red channel into all colour channels just to be nice.
+    gl_FragColor = vec4(texture2D(framebuffer, uvFlipped).xxx, 1.0);
 }
