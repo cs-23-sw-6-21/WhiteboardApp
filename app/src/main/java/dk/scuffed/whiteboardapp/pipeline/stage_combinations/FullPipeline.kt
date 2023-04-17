@@ -108,11 +108,7 @@ internal fun fullPipeline(
 
     val storeAccumulator = StoreStage(context, maskedAccumulation.frameBufferInfo, oldAccumulator, pipeline)
 
-    // INSERT MASKED ACCUMULATOR HERE
-
     val thresholded = StepStage(context, maskedAccumulation.frameBufferInfo, 0.5f, pipeline)
-
-
 
     val overlay = OverlayStage(
         context,
@@ -122,5 +118,5 @@ internal fun fullPipeline(
     )
 
 
-    return Pair(switchablePointPipeline, thresholded)
+    return Pair(switchablePointPipeline, maskStage)
 }
