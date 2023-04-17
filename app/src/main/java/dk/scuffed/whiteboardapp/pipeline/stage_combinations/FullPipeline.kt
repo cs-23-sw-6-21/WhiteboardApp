@@ -25,14 +25,17 @@ internal fun fullPipeline(
 ): Pair<SwitchablePointPipeline, GLOutputStage> {
 
 
+    // ------------------ SEGMENTATION STUFF START --------------
+
     val fullSegmentation = fullSegmentation(context, inputStage.frameBufferInfo, pipeline)
 
-    // ------------------ LINE DETECTION STUFF START --------------
+
     val storedFramebuffer = pipeline.allocateFramebuffer(
         inputStage,
         GLES20.GL_RGBA,
         inputStage.frameBufferInfo.textureSize
     )
+
 
     val maskStage = MaskingStage(
         context,
@@ -41,12 +44,18 @@ internal fun fullPipeline(
         fullSegmentation.frameBufferInfo,
         pipeline
     )
+
     val storeStage = StoreStage(
         context,
         maskStage.frameBufferInfo,
         storedFramebuffer,
         pipeline
     )
+
+    // ------------------ SEGMENTATION STUFF END --------------
+
+
+    // ------------------ LINE DETECTION STUFF START --------------
 
     val switchablePointPipeline = SwitchablePointPipeline(
         { pipeline -> DraggablePointsStage(pipeline) },
@@ -63,34 +72,34 @@ internal fun fullPipeline(
     // --------------- LINE DETECTION STUFF END
 
 
+    // ------------------ PERSPECTIVE CORRECTION START --------------
+
     val cameraPointsStage =
         CornersFromResolutionStage(inputStage.frameBufferInfo.textureSize, pipeline)
-    val cameraCorrected = fullPerspectiveCorrection(
+
+    val perspectiveCorrected = fullPerspectiveCorrection(
         context,
-        inputStage,
-        switchablePointPipeline.pointsOutputStage,
-        cameraPointsStage,
-        pipeline
-    )
-    
-    val maskCorrected = fullPerspectiveCorrection(
-        context,
-        fullSegmentation,
+        maskStage,
         switchablePointPipeline.pointsOutputStage,
         cameraPointsStage,
         pipeline
     )
 
+    // ------------------ PERSPECTIVE CORRECTION END --------------
+
+
+    // ------------------ POST PROCESSING START --------------
+
     val whitebalance = whiteBalance(
         context,
-        cameraCorrected,
+        perspectiveCorrected,
         5,
         pipeline
     )
 
     val binarized = binarize(
         context,
-        cameraCorrected,
+        perspectiveCorrected,
         7.5f,
         5,
         pipeline)
@@ -102,17 +111,12 @@ internal fun fullPipeline(
         pipeline
     )
 
-    val oldAccumulator = pipeline.allocateFramebuffer(binarized, binarized.frameBufferInfo.textureFormat, binarized.frameBufferInfo.textureSize)
+    // ------------------ POST PROCESSING END --------------
 
-    val maskedAccumulation = MaskedAccumulationStage(context, readdedColour.frameBufferInfo, oldAccumulator, maskCorrected.frameBufferInfo, 1f, pipeline)
-
-    val storeAccumulator = StoreStage(context, maskedAccumulation.frameBufferInfo, oldAccumulator, pipeline)
-
-    val thresholded = StepStage(context, maskedAccumulation.frameBufferInfo, 0.5f, pipeline)
 
     val overlay = OverlayStage(
         context,
-        thresholded.frameBufferInfo,
+        readdedColour.frameBufferInfo,
         drawCorners.frameBufferInfo,
         pipeline
     )
