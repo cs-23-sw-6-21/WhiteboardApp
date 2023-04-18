@@ -9,7 +9,7 @@ import kotlin.math.pow
  * Creates and outputs 4 points that you can drag using dragPoint.
  */
 internal class DraggablePointsStage(
-    pipeline: IPipeline
+    private val pipeline: IPipeline
 ) : PointsOutputStage(pipeline) {
     companion object {
         private var instance: DraggablePointsStage? = null
@@ -47,12 +47,13 @@ internal class DraggablePointsStage(
 
 
     private fun setInitialPoints() {
+        val resolution = getResolution()
         points.addAll(
             arrayOf(
-                Vec2Int(200, 800),
-                Vec2Int(200, 200),
-                Vec2Int(800, 200),
-                Vec2Int(800, 800),
+                Vec2Int(100, resolution.height - 100),
+                Vec2Int(100, 100),
+                Vec2Int(resolution.width - 100, 100),
+                Vec2Int(resolution.width - 100, resolution.height - 100),
             )
         )
     }

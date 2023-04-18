@@ -16,8 +16,8 @@ void main() {
     vec4 col2 = texture2D(sampler2, samplersUV);
     vec4 mask = texture2D(mask, samplersUV);
 
-    // annoying hack because the segmentor outputs a slightly blue color for no reason at all.
-    float actualmask = step(0.1, mask.x + mask.y + mask.z);
+    // add all channels together so it works with any colour (see segmentor, which is annoying and only uses one channel).
+    float actualmask = step(1.0, mask.x + mask.y + mask.z);
 
     gl_FragColor = col2 * actualmask + (1.0-actualmask) * col1;
 }

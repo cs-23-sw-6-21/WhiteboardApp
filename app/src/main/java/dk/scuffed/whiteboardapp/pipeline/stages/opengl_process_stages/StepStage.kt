@@ -1,8 +1,7 @@
-package dk.scuffed.whiteboardapp.pipeline.stages.segmentation_stages
+package dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages
 
 import android.content.Context
 import android.opengl.GLES20
-import android.util.Size
 import dk.scuffed.whiteboardapp.R
 import dk.scuffed.whiteboardapp.opengl.*
 import dk.scuffed.whiteboardapp.pipeline.FramebufferInfo
@@ -10,20 +9,20 @@ import dk.scuffed.whiteboardapp.pipeline.IPipeline
 import dk.scuffed.whiteboardapp.pipeline.stages.GLOutputStage
 
 /**
- * Converts the segmentation result into a result that matches the rest of the pipeline better.
+ * Uses the step function in GLSL.
  */
-internal class SegmentationPostProcessingStage(
+internal class StepStage(
     context: Context,
     private val inputFramebufferInfo: FramebufferInfo,
-    private val outputResolution: Size,
-    pipeline: IPipeline,
-) : GLOutputStage(context, R.raw.vertex_shader, R.raw.segment_postprocess_shader, pipeline) {
+    private val edge: Float,
+    pipeline: IPipeline
+) : GLOutputStage(context, R.raw.vertex_shader, R.raw.step_shader, pipeline) {
     init {
         setup()
     }
 
     override fun setupFramebufferInfo() {
-        allocateFramebuffer(GLES20.GL_RGBA, outputResolution)
+        allocateFramebuffer(GLES20.GL_RGBA, inputFramebufferInfo.textureSize)
     }
 
     override fun setupUniforms(program: Int) {
@@ -36,5 +35,9 @@ internal class SegmentationPostProcessingStage(
         glUniform1i(framebufferTextureHandle, inputFramebufferInfo.textureUnitPair.textureUnitIndex)
         glActiveTexture(inputFramebufferInfo.textureUnitPair.textureUnit)
         glBindTexture(GLES20.GL_TEXTURE_2D, inputFramebufferInfo.textureHandle)
+
+        // Input framebuffer
+        val edgeHandle = glGetUniformLocation(program, "edge")
+        glUniform1f(edgeHandle, edge)
     }
 }
