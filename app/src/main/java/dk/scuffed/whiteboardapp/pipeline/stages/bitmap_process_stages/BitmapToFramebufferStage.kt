@@ -17,7 +17,7 @@ internal class BitmapToFramebufferStage(
     private val pipeline: IPipeline
 ) : Stage(pipeline) {
 
-    var frameBufferInfo = allocateTexture()
+    val frameBufferInfo = allocateTexture()
 
     override fun update() {
         glActiveTexture(frameBufferInfo.textureUnitPair.textureUnit)

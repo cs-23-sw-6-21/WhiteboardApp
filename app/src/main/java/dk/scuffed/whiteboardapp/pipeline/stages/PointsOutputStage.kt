@@ -11,10 +11,5 @@ internal abstract class PointsOutputStage(
     pipeline: IPipeline,
     vararg initialPoints: Vec2Int
 ) : Stage(pipeline) {
-    val points: ArrayList<Vec2Int> = ArrayList()
-
-    init {
-        points.clear()
-        points.addAll(initialPoints)
-    }
+    val points = ArrayList(listOf(*initialPoints))
 }

@@ -9,7 +9,12 @@ import dk.scuffed.whiteboardapp.utils.Vec2Int
  */
 internal class ScreenCornerPointsStage(
     pipeline: IPipeline
-) : PointsOutputStage(pipeline, Vec2Int(0, 0), Vec2Int(0, 0), Vec2Int(0, 0), Vec2Int(0, 0)) {
+) : PointsOutputStage(
+    pipeline,
+    Vec2Int(0, pipeline.getInitialResolution().height),
+    Vec2Int(0, 0),
+    Vec2Int(pipeline.getInitialResolution().width, 0),
+    Vec2Int(pipeline.getInitialResolution().width, pipeline.getInitialResolution().height)) {
     override fun update() {
         points[0] = Vec2Int(0, getResolution().height)
         points[1] = Vec2Int(0, 0)
