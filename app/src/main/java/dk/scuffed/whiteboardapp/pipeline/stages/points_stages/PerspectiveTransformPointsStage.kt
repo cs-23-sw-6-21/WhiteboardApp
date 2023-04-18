@@ -7,7 +7,9 @@ import dk.scuffed.whiteboardapp.pipeline.stages.PointsOutputStage
 import dk.scuffed.whiteboardapp.utils.QuadFloat
 import dk.scuffed.whiteboardapp.utils.Vec2Float
 import dk.scuffed.whiteboardapp.utils.Vec2Int
-import org.opencv.core.*
+import org.opencv.core.Core
+import org.opencv.core.MatOfPoint2f
+import org.opencv.core.Point
 import org.opencv.imgproc.Imgproc
 
 
@@ -22,21 +24,31 @@ internal class PerspectiveTransformPointsStage(
     pipeline: IPipeline,
     private val pointsFrom: PointsOutputStage,
     private val pointsTo: PointsOutputStage
-) : PointsOutputStage(pipeline) {
-    init {
-        setInitialPoints()
-    }
-
-    var scaledResolution = Size(1080, 1920)
+) : PointsOutputStage(
+    pipeline,
+    pointsFrom.points[0],
+    pointsFrom.points[1],
+    pointsFrom.points[2],
+    pointsFrom.points[3],
+) {
+    var scaledResolution = getResolution()
 
     override fun update() {
         assert(pointsFrom.points.size == 4)
         assert(pointsTo.points.size == 4)
 
-        val boundingBox = boundingBox(QuadFloat(pointsFrom.points[0].toVec2Float(), pointsFrom.points[1].toVec2Float(), pointsFrom.points[2].toVec2Float(), pointsFrom.points[3].toVec2Float()))
+        val boundingBox = boundingBox(
+            QuadFloat(
+                pointsFrom.points[0].toVec2Float(),
+                pointsFrom.points[1].toVec2Float(),
+                pointsFrom.points[2].toVec2Float(),
+                pointsFrom.points[3].toVec2Float()
+            )
+        )
         val width = (boundingBox.b.x - boundingBox.a.x).toInt()
         val height = (boundingBox.d.y - boundingBox.a.y).toInt()
-        scaledResolution = scaleResolution(Size(width, height), Size(pointsTo.points[3].x, pointsTo.points[3].y))
+        scaledResolution =
+            scaleResolution(Size(width, height), Size(pointsTo.points[3].x, pointsTo.points[3].y))
 
         val src = MatOfPoint2f(
             Point(pointsFrom.points[0].x.toDouble(), pointsFrom.points[0].y.toDouble()),
@@ -68,17 +80,6 @@ internal class PerspectiveTransformPointsStage(
         result.release()
         src.release()
         dst.release()
-    }
-
-    private fun setInitialPoints() {
-        points.addAll(
-            arrayOf(
-                Vec2Int(200, 200),
-                Vec2Int(800, 200),
-                Vec2Int(800, 800),
-                Vec2Int(200, 800),
-            )
-        )
     }
 
     private fun boundingBox(quad: QuadFloat): QuadFloat {

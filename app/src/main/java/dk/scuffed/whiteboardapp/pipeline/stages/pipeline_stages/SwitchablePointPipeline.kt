@@ -12,7 +12,6 @@ internal class SwitchablePointPipeline(
     firstStageConstructor: (pipeline: IPipeline) -> Unit,
     secondStageConstructor: (pipeline: IPipeline) -> Unit,
     private val pipeline: IPipeline,
-    vararg initialPoints: Vec2Int
 ) : Stage(pipeline), IPipeline {
     private val firstStages = ArrayList<Stage>()
     private val secondStages = ArrayList<Stage>()
@@ -24,13 +23,16 @@ internal class SwitchablePointPipeline(
     private var loadingSwitch = false
 
 
-    val pointsOutputStage: PointsOutputStage = MyPointsOutputStage(pipeline, *initialPoints)
+    val pointsOutputStage: PointsOutputStage
 
     init {
         firstStageConstructor(this)
         loadingSwitch = true
         secondStageConstructor(this)
+        val pts = getLastStagePoints()
+        pointsOutputStage = MyPointsOutputStage(pipeline, pts[0], pts[1], pts[2], pts[3])
     }
+
 
     override fun draw() {
         for (stage in if (switch) {
@@ -41,12 +43,7 @@ internal class SwitchablePointPipeline(
             stage.performUpdate()
         }
 
-        val points = when (val lastStage = getLastStage()) {
-            is PointsOutputStage -> lastStage.points
-            is ThreadedBitmapInputPointOutputStage -> lastStage.myOutputPointsStage.points
-            else -> throw Exception("Tried to switch to a unknown point stage.")
-        }
-
+        val points = getLastStagePoints()
         (pointsOutputStage as MyPointsOutputStage).setPoints(points)
     }
 
@@ -104,6 +101,14 @@ internal class SwitchablePointPipeline(
             firstStages.last()
         } else {
             secondStages.last()
+        }
+    }
+
+    private fun getLastStagePoints(): ArrayList<Vec2Int> {
+        return when (val lastStage = getLastStage()) {
+            is PointsOutputStage -> lastStage.points
+            is ThreadedBitmapInputPointOutputStage -> lastStage.myOutputPointsStage.points
+            else -> throw Exception("Tried to switch to a unknown point stage.")
         }
     }
 

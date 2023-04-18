@@ -17,11 +17,7 @@ internal class SegmentationStage(
     pipeline: IPipeline
 ) : BitmapOutputStage(pipeline, Size(inputBitmap.width, inputBitmap.height), inputBitmap.config) {
 
-    private val segmentor: PPSegmentation
-
-    init {
-        segmentor = PPSegmentation(context, segmentationModel)
-    }
+    private val segmentor = PPSegmentation(context, segmentationModel)
 
     override fun update() {
         outputBitmap = segmentor.segment(inputBitmap)

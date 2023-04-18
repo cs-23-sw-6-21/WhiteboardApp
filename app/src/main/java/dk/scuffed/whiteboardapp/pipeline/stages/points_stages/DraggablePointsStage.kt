@@ -9,8 +9,14 @@ import kotlin.math.pow
  * Creates and outputs 4 points that you can drag using dragPoint.
  */
 internal class DraggablePointsStage(
-    private val pipeline: IPipeline
-) : PointsOutputStage(pipeline) {
+    pipeline: IPipeline
+) : PointsOutputStage(
+    pipeline,
+    Vec2Int(100, pipeline.getInitialResolution().height - 100),
+    Vec2Int(100, 100),
+    Vec2Int(pipeline.getInitialResolution().width - 100, 100),
+    Vec2Int(pipeline.getInitialResolution().width - 100, pipeline.getInitialResolution().height - 100),
+) {
     companion object {
         private var instance: DraggablePointsStage? = null
 
@@ -29,8 +35,7 @@ internal class DraggablePointsStage(
         var closestSquareDist = Float.POSITIVE_INFINITY
         var closestIndex = -1
         for (p in points.indices) {
-            val dist = (points[p].x - screenPosition.x).toFloat()
-                .pow(2) + (points[p].y - screenPosition.y).toFloat().pow(2)
+            val dist = points[p].distance(screenPosition)
             if (dist < closestSquareDist) {
                 closestSquareDist = dist
                 closestIndex = p
@@ -42,23 +47,8 @@ internal class DraggablePointsStage(
 
     init {
         instance = this
-        setInitialPoints()
-    }
-
-
-    private fun setInitialPoints() {
-        val resolution = getResolution()
-        points.addAll(
-            arrayOf(
-                Vec2Int(100, resolution.height - 100),
-                Vec2Int(100, 100),
-                Vec2Int(resolution.width - 100, 100),
-                Vec2Int(resolution.width - 100, resolution.height - 100),
-            )
-        )
     }
 
     override fun update() {
-
     }
 }

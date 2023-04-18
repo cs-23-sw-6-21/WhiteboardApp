@@ -113,10 +113,12 @@ internal class DrawCornersStage(
      * @param point is a Vec2 which stores the x and y coordinate.
      */
     private fun drawPoint(point: Vec2Int) {
+        val circleRadiusVec = Vec2Int(circleRadius, circleRadius)
+
         // Calculates the bottom left corner for the viewport
-        val bottomLeftCorner = Vec2Int(point.x - circleRadius, point.y - circleRadius)
+        val bottomLeftCorner = point - circleRadiusVec
         // Calculates the top right corner for the viewport
-        val topRightCorner = Vec2Int(point.x + circleRadius, point.y + circleRadius)
+        val topRightCorner = point + circleRadiusVec
 
         val size = topRightCorner - bottomLeftCorner
 

@@ -39,9 +39,6 @@ internal class DrawPipelineStage(
         }
     }
 
-    // TODO Get this from the view.
-    private val resolution: Size = Size(getResolution().width, getResolution().height)
-
     private var currentStageIndex: Int
 
     // Framebuffer used for drawing bitmaps into to throw into the GLOutput
@@ -56,7 +53,7 @@ internal class DrawPipelineStage(
 
     override fun setupFramebufferInfo() {
         // Set framebuffer to screen
-        frameBufferInfo = FramebufferInfo(0, 0, TextureUnitPair(0, 0), 0, resolution)
+        frameBufferInfo = FramebufferInfo(0, 0, TextureUnitPair(0, 0), 0, getResolution())
     }
 
     /// Go to the next stage in the pipeline, looping if reaching the end.
@@ -142,7 +139,7 @@ internal class DrawPipelineStage(
             textureHandle,
             textureUnitPair,
             GLES20.GL_RGBA,
-            Size(resolution.width, resolution.height)
+            getResolution()
         )
     }
 }
