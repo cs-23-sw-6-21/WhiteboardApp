@@ -1,0 +1,62 @@
+package dk.scuffed.whiteboardapp.pipeline.stage_combinations
+
+import android.content.Context
+import android.opengl.GLES20
+import dk.scuffed.whiteboardapp.pipeline.IPipeline
+import dk.scuffed.whiteboardapp.pipeline.stages.GLOutputStage
+import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.MaskingStage
+import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.OverlayStage
+import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.StoreStage
+import dk.scuffed.whiteboardapp.pipeline.stages.pipeline_stages.SwitchablePointPipeline
+import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.DraggablePointsStage
+import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.DrawCornersStage
+
+internal fun CornerTest(
+    context: Context,
+    inputStage: GLOutputStage,
+    pipeline: IPipeline
+): Pair<SwitchablePointPipeline, OverlayStage> {
+
+    val fullSegmentation = fullSegmentation(context, inputStage.frameBufferInfo, pipeline)
+    val storedFramebuffer = pipeline.allocateFramebuffer(
+        inputStage,
+        GLES20.GL_RGBA,
+        inputStage.frameBufferInfo.textureSize
+    )
+
+
+    val maskStage = MaskingStage(
+        context,
+        storedFramebuffer,
+        inputStage.frameBufferInfo,
+        fullSegmentation.frameBufferInfo,
+        pipeline
+    )
+
+    val storeStage = StoreStage(
+        context,
+        maskStage.frameBufferInfo,
+        storedFramebuffer,
+        pipeline
+    )
+
+    val switchablePointPipeline = SwitchablePointPipeline(
+        { pipeline -> DraggablePointsStage(pipeline) },
+        { pipeline -> fullCornerDetection(context, storeStage, pipeline) },
+        pipeline
+    )
+
+    val drawCorners = DrawCornersStage(
+        context,
+        pipeline,
+        switchablePointPipeline.pointsOutputStage
+    )
+
+    val overlay = OverlayStage(
+        context,
+        inputStage.frameBufferInfo,
+        drawCorners.frameBufferInfo,
+        pipeline
+    )
+    return Pair(switchablePointPipeline, overlay)
+}
