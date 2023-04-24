@@ -25,7 +25,6 @@ internal class Pipeline(context: Context, private val initialResolution: Size) :
 
     private var stages = mutableListOf<Stage>()
     private var nextTextureUnit: Int = 0
-    private val switchablePointPipeline: SwitchablePointPipeline
 
     private val indexToTextureUnit = intArrayOf(
         GLES20.GL_TEXTURE0,
@@ -80,7 +79,6 @@ internal class Pipeline(context: Context, private val initialResolution: Size) :
         val cameraXStage = CameraXStage(context, this)
 
         val entirePipeline = fullPipeline(context, cameraXStage, this)
-        switchablePointPipeline = entirePipeline.first
 
         DrawFramebufferStage(
             context,
@@ -89,13 +87,6 @@ internal class Pipeline(context: Context, private val initialResolution: Size) :
         )
     }
 
-    /**
-     * Sets the switch variable to the inputted boolean.
-     * @param bool is a Boolean to changes the switches value.
-     */
-    fun switchStages(bool: Boolean){
-        switchablePointPipeline.setSwitch(bool)
-    }
     override fun draw() {
         val startTime = System.nanoTime()
         stages.forEach { stage -> stage.performUpdate() }

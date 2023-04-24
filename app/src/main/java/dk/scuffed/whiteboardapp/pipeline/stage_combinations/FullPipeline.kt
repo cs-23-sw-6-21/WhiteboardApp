@@ -58,6 +58,7 @@ internal fun fullPipeline(
     // ------------------ LINE DETECTION STUFF START --------------
 
     val switchablePointPipeline = SwitchablePointPipeline(
+        context,
         { pipeline -> DraggablePointsStage(pipeline) },
         { pipeline -> fullCornerDetection(context, storeStage, pipeline) },
         pipeline

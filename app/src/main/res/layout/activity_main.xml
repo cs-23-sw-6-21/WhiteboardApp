@@ -14,6 +14,9 @@
         android:background="@drawable/round_button"
         android:contentDescription="@string/toggle_corner_detection"
         android:visibility="visible"
+        app:icon="@drawable/baseline_keyboard_command_key_24"
+        app:iconGravity="textStart"
+        app:iconPadding="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
