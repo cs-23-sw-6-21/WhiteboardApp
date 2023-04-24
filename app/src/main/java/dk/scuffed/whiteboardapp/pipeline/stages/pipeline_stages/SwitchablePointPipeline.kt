@@ -1,6 +1,10 @@
 package dk.scuffed.whiteboardapp.pipeline.stages.pipeline_stages
 
+import android.content.Context
 import android.util.Size
+import android.widget.Button
+import dk.scuffed.whiteboardapp.MainActivity
+import dk.scuffed.whiteboardapp.R
 import dk.scuffed.whiteboardapp.pipeline.FramebufferInfo
 import dk.scuffed.whiteboardapp.pipeline.IPipeline
 import dk.scuffed.whiteboardapp.pipeline.TextureUnitPair
@@ -9,6 +13,7 @@ import dk.scuffed.whiteboardapp.pipeline.stages.Stage
 import dk.scuffed.whiteboardapp.utils.Vec2Int
 
 internal class SwitchablePointPipeline(
+    context: Context,
     firstStageConstructor: (pipeline: IPipeline) -> Unit,
     secondStageConstructor: (pipeline: IPipeline) -> Unit,
     private val pipeline: IPipeline,
@@ -26,6 +31,11 @@ internal class SwitchablePointPipeline(
     val pointsOutputStage: PointsOutputStage
 
     init {
+        val button = (context as MainActivity).findViewById<Button>(R.id.round_button)
+        button.setOnClickListener {
+            setSwitch(!switch)
+        }
+
         firstStageConstructor(this)
         loadingSwitch = true
         secondStageConstructor(this)
