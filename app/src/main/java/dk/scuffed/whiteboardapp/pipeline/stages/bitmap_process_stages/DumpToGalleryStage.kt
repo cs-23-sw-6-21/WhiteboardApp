@@ -36,15 +36,33 @@ internal class DumpToGalleryStage(
     Size(bitmapStage.outputBitmap.width, bitmapStage.outputBitmap.height),
     bitmapStage.outputBitmap.config
 ) {
-    init {
-        val button = (context as MainActivity).findViewById<Button>(R.id.capture)
-        button.setOnClickListener {
-            dump()
+
+    companion object {
+        fun saveAllToGallery(){
+            for (s in stages) {
+                s.dump()
+            }
         }
+        fun addStage(s: DumpToGalleryStage){
+            stages.add(s)
+        }
+
+        private val stages = arrayListOf<DumpToGalleryStage>()
+    }
+
+    init {
+        // Take control of the listening. Note it overrides, so only one can control it.
+        val button = (context as MainActivity).findViewById<Button>(R.id.capture)
+
+        button.setOnClickListener {
+            saveAllToGallery()
+        }
+
+        addStage(this)
 
     }
 
-    fun dump(){
+    public fun dump(){
         saveImage(bitmapStage.outputBitmap, context, "WhiteboardApp")
     }
 

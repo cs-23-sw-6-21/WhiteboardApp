@@ -57,8 +57,9 @@ internal class Pipeline(context: Context, private val initialResolution: Size) :
         GLES20.GL_TEXTURE28,
         GLES20.GL_TEXTURE29,
         GLES20.GL_TEXTURE30,
-        GLES20.GL_TEXTURE31
-        )
+        GLES20.GL_TEXTURE31,
+        GLES20.GL_TEXTURE31 + 1
+    )
 
     init {
         glDisable(GLES20.GL_BLEND)
@@ -79,12 +80,17 @@ internal class Pipeline(context: Context, private val initialResolution: Size) :
 
         val entirePipeline = fullPipeline(context, cameraXStage, this)
 
+
+        dumpToGalleryFull(context, cameraXStage, this)
+
+        dumpToGalleryFull(context, entirePipeline.second, this)
+/*
         val bitmapCoordinate = OpenGLToBitmapCoordinate(context, entirePipeline.second.frameBufferInfo, this)
 
         val conv = FramebufferToBitmapStage(bitmapCoordinate.frameBufferInfo, Bitmap.Config.ARGB_8888, this)
 
         val dump = DumpToGalleryStage(context, conv, this)
-
+*/
         DrawFramebufferStage(
             context,
             entirePipeline.second.frameBufferInfo,
