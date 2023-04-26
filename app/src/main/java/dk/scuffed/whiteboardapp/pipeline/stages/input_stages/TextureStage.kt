@@ -18,7 +18,7 @@ internal class TextureStage(
     context: Context,
     private val texture: Bitmap,
     pipeline: IPipeline
-) : GLOutputStage(context, R.raw.vertex_shader, R.raw.texture, pipeline) {
+) : GLOutputStage(context, R.raw.vertex_shader, R.raw.image_shader, pipeline) {
     private val textureUnitPair: TextureUnitPair
     private val textureHandle: Int
 
@@ -27,6 +27,7 @@ internal class TextureStage(
         val pair = loadTexture(texture, pipeline, this)
         textureUnitPair = pair.first
         textureHandle = pair.second
+
     }
 
     override fun setupFramebufferInfo() {
@@ -45,6 +46,6 @@ internal class TextureStage(
 
         // Input framebuffer resolution
         val framebufferResolutionHandle = glGetUniformLocation(program, "resolution")
-        glUniform2f(framebufferResolutionHandle, texture.width.toFloat(), texture.height.toFloat())
+        glUniform2f(framebufferResolutionHandle, getResolution().width.toFloat(), getResolution().height.toFloat())
     }
 }
