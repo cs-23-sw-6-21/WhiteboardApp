@@ -11,6 +11,8 @@ import dk.scuffed.whiteboardapp.R
 import dk.scuffed.whiteboardapp.opengl.*
 import dk.scuffed.whiteboardapp.pipeline.stage_combinations.*
 import dk.scuffed.whiteboardapp.pipeline.stages.*
+import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.DumpToGalleryStage
+import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.FramebufferToBitmapStage
 import dk.scuffed.whiteboardapp.pipeline.stages.input_stages.CameraXStage
 import dk.scuffed.whiteboardapp.pipeline.stages.input_stages.TextureStage
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.BinarizationFastStage
@@ -79,6 +81,10 @@ internal class Pipeline(context: Context, private val initialResolution: Size) :
         val cameraXStage = CameraXStage(context, this)
 
         val entirePipeline = fullPipeline(context, cameraXStage, this)
+
+        val conv = FramebufferToBitmapStage(entirePipeline.second.frameBufferInfo, Bitmap.Config.ARGB_8888, this)
+
+        val dump = DumpToGalleryStage(context, conv, this)
 
         DrawFramebufferStage(
             context,
