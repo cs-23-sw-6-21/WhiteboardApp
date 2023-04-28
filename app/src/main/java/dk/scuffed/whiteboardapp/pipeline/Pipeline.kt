@@ -7,6 +7,9 @@ import android.graphics.BitmapFactory
 import android.opengl.GLES20
 import android.util.Log
 import android.util.Size
+import android.view.View
+import android.widget.Button
+import dk.scuffed.whiteboardapp.MainActivity
 import dk.scuffed.whiteboardapp.R
 import dk.scuffed.whiteboardapp.opengl.*
 import dk.scuffed.whiteboardapp.pipeline.stage_combinations.*
@@ -22,7 +25,7 @@ import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.DraggablePointsSta
 
 const val useDoubleBuffering = true
 
-internal class Pipeline(context: Context, private val initialResolution: Size) : IPipeline {
+internal class Pipeline(private val context: Context, private val initialResolution: Size) : IPipeline {
 
     var stages = mutableListOf<Stage>()
     private var nextTextureUnit: Int = 0
@@ -75,6 +78,11 @@ internal class Pipeline(context: Context, private val initialResolution: Size) :
 
         if (CSVWriter.recordTimings){
             CSVWriter.MainWriter.write("$duration\n")
+            CSVWriter.frameCounter += 1
+            if (CSVWriter.frameCounter == 5000)
+            {
+                (context as MainActivity).findViewById<Button>(R.id.round_button).visibility = View.INVISIBLE
+            }
             Log.i("Pipeline", "Frame took ${duration}ms")
         }
     }

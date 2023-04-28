@@ -10,6 +10,8 @@ object CSVWriter {
 
     val useGlFinish = true
 
+    var frameCounter = 0
+
     val MainWriter : OutputStreamWriter
 
     val CornerDetectionWriter : OutputStreamWriter
