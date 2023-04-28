@@ -3,15 +3,15 @@ package dk.scuffed.whiteboardapp.pipeline.stages
 import android.util.Log
 import android.util.Size
 import dk.scuffed.whiteboardapp.opengl.glFinish
+import dk.scuffed.whiteboardapp.pipeline.CSVWriter
 import dk.scuffed.whiteboardapp.pipeline.IPipeline
-
-private val recordTimings = true
+import dk.scuffed.whiteboardapp.pipeline.stages.pipeline_stages.SwitchablePointPipeline
 
 /**
  * Baseclass for stages.
  * Manages updates and connection to the pipeline.
  */
-internal abstract class Stage(pipeline: IPipeline) {
+internal abstract class Stage(private val pipeline: IPipeline) {
 
     private val name: String
 
@@ -21,6 +21,15 @@ internal abstract class Stage(pipeline: IPipeline) {
         pipeline.addStage(this)
         name = this.javaClass.name
         resolution = pipeline.getInitialResolution()
+        if (CSVWriter.recordTimings) {
+            if (pipeline is SwitchablePointPipeline)
+            {
+                CSVWriter.CornerDetectionWriter.write("${name},")
+            } else
+            {
+                CSVWriter.MainWriter.write("${name},")
+            }
+        }
     }
 
     protected fun getResolution(): Size {
@@ -32,7 +41,7 @@ internal abstract class Stage(pipeline: IPipeline) {
     fun performUpdate() {
         val startTime = System.nanoTime()
         update()
-        if (recordTimings && this is GLOutputStage) {
+        if (CSVWriter.useGlFinish && this is GLOutputStage) {
             glFinish()
         }
         val endTime = System.nanoTime()
@@ -40,7 +49,14 @@ internal abstract class Stage(pipeline: IPipeline) {
         //Calculate duration and convert to ms
         val duration = (endTime - startTime).toDouble() / 1000000.0
 
-        if (recordTimings) {
+        if (CSVWriter.recordTimings) {
+            if (pipeline is SwitchablePointPipeline)
+            {
+                CSVWriter.CornerDetectionWriter.write("$name,")
+            } else
+            {
+                CSVWriter.MainWriter.write("$name,")
+            }
             Log.d("Stages", "Stage: $name took $duration ms")
         }
     }
