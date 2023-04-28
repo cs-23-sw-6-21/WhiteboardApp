@@ -1,10 +1,13 @@
 package dk.scuffed.whiteboardapp.pipeline
 
 import android.os.Environment
+import android.os.Looper
 import java.io.File
 import java.io.OutputStreamWriter
 
 object CSVWriter {
+
+    val threadMain = Looper.getMainLooper();
 
     var recordTimings = true
 
@@ -26,10 +29,7 @@ object CSVWriter {
         cornerDetectionFile.createNewFile()
 
         MainWriter = mainFile.writer()
-        MainWriter.write("")
-
-        CornerDetectionWriter = mainFile.writer()
-        MainWriter.write("")
+        CornerDetectionWriter = cornerDetectionFile.writer()
     }
 
 }

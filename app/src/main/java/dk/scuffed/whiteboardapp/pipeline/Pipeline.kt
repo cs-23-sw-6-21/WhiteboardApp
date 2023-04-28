@@ -109,10 +109,11 @@ internal class Pipeline(private val context: Context, private val initialResolut
         val endTime = System.nanoTime()
         val duration = (endTime - startTime).toDouble() / 1000000.0
 
-        if (CSVWriter.recordTimings){
+        if (CSVWriter.recordTimings)
+        {
             CSVWriter.MainWriter.write("$duration\n")
             CSVWriter.frameCounter += 1
-            if (CSVWriter.frameCounter == 5000)
+            if (CSVWriter.frameCounter == 100)
             {
                 (context as MainActivity).findViewById<Button>(R.id.round_button).visibility = View.INVISIBLE
                 CSVWriter.recordTimings = false

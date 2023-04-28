@@ -51,7 +51,10 @@ internal class SwitchablePointPipeline(
 
         val endTime = System.nanoTime()
         val duration = (endTime - startTime).toDouble() / 1000000.0
+        if (CSVWriter.recordTimings)
+        {
         CSVWriter.CornerDetectionWriter.write("$duration\n")
+        }
     }
 
     override fun onResolutionChanged(resolution: Size) {
