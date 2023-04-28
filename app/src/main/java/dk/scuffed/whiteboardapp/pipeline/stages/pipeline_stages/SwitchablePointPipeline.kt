@@ -19,7 +19,7 @@ internal class SwitchablePointPipeline(
     private val pipeline: IPipeline,
 ) : Stage(pipeline), IPipeline {
     private val firstStages = ArrayList<Stage>()
-    val secondStages = ArrayList<Stage>()
+    private val secondStages = ArrayList<Stage>()
 
     //Used for switching between the two stage arrays.
     private var switch = true
