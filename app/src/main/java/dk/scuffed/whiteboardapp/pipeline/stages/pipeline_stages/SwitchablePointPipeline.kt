@@ -5,6 +5,7 @@ import android.util.Size
 import android.widget.Button
 import dk.scuffed.whiteboardapp.MainActivity
 import dk.scuffed.whiteboardapp.R
+import dk.scuffed.whiteboardapp.pipeline.CSVWriter
 import dk.scuffed.whiteboardapp.pipeline.FramebufferInfo
 import dk.scuffed.whiteboardapp.pipeline.IPipeline
 import dk.scuffed.whiteboardapp.pipeline.TextureUnitPair
@@ -41,10 +42,12 @@ internal class SwitchablePointPipeline(
         secondStageConstructor(this)
         val pts = getLastStagePoints()
         pointsOutputStage = MyPointsOutputStage(pipeline, pts[0], pts[1], pts[2], pts[3])
+        CSVWriter.CornerDetectionWriter.write("Overall\n")
     }
 
 
     override fun draw() {
+        val startTime = System.nanoTime()
         for (stage in if (switch) {
             firstStages
         } else {
@@ -55,6 +58,10 @@ internal class SwitchablePointPipeline(
 
         val points = getLastStagePoints()
         (pointsOutputStage as MyPointsOutputStage).setPoints(points)
+
+        val endTime = System.nanoTime()
+        val duration = (endTime - startTime).toDouble() / 1000000.0
+        CSVWriter.CornerDetectionWriter.write("$duration\n")
     }
 
     override fun onResolutionChanged(resolution: Size) {

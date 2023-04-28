@@ -82,6 +82,7 @@ internal class Pipeline(private val context: Context, private val initialResolut
             if (CSVWriter.frameCounter == 5000)
             {
                 (context as MainActivity).findViewById<Button>(R.id.round_button).visibility = View.INVISIBLE
+                CSVWriter.recordTimings = false
                 CSVWriter.MainWriter.flush()
                 CSVWriter.MainWriter.close()
                 CSVWriter.CornerDetectionWriter.flush()
