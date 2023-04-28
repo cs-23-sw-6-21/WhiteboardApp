@@ -38,6 +38,25 @@ internal class DumpToGalleryStage(
 ) {
 
     companion object {
+        private var readyToDump: Boolean = false
+        private var shouldDump: Boolean = false
+        public fun DumpAll(){
+            shouldDump = true
+        }
+        fun shouldDump(stage: DumpToGalleryStage): Boolean {
+            if (readyToDump) {
+                if (stage == stages.last()){
+                    readyToDump = false
+                    shouldDump = false
+                }
+                return true
+            }
+
+            if (shouldDump && stage == stages.last()){
+                readyToDump = true
+            }
+            return false
+        }
         fun saveAllToGallery(){
             for (s in stages) {
                 s.dump()
@@ -55,11 +74,10 @@ internal class DumpToGalleryStage(
         val button = (context as MainActivity).findViewById<Button>(R.id.capture)
 
         button.setOnClickListener {
-            saveAllToGallery()
+            DumpAll()
         }
 
         addStage(this)
-
     }
 
     public fun dump(){
@@ -122,5 +140,8 @@ internal class DumpToGalleryStage(
     }
 
     override fun update() {
+        if (shouldDump(this)){
+            dump()
+        }
     }
 }

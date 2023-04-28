@@ -123,6 +123,5 @@ internal fun fullPipeline(
         pipeline
     )
 
-
     return Pair(switchablePointPipeline, overlay)
 }

@@ -19,10 +19,10 @@ import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.OpenGLToBi
  */
 internal fun dumpToGalleryFull(
     context: Context,
-    input: GLOutputStage,
+    input: FramebufferInfo,
     pipeline: IPipeline
 ) {
-    val adjusted = OpenGLToBitmapCoordinate(context, input.frameBufferInfo, pipeline)
+    val adjusted = OpenGLToBitmapCoordinate(context, input, pipeline)
 
     val bitmap = FramebufferToBitmapStage(adjusted.frameBufferInfo, Bitmap.Config.ARGB_8888, pipeline)
 
