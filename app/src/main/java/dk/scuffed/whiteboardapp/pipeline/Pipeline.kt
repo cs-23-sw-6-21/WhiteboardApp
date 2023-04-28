@@ -13,10 +13,7 @@ import dk.scuffed.whiteboardapp.pipeline.stage_combinations.*
 import dk.scuffed.whiteboardapp.pipeline.stages.*
 import dk.scuffed.whiteboardapp.pipeline.stages.input_stages.CameraXStage
 import dk.scuffed.whiteboardapp.pipeline.stages.input_stages.TextureStage
-import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.BinarizationFastStage
-import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.Downscale2xStage
-import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.GrayscaleStage
-import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.ScaleToResolution
+import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.*
 import dk.scuffed.whiteboardapp.pipeline.stages.output_stages.DrawFramebufferStage
 import dk.scuffed.whiteboardapp.pipeline.stages.pipeline_stages.SwitchablePointPipeline
 import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.DraggablePointsStage
@@ -66,23 +63,25 @@ internal class Pipeline(context: Context, private val initialResolution: Size) :
         glDisable(GLES20.GL_CULL_FACE)
         glDisable(GLES20.GL_DEPTH_TEST)
         glClearColorError()
-/*
+
+        /*
         val opt = BitmapFactory.Options()
         opt.inScaled = false
         val textureStage = TextureStage(
             context,
-            BitmapFactory.decodeResource(context.resources, R.drawable.binarizetest, opt),
+            BitmapFactory.decodeResource(context.resources, R.drawable.whiteboard, opt),
             this
-        )
-        */
+        )*/
 
         val cameraXStage = CameraXStage(context, this)
 
         val entirePipeline = fullPipeline(context, cameraXStage, this)
 
+        val letterbox = LetterboxingStage(context, entirePipeline.second.frameBufferInfo, this)
+
         DrawFramebufferStage(
             context,
-            entirePipeline.second.frameBufferInfo,
+            letterbox.frameBufferInfo,
             this
         )
     }
