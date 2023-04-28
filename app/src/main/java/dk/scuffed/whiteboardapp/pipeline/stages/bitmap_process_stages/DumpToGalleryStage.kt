@@ -6,19 +6,12 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Environment
 import android.provider.MediaStore
-import android.util.Log
 import android.util.Size
 import android.widget.Button
 import dk.scuffed.whiteboardapp.MainActivity
 import dk.scuffed.whiteboardapp.R
 import dk.scuffed.whiteboardapp.pipeline.*
 import dk.scuffed.whiteboardapp.pipeline.stages.BitmapOutputStage
-import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.DraggablePointsStage
-import dk.scuffed.whiteboardapp.utils.Vec2Int
-import org.opencv.android.Utils
-import org.opencv.core.CvType
-import org.opencv.core.Mat
-import org.opencv.imgproc.Imgproc
 import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream
@@ -26,6 +19,8 @@ import java.io.OutputStream
 
 /**
  * Allows saving a bitmap to the phone gallery.
+ * Is controlled by a button.
+ * When the button is pressed, all of these stages will dump from current frame.
  */
 internal class DumpToGalleryStage(
     private val context: Context,
@@ -38,22 +33,24 @@ internal class DumpToGalleryStage(
 ) {
 
     companion object {
-        private var readyToDump: Boolean = false
+        private var dumpThisFrame: Boolean = false
         private var shouldDump: Boolean = false
+        /// Makes all DumpToGalleryStages dump their content to the gallery
         fun DumpAll(){
             shouldDump = true
         }
-        fun shouldDump(stage: DumpToGalleryStage): Boolean {
-            if (readyToDump) {
+        /// Check and update if this stage should dump.
+        fun checkShouldDumpThisFrame(stage: DumpToGalleryStage): Boolean {
+            if (dumpThisFrame) {
                 if (stage == stages.last()){
-                    readyToDump = false
+                    dumpThisFrame = false
                     shouldDump = false
                 }
                 return true
             }
 
             if (shouldDump && stage == stages.last()){
-                readyToDump = true
+                dumpThisFrame = true
             }
             return false
         }
@@ -75,9 +72,17 @@ internal class DumpToGalleryStage(
         addStage(this)
     }
 
-    public fun dump(){
+    override fun update() {
+        if (checkShouldDumpThisFrame(this)){
+            dump()
+        }
+    }
+
+    /// Dump content of framebuffer to gallery
+    fun dump(){
         saveImage(bitmapStage.outputBitmap, context, "WhiteboardApp")
     }
+
 
 
     //Image saving to gallery functionality is from https://stackoverflow.com/a/57265702
@@ -131,12 +136,6 @@ internal class DumpToGalleryStage(
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-        }
-    }
-
-    override fun update() {
-        if (shouldDump(this)){
-            dump()
         }
     }
 }
