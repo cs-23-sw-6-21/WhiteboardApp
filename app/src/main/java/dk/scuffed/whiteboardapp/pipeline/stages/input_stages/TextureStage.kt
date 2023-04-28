@@ -31,7 +31,7 @@ internal class TextureStage(
     }
 
     override fun setupFramebufferInfo() {
-        val resolution = Size(texture.width, texture.height)
+        val resolution = Size(texture.height, texture.width)
         allocateFramebuffer(GLES20.GL_RGBA, resolution)
     }
 
@@ -46,6 +46,6 @@ internal class TextureStage(
 
         // Input framebuffer resolution
         val framebufferResolutionHandle = glGetUniformLocation(program, "resolution")
-        glUniform2f(framebufferResolutionHandle, getResolution().width.toFloat(), getResolution().height.toFloat())
+        glUniform2f(framebufferResolutionHandle, texture.height.toFloat(), texture.width.toFloat())
     }
 }

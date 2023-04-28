@@ -34,6 +34,8 @@ internal class PerspectiveTransformPointsStage(
     var scaledResolution = getResolution()
 
     override fun update() {
+
+
         assert(pointsFrom.points.size == 4)
         assert(pointsTo.points.size == 4)
 
@@ -48,7 +50,7 @@ internal class PerspectiveTransformPointsStage(
         val width = (boundingBox.b.x - boundingBox.a.x).toInt()
         val height = (boundingBox.d.y - boundingBox.a.y).toInt()
         scaledResolution =
-            scaleResolution(Size(width, height), getResolution())
+            scaleResolution(Size(width, height), Size(pointsTo.points[3].x, pointsTo.points[3].y))
 
         val src = MatOfPoint2f(
             Point(pointsFrom.points[0].x.toDouble(), pointsFrom.points[0].y.toDouble()),
