@@ -24,10 +24,10 @@ internal abstract class Stage(private val pipeline: IPipeline) {
         if (CSVWriter.recordTimings) {
             if (pipeline is SwitchablePointPipeline)
             {
-                CSVWriter.CornerDetectionWriter.write("${name},")
+                CSVWriter.CornerDetectionWriter.write("$name,")
             } else
             {
-                CSVWriter.MainWriter.write("${name},")
+                CSVWriter.MainWriter.write("$name,")
             }
         }
     }
@@ -52,10 +52,10 @@ internal abstract class Stage(private val pipeline: IPipeline) {
         if (CSVWriter.recordTimings) {
             if (pipeline is SwitchablePointPipeline)
             {
-                CSVWriter.CornerDetectionWriter.write("$name,")
+                CSVWriter.CornerDetectionWriter.write("$duration,")
             } else
             {
-                CSVWriter.MainWriter.write("$name,")
+                CSVWriter.MainWriter.write("$duration,")
             }
             Log.d("Stages", "Stage: $name took $duration ms")
         }

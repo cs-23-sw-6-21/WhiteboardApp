@@ -6,7 +6,7 @@ import java.io.OutputStreamWriter
 
 object CSVWriter {
 
-    val recordTimings = true
+    var recordTimings = true
 
     val useGlFinish = true
 
