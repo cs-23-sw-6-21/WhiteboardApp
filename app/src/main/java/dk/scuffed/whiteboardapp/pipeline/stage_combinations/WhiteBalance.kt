@@ -11,15 +11,10 @@ import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.*
 internal fun whiteBalance(
     context: Context,
     input: GLOutputStage,
-    downscaleFactor: Int,
+    downscaledInput: GLOutputStage,
     pipeline: IPipeline
 ): GLOutputStage {
-    var prevStage: GLOutputStage = input
-    for (i in 0 until downscaleFactor){
-        prevStage = Downscale2xStage(context, prevStage.frameBufferInfo, pipeline)
-    }
-
-    val whiteBalanceFastStage = WhitebalanceStage(context, prevStage.frameBufferInfo, input.frameBufferInfo, pipeline)
+    val whiteBalanceFastStage = WhitebalanceStage(context, downscaledInput.frameBufferInfo, input.frameBufferInfo, pipeline)
 
 
     val hsvAdjustmentsStage = HSVAdjustmentsStage(context, whiteBalanceFastStage.frameBufferInfo, pipeline)

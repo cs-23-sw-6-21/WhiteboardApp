@@ -25,11 +25,6 @@ internal class ScaleToResolution(
 
     override fun setupFramebufferInfo() {
         allocateFramebuffer(GLES20.GL_RGBA, size)
-        glBindTexture(GLES20.GL_TEXTURE_2D, frameBufferInfo.textureHandle)
-        glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST)
-        glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_NEAREST)
-        glBindTexture(GLES20.GL_TEXTURE_2D, 0)
-
     }
 
     override fun setupUniforms(program: Int) {

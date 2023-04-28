@@ -5,7 +5,7 @@ import android.util.Size
 import dk.scuffed.whiteboardapp.opengl.glFinish
 import dk.scuffed.whiteboardapp.pipeline.IPipeline
 
-private val recordTimings = true
+private val recordTimings = false
 
 /**
  * Baseclass for stages.
