@@ -40,7 +40,7 @@ internal class DumpToGalleryStage(
     companion object {
         private var readyToDump: Boolean = false
         private var shouldDump: Boolean = false
-        public fun DumpAll(){
+        fun DumpAll(){
             shouldDump = true
         }
         fun shouldDump(stage: DumpToGalleryStage): Boolean {
@@ -56,11 +56,6 @@ internal class DumpToGalleryStage(
                 readyToDump = true
             }
             return false
-        }
-        fun saveAllToGallery(){
-            for (s in stages) {
-                s.dump()
-            }
         }
         fun addStage(s: DumpToGalleryStage){
             stages.add(s)
