@@ -1,8 +1,8 @@
 package dk.scuffed.whiteboardapp.pipeline.stages
 
+import android.os.Looper
 import android.util.Log
 import android.util.Size
-import dk.scuffed.whiteboardapp.BuildConfig
 import dk.scuffed.whiteboardapp.opengl.glFinish
 import dk.scuffed.whiteboardapp.pipeline.CSVWriter
 import dk.scuffed.whiteboardapp.pipeline.IPipeline

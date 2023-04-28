@@ -1,7 +1,10 @@
 package dk.scuffed.whiteboardapp
 
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.os.Environment
+import android.provider.Settings
 import android.util.Log
 import android.widget.Button
 import android.widget.Toast
@@ -39,6 +42,11 @@ class MainActivity : AppCompatActivity() {
             // Permission has not been granted yet, request it
             requestPermissions(arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
         }
+
+        if (!Environment.isExternalStorageManager()) {
+            val intent = Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION)
+            startActivity(intent)
+        }
     }
 
     override fun onRequestPermissionsResult(
@@ -56,21 +64,17 @@ class MainActivity : AppCompatActivity() {
                 finish()
             }
         }
-        when (requestCode) {
-            1 -> {
-                // If request is cancelled, the grantResults array is empty
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // Permission has been granted, you can save CSV files
-                } else {
-                    Toast.makeText(this, "This app requires storage permission!", Toast.LENGTH_LONG)
-                        .show()
-                    finish()
-                }
-                return
+        if (requestCode == 1)
+        {
+            // If request is cancelled, the grantResults array is empty
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission has been granted, you can save CSV files
+            } else {
+                Toast.makeText(this, "This app requires storage permission!", Toast.LENGTH_LONG)
+                    .show()
+                finish()
             }
-            else -> {
-                // Ignore all other requests
-            }
+            return
         }
     }
 }
