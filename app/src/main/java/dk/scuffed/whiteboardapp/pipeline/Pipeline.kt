@@ -59,7 +59,9 @@ internal class Pipeline(context: Context, private val initialResolution: Size) :
         GLES20.GL_TEXTURE28,
         GLES20.GL_TEXTURE29,
         GLES20.GL_TEXTURE30,
-        GLES20.GL_TEXTURE31
+        GLES20.GL_TEXTURE31,
+        34016,
+        34017
         )
 
     init {

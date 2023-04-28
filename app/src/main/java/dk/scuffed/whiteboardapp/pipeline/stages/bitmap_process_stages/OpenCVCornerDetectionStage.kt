@@ -1,16 +1,13 @@
 package dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages
 
 import dk.scuffed.whiteboardapp.pipeline.IPipeline
-import dk.scuffed.whiteboardapp.pipeline.Pipeline
 import dk.scuffed.whiteboardapp.pipeline.stages.BitmapOutputStage
 import dk.scuffed.whiteboardapp.pipeline.stages.PointsOutputStage
 import dk.scuffed.whiteboardapp.utils.Vec2Int
 import org.opencv.android.Utils
 import org.opencv.core.Mat
 import org.opencv.core.MatOfKeyPoint
-import org.opencv.core.Scalar
 import org.opencv.features2d.FastFeatureDetector
-import org.opencv.features2d.Features2d
 
 internal class OpenCVCornerDetectionStage(
     private val bitmapOutputStage: BitmapOutputStage,

@@ -24,11 +24,21 @@ internal class WeightedPointsStage(
 
     override fun update() {
         pointHistories[0][pointIndex] = inputPoints.points[0]
+        historyPoints[0] = weightedAvgPoint(arrayOf(inputPoints.points[0]))
+
         pointHistories[1][pointIndex] = inputPoints.points[1]
+        historyPoints[1] = weightedAvgPoint(arrayOf(inputPoints.points[1]))
+
         pointHistories[2][pointIndex] = inputPoints.points[2]
+        historyPoints[2] = weightedAvgPoint(arrayOf(inputPoints.points[2]))
+
         pointHistories[3][pointIndex] = inputPoints.points[3]
+        historyPoints[3] = weightedAvgPoint(arrayOf(inputPoints.points[3]))
+
 
         pointIndex = (pointIndex + 1) % historySize
+
+
 
         points[0] = weightedAvgPoint(pointHistories[0])
         points[1] = weightedAvgPoint(pointHistories[1])

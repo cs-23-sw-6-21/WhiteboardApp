@@ -12,4 +12,5 @@ internal abstract class PointsOutputStage(
     vararg initialPoints: Vec2Int
 ) : Stage(pipeline) {
     val points = ArrayList(listOf(*initialPoints))
+    val historyPoints = ArrayList(listOf(*initialPoints))
 }

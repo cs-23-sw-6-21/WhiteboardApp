@@ -12,6 +12,7 @@ import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.StoreStage
 import dk.scuffed.whiteboardapp.pipeline.stages.pipeline_stages.SwitchablePointPipeline
 import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.CornersFromResolutionStage
 import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.DraggablePointsStage
+import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.DrawCornerHistoryStage
 import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.DrawCornersStage
 import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.ScreenCornerPointsStage
 
@@ -63,11 +64,17 @@ internal fun fullPipeline(
         pipeline
     )
 
-    val drawCorners = DrawCornersStage(
+    val historyCorners = DrawCornerHistoryStage(
         context,
         pipeline,
         switchablePointPipeline.pointsOutputStage
     )
+
+    /*val drawCorners = DrawCornersStage(
+        context,
+        pipeline,
+        switchablePointPipeline.pointsOutputStage
+    )*/
 
     // --------------- LINE DETECTION STUFF END
 
@@ -113,14 +120,20 @@ internal fun fullPipeline(
 
     // ------------------ POST PROCESSING END --------------
 
-
-    val overlay = OverlayStage(
+    val overlayCorners = OverlayStage(
         context,
         readdedColour.frameBufferInfo,
-        drawCorners.frameBufferInfo,
+        historyCorners.frameBufferInfo,
         pipeline
     )
 
+    /*val overlay = OverlayStage(
+        context,
+        overlayCorners.frameBufferInfo,
+        drawCorners.frameBufferInfo,
+        pipeline
+    )*/
 
-    return Pair(switchablePointPipeline, overlay)
+
+    return Pair(switchablePointPipeline, overlayCorners)
 }
