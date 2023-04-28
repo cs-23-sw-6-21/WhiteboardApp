@@ -24,7 +24,7 @@ const val useDoubleBuffering = true
 
 internal class Pipeline(context: Context, private val initialResolution: Size) : IPipeline {
 
-    private var stages = mutableListOf<Stage>()
+    var stages = mutableListOf<Stage>()
     private var nextTextureUnit: Int = 0
 
     private fun indexToTextureUnit(i: Int): Int{
@@ -61,6 +61,10 @@ internal class Pipeline(context: Context, private val initialResolution: Size) :
             letterbox.frameBufferInfo,
             this
         )
+
+        if (CSVWriter.recordTimings){
+            CSVWriter.MainWriter.write("Overall\n")
+        }
     }
 
     override fun draw() {
@@ -68,7 +72,11 @@ internal class Pipeline(context: Context, private val initialResolution: Size) :
         stages.forEach { stage -> stage.performUpdate() }
         val endTime = System.nanoTime()
         val duration = (endTime - startTime).toDouble() / 1000000.0
-        Log.i("Pipeline", "Frame took ${duration}ms")
+
+        if (CSVWriter.recordTimings){
+            CSVWriter.MainWriter.write("$duration\n")
+            Log.i("Pipeline", "Frame took ${duration}ms")
+        }
     }
 
     override fun onResolutionChanged(resolution: Size) {
