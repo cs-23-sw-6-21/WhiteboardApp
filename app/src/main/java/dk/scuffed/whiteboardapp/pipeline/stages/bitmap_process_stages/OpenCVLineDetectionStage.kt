@@ -31,7 +31,7 @@ internal class OpenCVLineDetectionStage(
     private val rhoResolution: Double = 1.0,
     private val thetaResolution: Double = Math.PI / 180.0,
     private val rhoThreshold: Double = 0.0,
-    private val thetaThreshold: Double = 0.0
+    private val thetaThreshold: Double = 0.0,
 ) : LinesOutputStage(pipeline) {
 
     private val inputMat = Mat()
