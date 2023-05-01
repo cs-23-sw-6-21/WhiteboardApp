@@ -1,7 +1,9 @@
 package dk.scuffed.whiteboardapp.pipeline.stage_combinations
 
 import android.content.Context
+import android.icu.number.Scale
 import android.opengl.GLES20
+import android.util.Size
 import dk.scuffed.whiteboardapp.pipeline.IPipeline
 import dk.scuffed.whiteboardapp.pipeline.stages.GLOutputStage
 import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.DumpToGalleryStage
@@ -87,23 +89,37 @@ internal fun fullPipeline(
         pipeline
     )
 
+    GenerateMipmapStage(perspectiveCorrected.frameBufferInfo, false, pipeline)
+
     // ------------------ PERSPECTIVE CORRECTION END --------------
 
 
     // ------------------ POST PROCESSING START --------------
 
+    val downscaledForWhitebalance = ScaleToResolution(
+        context, perspectiveCorrected.frameBufferInfo,
+        Size(perspectiveCorrected.frameBufferInfo.textureSize.width / 32, perspectiveCorrected.frameBufferInfo.textureSize.height / 32),
+        pipeline
+    )
+    val downscaledForBinarization = ScaleToResolution(
+        context, perspectiveCorrected.frameBufferInfo,
+        Size(perspectiveCorrected.frameBufferInfo.textureSize.width / 8, perspectiveCorrected.frameBufferInfo.textureSize.height / 8),
+        pipeline
+    )
+
     val whitebalance = whiteBalance(
         context,
         perspectiveCorrected,
-        5,
+        downscaledForWhitebalance,
         pipeline
     )
+
 
     val binarized = binarize(
         context,
         perspectiveCorrected,
+        downscaledForBinarization,
         7.5f,
-        3,
         pipeline)
 
     val readdedColour = addColour(

@@ -46,9 +46,8 @@ internal class Pipeline(context: Context, private val initialResolution: Size) :
 
         val cameraXStage = CameraXStage(context, this)
 
-        val entirePipeline = fullPipeline(context, cameraXStage, this)
 
-        dumpToGalleryFull(context, cameraXStage.frameBufferInfo, this)
+        val entirePipeline = fullPipeline(context, cameraXStage, this)
 
         dumpToGalleryFull(context, entirePipeline.second.frameBufferInfo, this)
 
