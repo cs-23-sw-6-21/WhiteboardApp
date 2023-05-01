@@ -13,6 +13,7 @@ import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.Letterboxi
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.OverlayStage
 import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.DrawCornersStage
 import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.DrawLinesStage
+import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.WeightedPointsStage
 import dk.scuffed.whiteboardapp.utils.Color
 
 /**
@@ -24,7 +25,6 @@ internal fun fullCornerDetectionWithDebugDrawing(
     inputStage: GLOutputStage,
     pipeline: IPipeline
 ): Pair<PointsOutputStage, GLOutputStage> {
-
     val edges = fullCannyEdgeDetection(
         context,
         inputStage,
@@ -37,6 +37,50 @@ internal fun fullCornerDetectionWithDebugDrawing(
         pipeline
     )
 
+    val openCVLineDetectionStage2 = OpenCVLineDetectionStage(
+        edgesBitmapStage,
+        150,
+        50,
+        pipeline,
+        1.0,
+        Math.PI / 180.0
+    )
+    val verticalLinesAngleDiscriminatorStage2 = LinesAngleDiscriminatorStage(
+        openCVLineDetectionStage2,
+        -(Math.PI / 4.0f).toFloat(),
+        (Math.PI / 4.0f).toFloat(),
+        pipeline
+    )
+
+    val horizontalLinesAngleDiscriminatorStage2 = LinesAngleDiscriminatorStage(
+        openCVLineDetectionStage2,
+        (Math.PI / 4.0f).toFloat(),
+        (Math.PI / 2.0f + Math.PI / 4.0f).toFloat(),
+        pipeline
+    )
+
+    val verticalDrawLinesStage2 = DrawLinesStage(
+        context,
+        verticalLinesAngleDiscriminatorStage2,
+        Color(1.0f, 0.0f, 0.0f, 0.5f),
+        inputStage.frameBufferInfo.textureSize,
+        pipeline
+    )
+
+    val horizontalDrawLinesStage2 = DrawLinesStage(
+        context,
+        horizontalLinesAngleDiscriminatorStage2,
+        Color(1.0f, 0.1f, 0.1f, 0.5f),
+        inputStage.frameBufferInfo.textureSize,
+        pipeline
+    )
+
+
+
+
+
+
+
     val openCVLineDetectionStage = OpenCVLineDetectionStage(
         edgesBitmapStage,
         150,
@@ -48,18 +92,11 @@ internal fun fullCornerDetectionWithDebugDrawing(
         Math.PI / 75.0
     )
 
+
     val verticalLinesAngleDiscriminatorStage = LinesAngleDiscriminatorStage(
         openCVLineDetectionStage,
         -(Math.PI / 4.0f).toFloat(),
         (Math.PI / 4.0f).toFloat(),
-        pipeline
-    )
-
-    val verticalDrawLinesStage = DrawLinesStage(
-        context,
-        verticalLinesAngleDiscriminatorStage,
-        Color(1.0f, 0.0f, 0.0f, 1.0f),
-        inputStage.frameBufferInfo.textureSize,
         pipeline
     )
 
@@ -70,24 +107,48 @@ internal fun fullCornerDetectionWithDebugDrawing(
         pipeline
     )
 
-    val horizontalDrawLinesStage = DrawLinesStage(
+    val verticalDrawLinesStage = DrawLinesStage(
         context,
-        horizontalLinesAngleDiscriminatorStage,
-        Color(0.0f, 1.0f, 0.0f, 1.0f),
+        verticalLinesAngleDiscriminatorStage,
+        Color(0.0f, 1.0f, 0.0f, 0.5f),
         inputStage.frameBufferInfo.textureSize,
         pipeline
     )
 
+    val horizontalDrawLinesStage = DrawLinesStage(
+        context,
+        horizontalLinesAngleDiscriminatorStage,
+        Color(0.0f, 1.0f, 0.0f, 0.5f),
+        inputStage.frameBufferInfo.textureSize,
+        pipeline
+    )
+/*
     val letterboxedStage = LetterboxingStage(
         context,
         inputStage.frameBufferInfo,
         pipeline
     )
 
+ */
+
+
+    val verticalOverlayStage2 = OverlayStage(
+        context,
+        inputStage.frameBufferInfo,
+        verticalDrawLinesStage2.frameBufferInfo,
+        pipeline
+    )
+
+    val horizontalOverlayStage2 = OverlayStage(
+        context,
+        verticalOverlayStage2.frameBufferInfo,
+        horizontalDrawLinesStage2.frameBufferInfo,
+        pipeline
+    )
 
     val verticalOverlayStage = OverlayStage(
         context,
-        letterboxedStage.frameBufferInfo,
+        horizontalOverlayStage2.frameBufferInfo,
         verticalDrawLinesStage.frameBufferInfo,
         pipeline
     )
@@ -104,11 +165,21 @@ internal fun fullCornerDetectionWithDebugDrawing(
         verticalLinesAngleDiscriminatorStage,
         pipeline
     )
+    /*
+    val weightedCornerStage = WeightedPointsStage(
+        biggestQuadStage,
+        20,
+        5.0f,
+        pipeline
+    )
+     */
+
 
     val drawCornersStage = DrawCornersStage(
         context,
         pipeline,
-        biggestQuadStage
+        biggestQuadStage,
+        inputStage.frameBufferInfo.textureSize
     )
 
     val debugOverlay = OverlayStage(

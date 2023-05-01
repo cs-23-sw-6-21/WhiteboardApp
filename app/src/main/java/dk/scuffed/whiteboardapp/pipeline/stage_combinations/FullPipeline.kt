@@ -70,7 +70,8 @@ internal fun fullPipeline(
     val drawCorners = DrawCornersStage(
         context,
         pipeline,
-        switchablePointPipeline.pointsOutputStage
+        switchablePointPipeline.pointsOutputStage,
+        inputStage.frameBufferInfo.textureSize
     )
 
     // --------------- LINE DETECTION STUFF END
