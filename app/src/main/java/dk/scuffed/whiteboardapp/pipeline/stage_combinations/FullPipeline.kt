@@ -26,7 +26,6 @@ internal fun fullPipeline(
     pipeline: IPipeline
 ): Pair<SwitchablePointPipeline, GLOutputStage> {
 
-    GenerateMipmapStage(inputStage.frameBufferInfo, false, pipeline)
 
     // ------------------ SEGMENTATION STUFF START --------------
 
@@ -89,14 +88,16 @@ internal fun fullPipeline(
         pipeline
     )
 
+    GenerateMipmapStage(perspectiveCorrected.frameBufferInfo, false, pipeline)
+
     // ------------------ PERSPECTIVE CORRECTION END --------------
 
 
     // ------------------ POST PROCESSING START --------------
 
     val downscaled = ScaleToResolution(
-        context, inputStage.frameBufferInfo,
-        Size(inputStage.frameBufferInfo.textureSize.width / 32, inputStage.frameBufferInfo.textureSize.height / 32),
+        context, perspectiveCorrected.frameBufferInfo,
+        Size(perspectiveCorrected.frameBufferInfo.textureSize.width / 32, perspectiveCorrected.frameBufferInfo.textureSize.height / 32),
         pipeline
     )
 

@@ -70,7 +70,7 @@ internal class PerspectiveCorrectionStage(
     }
 
     override fun clear() {
-        glClearColor(Color(1f, 1f, 1f, 1f))
+        glClearColor(Color(0f, 0f, 0f, 0f))
         glClear(GLES20.GL_COLOR_BUFFER_BIT)
         glClearColorError()
     }
