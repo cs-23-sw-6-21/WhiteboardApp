@@ -37,7 +37,8 @@ internal fun perspectiveCorrectionTestPipeline(
     val drawCorners = DrawCornersStage(
         context,
         pipeline,
-        draggablePoints
+        draggablePoints,
+        inputStage.frameBufferInfo.textureSize
     )
 
     val overlay = OverlayStage(
