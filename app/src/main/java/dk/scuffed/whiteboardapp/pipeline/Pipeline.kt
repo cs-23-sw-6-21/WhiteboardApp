@@ -11,6 +11,8 @@ import dk.scuffed.whiteboardapp.R
 import dk.scuffed.whiteboardapp.opengl.*
 import dk.scuffed.whiteboardapp.pipeline.stage_combinations.*
 import dk.scuffed.whiteboardapp.pipeline.stages.*
+import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.DumpToGalleryStage
+import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.FramebufferToBitmapStage
 import dk.scuffed.whiteboardapp.pipeline.stages.input_stages.CameraXStage
 import dk.scuffed.whiteboardapp.pipeline.stages.input_stages.TextureStage
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.*
@@ -32,26 +34,28 @@ internal class Pipeline(context: Context, private val initialResolution: Size) :
         glDisable(GLES20.GL_CULL_FACE)
         glDisable(GLES20.GL_DEPTH_TEST)
         glClearColorError()
-/*
+
+        /*
         val opt = BitmapFactory.Options()
         opt.inScaled = false
         val textureStage = TextureStage(
             context,
-            BitmapFactory.decodeResource(context.resources, R.drawable.binarizetest, opt),
+            BitmapFactory.decodeResource(context.resources, R.drawable.whiteboard, opt),
             this
-        )
-        */
+        )*/
 
         val cameraXStage = CameraXStage(context, this)
 
 
         val entirePipeline = fullPipeline(context, cameraXStage, this)
 
-        val letterBox = LetterboxingStage(context, entirePipeline.second.frameBufferInfo, this)
+        dumpToGalleryFull(context, entirePipeline.second.frameBufferInfo, this)
+
+        val letterbox = LetterboxingStage(context, entirePipeline.second.frameBufferInfo, this)
 
         DrawFramebufferStage(
             context,
-            letterBox.frameBufferInfo,
+            letterbox.frameBufferInfo,
             this
         )
     }
