@@ -6,6 +6,7 @@ import android.opengl.GLES20
 import android.util.Size
 import dk.scuffed.whiteboardapp.pipeline.IPipeline
 import dk.scuffed.whiteboardapp.pipeline.stages.GLOutputStage
+import dk.scuffed.whiteboardapp.pipeline.stages.PointsOutputStage
 import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.DumpToGalleryStage
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.*
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.BinarizationStage
@@ -13,10 +14,10 @@ import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.MaskingSta
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.OverlayStage
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.StoreStage
 import dk.scuffed.whiteboardapp.pipeline.stages.pipeline_stages.SwitchablePointPipeline
+import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.*
 import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.CornersFromResolutionStage
 import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.DraggablePointsStage
 import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.DrawCornersStage
-import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.ScreenCornerPointsStage
 import dk.scuffed.whiteboardapp.utils.Color
 
 /**
@@ -26,7 +27,7 @@ internal fun fullPipeline(
     context: Context,
     inputStage: GLOutputStage,
     pipeline: IPipeline
-): Pair<SwitchablePointPipeline, GLOutputStage> {
+): Pair<PointsOutputStage, GLOutputStage> {
 
 
     // ------------------ SEGMENTATION STUFF START --------------
@@ -61,18 +62,20 @@ internal fun fullPipeline(
 
     // ------------------ LINE DETECTION STUFF START --------------
 
-    val switchablePointPipeline = SwitchablePointPipeline(
-        context,
-        { pipeline -> DraggablePointsStage(pipeline) },
-        { pipeline -> fullCornerDetection(context, storeStage, pipeline) },
-        pipeline
-    )
+    val cornerDetection = fullCornerDetection(context, storeStage, pipeline)
 
     val drawCorners = DrawCornersStage(
         context,
         pipeline,
-        switchablePointPipeline.pointsOutputStage,
+        cornerDetection,
         Color(0.0f, 1.0f, 0.0f, 1.0f)
+    )
+
+    val drawHistoryCorners = DrawCornersStage(
+        context,
+        pipeline,
+        (cornerDetection as WeightedPointsStage).historyPointsStage,
+        Color(1.0f, 0.0f, 0.0f, 1.0f)
     )
 
     // --------------- LINE DETECTION STUFF END
@@ -86,7 +89,7 @@ internal fun fullPipeline(
     val perspectiveCorrected = fullPerspectiveCorrection(
         context,
         maskStage,
-        switchablePointPipeline.pointsOutputStage,
+        cornerDetection,
         cameraPointsStage,
         pipeline
     )
@@ -137,9 +140,16 @@ internal fun fullPipeline(
     val overlay = OverlayStage(
         context,
         readdedColour.frameBufferInfo,
+        drawHistoryCorners.frameBufferInfo,
+        pipeline
+    )
+
+    val overlay2 = OverlayStage(
+        context,
+        overlay.frameBufferInfo,
         drawCorners.frameBufferInfo,
         pipeline
     )
 
-    return Pair(switchablePointPipeline, overlay)
+    return Pair(cornerDetection, overlay2)
 }

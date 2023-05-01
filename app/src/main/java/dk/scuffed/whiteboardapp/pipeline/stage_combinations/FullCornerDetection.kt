@@ -23,66 +23,56 @@ internal fun fullCornerDetection(
     inputStage: GLOutputStage,
     pipeline: IPipeline
 ): PointsOutputStage {
-
-    val threadedBitmapInputPointOutputStage = ThreadedBitmapInputPointOutputStage(
-        { pipeline ->
-            val edges = fullCannyEdgeDetection(
-                context,
-                inputStage,
-                pipeline
-            )
-
-            val edgesBitmapStage = FramebufferToBitmapStage(
-                edges.frameBufferInfo,
-                Bitmap.Config.ARGB_8888,
-                pipeline
-            )
-        },
-        { inputBitmapStage, pipeline ->
-            val openCVLineDetectionStage = OpenCVLineDetectionStage(
-                inputBitmapStage,
-                150,
-                50,
-                pipeline,
-                1.0,
-                Math.PI / 180.0,
-                15.0,
-                Math.PI / 75.0
-            )
-
-            val verticalLinesAngleDiscriminatorStage = LinesAngleDiscriminatorStage(
-                openCVLineDetectionStage,
-                -(Math.PI / 4.0f).toFloat(),
-                (Math.PI / 4.0f).toFloat(),
-                pipeline
-            )
-
-            val horizontalLinesAngleDiscriminatorStage = LinesAngleDiscriminatorStage(
-                openCVLineDetectionStage,
-                (Math.PI / 4.0f).toFloat(),
-                (Math.PI / 2.0f + Math.PI / 4.0f).toFloat(),
-                pipeline
-            )
-
-            val biggestQuadStage = BiggestQuadStage(
-                horizontalLinesAngleDiscriminatorStage,
-                verticalLinesAngleDiscriminatorStage,
-                pipeline
-            )
-
-            val weightedCornerStage = WeightedPointsStage(
-                biggestQuadStage,
-                20,
-                5.0f,
-                pipeline
-            )
-        },
-        pipeline,
-        Vec2Int(0,0),
-        Vec2Int(0,0),
-        Vec2Int(0,0),
-        Vec2Int(0,0)
+    val edges = fullCannyEdgeDetection(
+        context,
+        inputStage,
+        pipeline
     )
 
-    return threadedBitmapInputPointOutputStage.myOutputPointsStage
+    val edgesBitmapStage = FramebufferToBitmapStage(
+        edges.frameBufferInfo,
+        Bitmap.Config.ARGB_8888,
+        pipeline
+    )
+
+    val openCVLineDetectionStage = OpenCVLineDetectionStage(
+        edgesBitmapStage,
+        150,
+        50,
+        pipeline,
+        1.0,
+        Math.PI / 180.0,
+        15.0,
+        Math.PI / 75.0
+    )
+
+    val verticalLinesAngleDiscriminatorStage = LinesAngleDiscriminatorStage(
+        openCVLineDetectionStage,
+        -(Math.PI / 4.0f).toFloat(),
+        (Math.PI / 4.0f).toFloat(),
+        pipeline
+    )
+
+    val horizontalLinesAngleDiscriminatorStage = LinesAngleDiscriminatorStage(
+        openCVLineDetectionStage,
+        (Math.PI / 4.0f).toFloat(),
+        (Math.PI / 2.0f + Math.PI / 4.0f).toFloat(),
+        pipeline
+    )
+
+    val biggestQuadStage = BiggestQuadStage(
+        horizontalLinesAngleDiscriminatorStage,
+        verticalLinesAngleDiscriminatorStage,
+        pipeline
+    )
+
+    val weightedCornerStage = WeightedPointsStage(
+        biggestQuadStage,
+        20,
+        5.0f,
+        pipeline
+    )
+
+    return weightedCornerStage
+
 }

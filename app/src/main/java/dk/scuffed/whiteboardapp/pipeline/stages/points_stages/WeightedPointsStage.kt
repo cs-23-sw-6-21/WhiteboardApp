@@ -12,7 +12,7 @@ internal class WeightedPointsStage(
     private val weightThreshold: Float,
     pipeline: IPipeline
 ) : PointsOutputStage(pipeline, inputPoints.points[0], inputPoints.points[1], inputPoints.points[2], inputPoints.points[3]) {
-    private var pointHistories =
+    private val pointHistories =
         arrayOf(
             Array(historySize) { inputPoints.points[0] },
             Array(historySize) { inputPoints.points[1] },
@@ -20,6 +20,8 @@ internal class WeightedPointsStage(
             Array(historySize) { inputPoints.points[3] }
         )
     private var pointIndex = 0
+
+    val historyPointsStage: PointsOutputStage = MyHistoryPointsStage(pipeline, *pointHistories.flatten().toTypedArray())
 
 
     override fun update() {
@@ -34,6 +36,8 @@ internal class WeightedPointsStage(
         points[1] = weightedAvgPoint(pointHistories[1])
         points[2] = weightedAvgPoint(pointHistories[2])
         points[3] = weightedAvgPoint(pointHistories[3])
+
+        (historyPointsStage as MyHistoryPointsStage).setPoints(pointHistories.flatten().toTypedArray())
     }
 
     private fun weightedAvgPoint(pointHistory: Array<Vec2Int>): Vec2Int {
@@ -56,5 +60,18 @@ internal class WeightedPointsStage(
 
         val result = sum / weightSum
         return Vec2Float(round(result.x), round(result.y)).toVec2Int()
+    }
+
+    private class MyHistoryPointsStage(pipeline: IPipeline, vararg initialPoints: Vec2Int) :
+        PointsOutputStage(pipeline, *initialPoints) {
+        override fun update() {
+            // Nothing
+        }
+
+        fun setPoints(newPoints: Array<Vec2Int>) {
+            for (i in points.indices) {
+                points[i] = newPoints[i]
+            }
+        }
     }
 }
