@@ -34,29 +34,29 @@ internal class Pipeline(context: Context, private val initialResolution: Size) :
         glDisable(GLES20.GL_CULL_FACE)
         glDisable(GLES20.GL_DEPTH_TEST)
         glClearColorError()
-/*
+
+        /*
         val opt = BitmapFactory.Options()
         opt.inScaled = false
         val textureStage = TextureStage(
             context,
-            BitmapFactory.decodeResource(context.resources, R.drawable.binarizetest, opt),
+            BitmapFactory.decodeResource(context.resources, R.drawable.whiteboard, opt),
             this
-        )
-        */
+        )*/
 
         val cameraXStage = CameraXStage(context, this)
 
         val entirePipeline = fullPipeline(context, cameraXStage, this)
 
-
-
         dumpToGalleryFull(context, cameraXStage.frameBufferInfo, this)
 
         dumpToGalleryFull(context, entirePipeline.second.frameBufferInfo, this)
 
+        val letterbox = LetterboxingStage(context, entirePipeline.second.frameBufferInfo, this)
+
         DrawFramebufferStage(
             context,
-            entirePipeline.second.frameBufferInfo,
+            letterbox.frameBufferInfo,
             this
         )
     }
