@@ -96,12 +96,12 @@ internal fun fullPipeline(
 
     // ------------------ POST PROCESSING START --------------
 
-    val downscaled5 = ScaleToResolution(
+    val downscaledForWhitebalance = ScaleToResolution(
         context, perspectiveCorrected.frameBufferInfo,
         Size(perspectiveCorrected.frameBufferInfo.textureSize.width / 32, perspectiveCorrected.frameBufferInfo.textureSize.height / 32),
         pipeline
     )
-    val downscaled3 = ScaleToResolution(
+    val downscaledForBinarization = ScaleToResolution(
         context, perspectiveCorrected.frameBufferInfo,
         Size(perspectiveCorrected.frameBufferInfo.textureSize.width / 8, perspectiveCorrected.frameBufferInfo.textureSize.height / 8),
         pipeline
@@ -110,7 +110,7 @@ internal fun fullPipeline(
     val whitebalance = whiteBalance(
         context,
         perspectiveCorrected,
-        downscaled5,
+        downscaledForWhitebalance,
         pipeline
     )
 
@@ -118,7 +118,7 @@ internal fun fullPipeline(
     val binarized = binarize(
         context,
         perspectiveCorrected,
-        downscaled3,
+        downscaledForBinarization,
         7.5f,
         pipeline)
 
