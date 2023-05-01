@@ -17,6 +17,7 @@ import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.CornersFromResolut
 import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.DraggablePointsStage
 import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.DrawCornersStage
 import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.ScreenCornerPointsStage
+import dk.scuffed.whiteboardapp.utils.Color
 
 /**
  * Our canonical full pipeline that does everything except input/output
@@ -70,7 +71,8 @@ internal fun fullPipeline(
     val drawCorners = DrawCornersStage(
         context,
         pipeline,
-        switchablePointPipeline.pointsOutputStage
+        switchablePointPipeline.pointsOutputStage,
+        Color(0.0f, 1.0f, 0.0f, 1.0f)
     )
 
     // --------------- LINE DETECTION STUFF END

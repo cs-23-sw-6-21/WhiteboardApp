@@ -8,6 +8,7 @@ import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.OverlaySta
 import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.DraggablePointsStage
 import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.DrawCornersStage
 import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.ScreenCornerPointsStage
+import dk.scuffed.whiteboardapp.utils.Color
 
 /**
  * Runs the entire perspective correction based on draggable points and screen points and an input framebuffer
@@ -37,7 +38,8 @@ internal fun perspectiveCorrectionTestPipeline(
     val drawCorners = DrawCornersStage(
         context,
         pipeline,
-        draggablePoints
+        draggablePoints,
+        Color(0.0f, 1.0f, 0.0f, 1.0f)
     )
 
     val overlay = OverlayStage(

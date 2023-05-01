@@ -472,6 +472,11 @@ fun glUniform2f(location: Int, x: Float, y: Float) {
     logErrorIfAny("glUniform2f")
 }
 
+fun glUniform3f(location: Int, x: Float, y: Float, z: Float) {
+    GLES20.glUniform3f(location, x, y, z)
+    logErrorIfAny("glUniform3f")
+}
+
 fun glUniform4f(location: Int, r: Float, g: Float, b: Float, a: Float) {
     GLES20.glUniform4f(location, r, g, b, a)
     logErrorIfAny("glUniform4f")

@@ -108,7 +108,8 @@ internal fun fullCornerDetectionWithDebugDrawing(
     val drawCornersStage = DrawCornersStage(
         context,
         pipeline,
-        biggestQuadStage
+        biggestQuadStage,
+        Color(0.0f, 1.0f, 0.0f, 1.0f)
     )
 
     val debugOverlay = OverlayStage(
