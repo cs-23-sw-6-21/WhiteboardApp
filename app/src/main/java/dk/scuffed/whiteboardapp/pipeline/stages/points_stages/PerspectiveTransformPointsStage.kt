@@ -34,6 +34,8 @@ internal class PerspectiveTransformPointsStage(
     var scaledResolution = getResolution()
 
     override fun update() {
+
+
         assert(pointsFrom.points.size == 4)
         assert(pointsTo.points.size == 4)
 
