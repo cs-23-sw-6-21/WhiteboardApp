@@ -528,6 +528,28 @@ fun glUniform4fv(location: Int, count: Int, buffer: FloatArray, offset: Int) {
     logErrorIfAny("glUniform4fv")
 }
 
+fun glBindBuffer(target: Int, buffer: Int) {
+    GLES30.glBindBuffer(target, buffer)
+    logErrorIfAny("glBindBuffer")
+}
+
+fun glMapBufferRange(target: Int, offset: Int, length: Int, access: Int): Buffer {
+    val a = GLES30.glMapBufferRange(
+        target,
+        offset,
+        length,
+        access
+    )
+    logErrorIfAny("glMapBufferRange")
+    return a
+}
+
+fun glUnmapBuffer(target: Int) {
+    GLES30.glUnmapBuffer(target)
+    logErrorIfAny("glUnmapBuffer")
+}
+
+
 /**
  * Get how many bytes it takes to represent a pixel given a texture format
  * @param textureFormat The texture format
@@ -542,6 +564,9 @@ fun bytesPerPixel(textureFormat: Int): Int {
             .GL_RGB -> 3
         GLES30
             .GL_ALPHA -> 1
+        GLES30
+            .GL_RGBA8 -> 4
+
         else -> throw InvalidParameterException("textureFormat")
     }
 }

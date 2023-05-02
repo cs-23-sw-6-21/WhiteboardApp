@@ -52,13 +52,13 @@ internal class Pipeline(context: Context, private val initialResolution: Size) :
 
 
 
-        //val entirePipeline = fullPipeline(context, cameraXStage, this)
+        val entirePipeline = fullPipeline(context, cameraXStage, this)
 
-        val a = FramebufferToBitmapPBOStage(cameraXStage.frameBufferInfo, Bitmap.Config.ARGB_8888, this)
+        //val a = FramebufferToBitmapPBOStage(cameraXStage.frameBufferInfo, Bitmap.Config.ARGB_8888, this)
 
         //dumpToGalleryFull(context, entirePipeline.second.frameBufferInfo, this)
 
-        val letterbox = LetterboxingStage(context, cameraXStage.frameBufferInfo, this)
+        val letterbox = LetterboxingStage(context, entirePipeline.second.frameBufferInfo, this)
 
         DrawFramebufferStage(
             context,

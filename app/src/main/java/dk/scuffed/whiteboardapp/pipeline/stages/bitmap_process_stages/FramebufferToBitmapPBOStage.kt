@@ -60,12 +60,10 @@ internal class FramebufferToBitmapPBOStage(
     }
 
     override fun update() {
-        Log.d("pre", "pre")
 
         glBindFramebuffer(inputFramebufferInfo.fboHandle)
         //glActiveTexture(inputFramebufferInfo.textureUnitPair.textureUnit)
         readPixelsFromPBO(outputBitmap)
-        Log.d("pre", "post")
 
     }
 
@@ -73,23 +71,23 @@ internal class FramebufferToBitmapPBOStage(
      * Reads the pixels from the PBO and swaps the buffers
      */
     private fun readPixelsFromPBO(bitmap: Bitmap) {
-        //val times = arrayListOf(System.nanoTime())
+        val times = arrayListOf(System.nanoTime())
 
 
         // Bind the current buffer
-        GLES30.glBindBuffer(GLES30.GL_PIXEL_PACK_BUFFER, pboIds.get(currentPboIndex))
+        glBindBuffer(GLES30.GL_PIXEL_PACK_BUFFER, pboIds.get(currentPboIndex))
         //times.add(System.nanoTime())
 
         // Read pixels into the bound buffer
-        glReadPixels(0, 0, inputFramebufferInfo.textureSize.width, inputFramebufferInfo.textureSize.height, GLES30.GL_RGBA8, GLES30.GL_UNSIGNED_BYTE)
-        //times.add(System.nanoTime())
+        glReadPixels(0, 0, inputFramebufferInfo.textureSize.width, inputFramebufferInfo.textureSize.height, GLES30.GL_RGBA8U, GLES30.GL_UNSIGNED_BYTE)
+        times.add(System.nanoTime())
 
         // Bind the next buffer
-        GLES30.glBindBuffer(GLES30.GL_PIXEL_PACK_BUFFER, pboIds.get(nextPboIndex))
+        glBindBuffer(GLES30.GL_PIXEL_PACK_BUFFER, pboIds.get(nextPboIndex))
         //times.add(System.nanoTime())
 
         // Map to buffer to a byte buffer, this is our pixel data
-        val pixelsBuffer = GLES30.glMapBufferRange(
+        val pixelsBuffer = glMapBufferRange(
             GLES30.GL_PIXEL_PACK_BUFFER,
             0,
             inputFramebufferInfo.textureSize.width * inputFramebufferInfo.textureSize.height * 4,
@@ -107,19 +105,19 @@ internal class FramebufferToBitmapPBOStage(
         //times.add(System.nanoTime())
 
         // Unmap the buffers
-        GLES30.glUnmapBuffer(GLES30.GL_PIXEL_PACK_BUFFER)
-        GLES30.glBindBuffer(GLES30.GL_PIXEL_PACK_BUFFER, GLES20.GL_NONE)
-        GLES30.glBindFramebuffer(GLES30.GL_FRAMEBUFFER, GLES20.GL_NONE)
+        glUnmapBuffer(GLES30.GL_PIXEL_PACK_BUFFER)
+        glBindBuffer(GLES30.GL_PIXEL_PACK_BUFFER, GLES20.GL_NONE)
+        glBindFramebuffer(GLES20.GL_NONE)
         //times.add(System.nanoTime())
 
-/*
+
         for (i in times.indices) {
             if (i == 0){
                 continue
             }
-            //Log.d("sdfs", "Time " + i + ":" + (times[i] - times [i-1])/1000000.0)
+            Log.d("sdfs", "Time " + i + ":" + (times[i] - times [i-1])/1000000.0)
         }
-        */
+
 
     }
 }

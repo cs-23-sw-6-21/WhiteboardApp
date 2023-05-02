@@ -39,9 +39,6 @@ internal fun fullSegmentation(
         Bitmap.Config.ARGB_8888,
         pipeline
     )
-    val TEST = BitmapToFramebufferStage(segBitmap, pipeline)
-
-    val aa = GrayscaleStage(context, TEST.frameBufferInfo, pipeline)
 
     val seg = SegmentationStage(
         context,
@@ -91,5 +88,5 @@ internal fun fullSegmentation(
         pipeline
     )
 
-    return aa
+    return segPost
 }
