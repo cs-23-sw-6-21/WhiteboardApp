@@ -8,8 +8,10 @@ import dk.scuffed.whiteboardapp.pipeline.IPipeline
 import dk.scuffed.whiteboardapp.pipeline.Pipeline
 import dk.scuffed.whiteboardapp.pipeline.stages.GLOutputStage
 import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.BitmapToFramebufferStage
+import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.FramebufferToBitmapPBOStage
 import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.FramebufferToBitmapStage
 import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.OpenCVDilateStage
+import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.GrayscaleStage
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.SegmentationAccumulationStage
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.StoreStage
 import dk.scuffed.whiteboardapp.pipeline.stages.segmentation_stages.SegmentationPostProcessingStage
@@ -32,11 +34,14 @@ internal fun fullSegmentation(
         pipeline
     )
 
-    val segBitmap = FramebufferToBitmapStage(
+    val segBitmap = FramebufferToBitmapPBOStage(
         segPre.frameBufferInfo,
         Bitmap.Config.ARGB_8888,
         pipeline
     )
+    val TEST = BitmapToFramebufferStage(segBitmap, pipeline)
+
+    val aa = GrayscaleStage(context, TEST.frameBufferInfo, pipeline)
 
     val seg = SegmentationStage(
         context,
@@ -86,5 +91,5 @@ internal fun fullSegmentation(
         pipeline
     )
 
-    return segPost
+    return aa
 }

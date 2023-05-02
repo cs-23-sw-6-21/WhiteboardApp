@@ -3,11 +3,9 @@ package dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages
 import android.graphics.Bitmap
 import android.opengl.GLES20
 import android.opengl.GLES30
+import android.util.Log
 import dk.scuffed.whiteboardapp.helper.GlesHelper.glReadPixels
-import dk.scuffed.whiteboardapp.opengl.bytesPerPixel
-import dk.scuffed.whiteboardapp.opengl.glActiveTexture
-import dk.scuffed.whiteboardapp.opengl.glBindFramebuffer
-import dk.scuffed.whiteboardapp.opengl.glReadPixels
+import dk.scuffed.whiteboardapp.opengl.*
 import dk.scuffed.whiteboardapp.pipeline.FramebufferInfo
 import dk.scuffed.whiteboardapp.pipeline.IPipeline
 import dk.scuffed.whiteboardapp.pipeline.stages.BitmapOutputStage
@@ -62,36 +60,33 @@ internal class FramebufferToBitmapPBOStage(
     }
 
     override fun update() {
-        readPixelsFromPBO(outputBitmap)
-    }
-
-    private fun readFrameBuffer(bitmap: Bitmap, framebufferInfo: FramebufferInfo) {
-        byteBuffer.position(0)
+        Log.d("pre", "pre")
 
         glBindFramebuffer(inputFramebufferInfo.fboHandle)
-        glActiveTexture(inputFramebufferInfo.textureUnitPair.textureUnit)
-        glReadPixels(Vec2Int(0, 0), inputFramebufferInfo.textureSize, GLES20.GL_RGBA, byteBuffer)
+        //glActiveTexture(inputFramebufferInfo.textureUnitPair.textureUnit)
+        readPixelsFromPBO(outputBitmap)
+        Log.d("pre", "post")
 
-        //glReadPixels()
-
-        bitmap.copyPixelsFromBuffer(byteBuffer)
     }
 
     /**
      * Reads the pixels from the PBO and swaps the buffers
      */
     private fun readPixelsFromPBO(bitmap: Bitmap) {
+        //val times = arrayListOf(System.nanoTime())
+
+
         // Bind the current buffer
         GLES30.glBindBuffer(GLES30.GL_PIXEL_PACK_BUFFER, pboIds.get(currentPboIndex))
-
-        //glBindFramebuffer(inputFramebufferInfo.fboHandle)
-        //glActiveTexture(inputFramebufferInfo.textureUnitPair.textureUnit)
+        //times.add(System.nanoTime())
 
         // Read pixels into the bound buffer
-        glReadPixels(0, 0, inputFramebufferInfo.textureSize.width, inputFramebufferInfo.textureSize.height, GLES20.GL_RGBA, GLES30.GL_UNSIGNED_BYTE)
+        glReadPixels(0, 0, inputFramebufferInfo.textureSize.width, inputFramebufferInfo.textureSize.height, GLES30.GL_RGBA8, GLES30.GL_UNSIGNED_BYTE)
+        //times.add(System.nanoTime())
 
         // Bind the next buffer
         GLES30.glBindBuffer(GLES30.GL_PIXEL_PACK_BUFFER, pboIds.get(nextPboIndex))
+        //times.add(System.nanoTime())
 
         // Map to buffer to a byte buffer, this is our pixel data
         val pixelsBuffer = GLES30.glMapBufferRange(
@@ -100,17 +95,31 @@ internal class FramebufferToBitmapPBOStage(
             inputFramebufferInfo.textureSize.width * inputFramebufferInfo.textureSize.height * 4,
             GLES30.GL_MAP_READ_BIT
         ) as ByteBuffer
+        //times.add(System.nanoTime())
 
         bitmap.copyPixelsFromBuffer(pixelsBuffer)
+        //times.add(System.nanoTime())
 
 
         // Swap the buffer index
         currentPboIndex = (currentPboIndex + 1) % pboIds.capacity()
         nextPboIndex = (nextPboIndex + 1) % pboIds.capacity()
+        //times.add(System.nanoTime())
 
         // Unmap the buffers
         GLES30.glUnmapBuffer(GLES30.GL_PIXEL_PACK_BUFFER)
         GLES30.glBindBuffer(GLES30.GL_PIXEL_PACK_BUFFER, GLES20.GL_NONE)
         GLES30.glBindFramebuffer(GLES30.GL_FRAMEBUFFER, GLES20.GL_NONE)
+        //times.add(System.nanoTime())
+
+/*
+        for (i in times.indices) {
+            if (i == 0){
+                continue
+            }
+            //Log.d("sdfs", "Time " + i + ":" + (times[i] - times [i-1])/1000000.0)
+        }
+        */
+
     }
 }

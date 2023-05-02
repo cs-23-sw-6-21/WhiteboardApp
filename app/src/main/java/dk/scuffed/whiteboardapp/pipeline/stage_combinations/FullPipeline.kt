@@ -140,5 +140,5 @@ internal fun fullPipeline(
         pipeline
     )
 
-    return Pair(switchablePointPipeline, overlay)
+    return Pair(switchablePointPipeline, fullSegmentation)
 }
