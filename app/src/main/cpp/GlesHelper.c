@@ -4,7 +4,7 @@ JNIEXPORT void JNICALL
 
 
 // Change
-dk_scuffed_whiteboardapp_helper_GlesHelper_glReadPixels(JNIEnv *env, jobject instance, jint x,
+Java_dk_scuffed_whiteboardapp_helper_GlesHelper_glReadPixels(JNIEnv *env, jobject instance, jint x,
                                                         jint y, jint width, jint height,
                                                         jint format, jint type) {
     // TODO

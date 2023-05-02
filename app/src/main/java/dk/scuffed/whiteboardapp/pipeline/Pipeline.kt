@@ -12,6 +12,7 @@ import dk.scuffed.whiteboardapp.opengl.*
 import dk.scuffed.whiteboardapp.pipeline.stage_combinations.*
 import dk.scuffed.whiteboardapp.pipeline.stages.*
 import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.DumpToGalleryStage
+import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.FramebufferToBitmapPBOStage
 import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.FramebufferToBitmapStage
 import dk.scuffed.whiteboardapp.pipeline.stages.input_stages.CameraXStage
 import dk.scuffed.whiteboardapp.pipeline.stages.input_stages.TextureStage
@@ -47,11 +48,13 @@ internal class Pipeline(context: Context, private val initialResolution: Size) :
         val cameraXStage = CameraXStage(context, this)
 
 
-        val entirePipeline = fullPipeline(context, cameraXStage, this)
+        //val entirePipeline = fullPipeline(context, cameraXStage, this)
 
-        dumpToGalleryFull(context, entirePipeline.second.frameBufferInfo, this)
+        //dumpToGalleryFull(context, entirePipeline.second.frameBufferInfo, this)
 
-        val letterbox = LetterboxingStage(context, entirePipeline.second.frameBufferInfo, this)
+        val bitmap = FramebufferToBitmapPBOStage(cameraXStage.frameBufferInfo, Bitmap.Config.ARGB_8888, this)
+
+        val letterbox = LetterboxingStage(context, cameraXStage.frameBufferInfo, this)
 
         DrawFramebufferStage(
             context,
