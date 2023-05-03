@@ -17,6 +17,7 @@ import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.StoreStage
 import dk.scuffed.whiteboardapp.pipeline.stages.segmentation_stages.SegmentationPostProcessingStage
 import dk.scuffed.whiteboardapp.pipeline.stages.segmentation_stages.SegmentationPreProcessingStage
 import dk.scuffed.whiteboardapp.pipeline.stages.segmentation_stages.SegmentationStage
+import dk.scuffed.whiteboardapp.pipeline.useDoubleBuffering
 import dk.scuffed.whiteboardapp.segmentation.PPSegmentation
 
 /**
@@ -34,11 +35,23 @@ internal fun fullSegmentation(
         pipeline
     )
 
-    val segBitmap = FramebufferToBitmapPBOStage(
-        segPre.frameBufferInfo,
-        Bitmap.Config.ARGB_8888,
-        pipeline
-    )
+
+    var segBitmap =
+    if (useDoubleBuffering) {
+        FramebufferToBitmapPBOStage(
+            segPre.frameBufferInfo,
+            Bitmap.Config.ARGB_8888,
+            pipeline
+        )
+    }
+    else{
+        FramebufferToBitmapStage(
+            segPre.frameBufferInfo,
+            Bitmap.Config.ARGB_8888,
+            pipeline
+        )
+
+    }
 
     val seg = SegmentationStage(
         context,

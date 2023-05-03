@@ -20,6 +20,8 @@ import dk.scuffed.whiteboardapp.pipeline.stages.output_stages.DrawFramebufferSta
 import dk.scuffed.whiteboardapp.pipeline.stages.pipeline_stages.SwitchablePointPipeline
 import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.DraggablePointsStage
 
+const val useDoubleBuffering = true
+
 internal class Pipeline(context: Context, private val initialResolution: Size) : IPipeline {
 
     private var stages = mutableListOf<Stage>()
