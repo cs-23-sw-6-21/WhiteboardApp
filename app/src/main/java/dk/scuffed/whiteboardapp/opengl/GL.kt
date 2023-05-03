@@ -3,6 +3,7 @@ package dk.scuffed.whiteboardapp.opengl
 import android.opengl.GLES20
 import android.util.Log
 import android.util.Size
+import dk.scuffed.whiteboardapp.BuildConfig
 import dk.scuffed.whiteboardapp.utils.Color
 import dk.scuffed.whiteboardapp.utils.Vec2Int
 import java.nio.Buffer
@@ -498,10 +499,12 @@ fun bytesPerPixel(textureFormat: Int): Int {
 }
 
 private fun logErrorIfAny(funcname: String) {
-    var error = GLES20.glGetError()
-    while (error != 0) {
-        Log.e("OpenGL", funcname + ": " + error + ": " + errorToString(error))
-        error = GLES20.glGetError()
+    if (BuildConfig.DEBUG) {
+        var error = GLES20.glGetError()
+        while (error != 0) {
+            Log.e("OpenGL", funcname + ": " + error + ": " + errorToString(error))
+            error = GLES20.glGetError()
+        }
     }
 }
 
