@@ -1,9 +1,6 @@
 package dk.scuffed.whiteboardapp.pipeline
 
 import android.content.Context
-import android.content.res.Resources
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.opengl.GLES20
 import android.util.Log
 import android.util.Size
@@ -20,8 +17,6 @@ import dk.scuffed.whiteboardapp.pipeline.stages.input_stages.CameraXStage
 import dk.scuffed.whiteboardapp.pipeline.stages.input_stages.TextureStage
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.*
 import dk.scuffed.whiteboardapp.pipeline.stages.output_stages.DrawFramebufferStage
-import dk.scuffed.whiteboardapp.pipeline.stages.pipeline_stages.SwitchablePointPipeline
-import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.DraggablePointsStage
 
 const val useDoubleBuffering = true
 
@@ -52,7 +47,7 @@ internal class Pipeline(private val context: Context, private val initialResolut
         val cameraXStage = CameraXStage(context, this)
 
 
-        val entirePipeline = fullPipeline(context, cameraXStage, this)
+        val entirePipeline = mainThreadPipeline(context, cameraXStage, this)
 
         //dumpToGalleryFull(context, entirePipeline.second.frameBufferInfo, this)
 
@@ -80,14 +75,12 @@ internal class Pipeline(private val context: Context, private val initialResolut
         {
             CSVWriter.MainWriter.write("$duration\n")
             CSVWriter.frameCounter += 1
-            if (CSVWriter.frameCounter == 100)
+            if (CSVWriter.frameCounter == CSVWriter.numberOfFrames)
             {
                 (context as MainActivity).findViewById<Button>(R.id.round_button).visibility = View.INVISIBLE
                 CSVWriter.recordTimings = false
                 CSVWriter.MainWriter.flush()
                 CSVWriter.MainWriter.close()
-                CSVWriter.CornerDetectionWriter.flush()
-                CSVWriter.CornerDetectionWriter.close()
             }
             Log.i("Pipeline", "Frame took ${duration}ms")
         }

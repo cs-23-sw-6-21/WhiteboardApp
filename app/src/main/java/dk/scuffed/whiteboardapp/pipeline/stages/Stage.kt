@@ -45,7 +45,7 @@ internal abstract class Stage(private val pipeline: IPipeline) {
         val duration = (endTime - startTime).toDouble() / 1000000.0
 
         if (CSVWriter.recordTimings) {
-                CSVWriter.MainWriter.write("$name,")
+                CSVWriter.MainWriter.write("$duration,")
         }
         if (BuildConfig.DEBUG) {
             if (this is GLOutputStage) {
