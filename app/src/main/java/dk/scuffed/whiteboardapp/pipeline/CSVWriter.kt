@@ -1,13 +1,14 @@
 package dk.scuffed.whiteboardapp.pipeline
 
 import android.os.Environment
-import android.os.Looper
 import java.io.File
 import java.io.OutputStreamWriter
 
 object CSVWriter {
 
-    var recordTimings = true
+    var recordStageTimings = true
+
+    var recordOverallTimings = true
 
     val useGlFinish = true
 
