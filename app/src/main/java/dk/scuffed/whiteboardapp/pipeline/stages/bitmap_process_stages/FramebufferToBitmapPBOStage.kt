@@ -79,7 +79,7 @@ internal class FramebufferToBitmapPBOStage(
         //times.add(System.nanoTime())
 
         // Read pixels into the bound buffer
-        glReadPixels(0, 0, inputFramebufferInfo.textureSize.width, inputFramebufferInfo.textureSize.height, GLES30.GL_RGBA8U, GLES30.GL_UNSIGNED_BYTE)
+        glReadPixels(0, 0, inputFramebufferInfo.textureSize.width, inputFramebufferInfo.textureSize.height, GLES30.GL_RGBA, GLES30.GL_UNSIGNED_BYTE)
         times.add(System.nanoTime())
 
         // Bind the next buffer

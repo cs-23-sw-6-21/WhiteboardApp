@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.icu.number.Scale
 import android.opengl.GLES20
 import android.util.Log
 import android.util.Size
@@ -12,15 +11,12 @@ import dk.scuffed.whiteboardapp.R
 import dk.scuffed.whiteboardapp.opengl.*
 import dk.scuffed.whiteboardapp.pipeline.stage_combinations.*
 import dk.scuffed.whiteboardapp.pipeline.stages.*
-import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.BitmapToFramebufferStage
 import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.DumpToGalleryStage
-import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.FramebufferToBitmapPBOStage
 import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.FramebufferToBitmapStage
 import dk.scuffed.whiteboardapp.pipeline.stages.input_stages.CameraXStage
 import dk.scuffed.whiteboardapp.pipeline.stages.input_stages.TextureStage
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.*
 import dk.scuffed.whiteboardapp.pipeline.stages.output_stages.DrawFramebufferStage
-import dk.scuffed.whiteboardapp.pipeline.stages.output_stages.DrawPipelineStage
 import dk.scuffed.whiteboardapp.pipeline.stages.pipeline_stages.SwitchablePointPipeline
 import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.DraggablePointsStage
 
@@ -51,12 +47,10 @@ internal class Pipeline(context: Context, private val initialResolution: Size) :
         val cameraXStage = CameraXStage(context, this)
 
 
-
         val entirePipeline = fullPipeline(context, cameraXStage, this)
 
-        //val a = FramebufferToBitmapPBOStage(cameraXStage.frameBufferInfo, Bitmap.Config.ARGB_8888, this)
-
         //dumpToGalleryFull(context, entirePipeline.second.frameBufferInfo, this)
+
 
         val letterbox = LetterboxingStage(context, entirePipeline.second.frameBufferInfo, this)
 
