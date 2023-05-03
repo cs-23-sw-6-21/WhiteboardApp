@@ -32,7 +32,7 @@ internal class PerspectiveCorrectionStage(
     }
 
     override fun setupFramebufferInfo() {
-        allocateFramebuffer(GLES20.GL_RGBA, getResolution())
+        allocateFramebuffer(GLES20.GL_RGBA, inputFramebufferInfo.textureSize)
     }
 
     override fun setupUniforms(program: Int) {
@@ -64,13 +64,13 @@ internal class PerspectiveCorrectionStage(
 
     override fun viewport() {
         // Calculate the bottom left corner so that the view is centralized.
-        val offsetX = (getResolution().width - inputVertices.scaledResolution.width) / 2
-        val offsetY = (getResolution().height - inputVertices.scaledResolution.height) / 2
+        val offsetX = (inputFramebufferInfo.textureSize.width - inputVertices.scaledResolution.width) / 2
+        val offsetY = (inputFramebufferInfo.textureSize.height - inputVertices.scaledResolution.height) / 2
         glViewport(Vec2Int(offsetX, offsetY), Size(inputVertices.scaledResolution.width, inputVertices.scaledResolution.height))
     }
 
     override fun clear() {
-        glClearColor(Color(1f, 1f, 1f, 1f))
+        glClearColor(Color(0f, 0f, 0f, 0f))
         glClear(GLES20.GL_COLOR_BUFFER_BIT)
         glClearColorError()
     }

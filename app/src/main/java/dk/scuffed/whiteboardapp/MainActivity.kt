@@ -15,7 +15,6 @@ import org.opencv.android.OpenCVLoader
 
 
 class MainActivity : AppCompatActivity() {
-    private var stageSwitch = false
     private val CAMERA_PERMISSION_REQUEST_CODE = 100
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,10 +34,6 @@ class MainActivity : AppCompatActivity() {
             val buttonView = findViewById<ConstraintLayout>(R.id.button_view)
             val openGLView = OpenGLView(this)
             buttonView.addView(openGLView)
-            findViewById<Button>(R.id.round_button).setOnClickListener {
-                openGLView.switchStage(stageSwitch)
-                stageSwitch = !stageSwitch
-            }
         }
         // Check if the permission has already been granted
         if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {

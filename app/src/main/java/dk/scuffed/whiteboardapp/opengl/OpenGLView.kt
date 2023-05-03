@@ -26,12 +26,4 @@ class OpenGLView(context: Context) : GLSurfaceView(context) {
         }
         return true
     }
-
-    /**
-     * Switches the switchablePipelineStage
-     * @param bool is a Boolean to changes the switches value.
-     */
-    fun switchStage(bool: Boolean){
-        renderer.switchStage(bool)
-    }
 }

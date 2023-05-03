@@ -14,6 +14,25 @@
         android:background="@drawable/round_button"
         android:contentDescription="@string/toggle_corner_detection"
         android:visibility="visible"
+        app:icon="@drawable/baseline_keyboard_command_key_24"
+        app:iconGravity="textStart"
+        app:iconPadding="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/capture"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginEnd="200dp"
+        android:layout_marginBottom="36dp"
+        android:background="@drawable/round_button"
+        android:contentDescription="@string/capture"
+        android:visibility="visible"
+        app:icon="@drawable/ic_launcher_foreground"
+        app:iconGravity="textStart"
+        app:iconPadding="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

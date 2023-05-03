@@ -1,6 +1,7 @@
 package dk.scuffed.whiteboardapp.pipeline.stage_combinations
 
 import android.content.Context
+import android.icu.number.Scale
 import dk.scuffed.whiteboardapp.pipeline.IPipeline
 import dk.scuffed.whiteboardapp.pipeline.Pipeline
 import dk.scuffed.whiteboardapp.pipeline.stages.GLOutputStage
@@ -14,22 +15,22 @@ import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.GrayscaleS
 internal fun binarize(
     context: Context,
     input: GLOutputStage,
+    downscaledInput: GLOutputStage,
     threshold: Float,
-    downscaleFactor: Int,
-    pipeline: IPipeline
+    pipeline: IPipeline,
 ): GLOutputStage {
     val grayscaleStage = GrayscaleStage(
         context,
         input.frameBufferInfo,
         pipeline
     )
+    val grayscaleDownscaledStage = GrayscaleStage(
+        context,
+        downscaledInput.frameBufferInfo,
+        pipeline
+    )
 
-    var prevStage: GLOutputStage = grayscaleStage
-    for (i in 0 until downscaleFactor){
-        prevStage = Downscale2xStage(context, prevStage.frameBufferInfo, pipeline)
-    }
-
-    val binarizeFast = BinarizationFastStage(context, grayscaleStage.frameBufferInfo, prevStage.frameBufferInfo, threshold, pipeline)
+    val binarizeFast = BinarizationFastStage(context, grayscaleStage.frameBufferInfo, grayscaleDownscaledStage.frameBufferInfo, threshold, pipeline)
 
     return binarizeFast
 }

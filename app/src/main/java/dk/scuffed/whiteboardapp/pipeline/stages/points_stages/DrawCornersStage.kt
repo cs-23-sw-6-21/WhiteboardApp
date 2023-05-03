@@ -25,7 +25,8 @@ import java.nio.ShortBuffer
 internal class DrawCornersStage(
     private val context: Context,
     pipeline: IPipeline,
-    private val pointsStage: PointsOutputStage
+    private val pointsStage: PointsOutputStage,
+    resolution: Size
 ) : Stage(pipeline) {
     //The radius of the circle
     private val circleRadius: Int = 25
@@ -76,7 +77,7 @@ internal class DrawCornersStage(
         frameBufferInfo = pipeline.allocateFramebuffer(
             this,
             GLES20.GL_RGBA,
-            getResolution()
+            resolution
         )
         setupGlProgram()
     }

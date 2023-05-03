@@ -1,9 +1,12 @@
 package dk.scuffed.whiteboardapp.pipeline.stage_combinations
 
 import android.content.Context
+import android.icu.number.Scale
 import android.opengl.GLES20
+import android.util.Size
 import dk.scuffed.whiteboardapp.pipeline.IPipeline
 import dk.scuffed.whiteboardapp.pipeline.stages.GLOutputStage
+import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.DumpToGalleryStage
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.*
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.BinarizationStage
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.MaskingStage
@@ -58,6 +61,7 @@ internal fun fullPipeline(
     // ------------------ LINE DETECTION STUFF START --------------
 
     val switchablePointPipeline = SwitchablePointPipeline(
+        context,
         { pipeline -> DraggablePointsStage(pipeline) },
         { pipeline -> fullCornerDetection(context, storeStage, pipeline) },
         pipeline
@@ -66,7 +70,8 @@ internal fun fullPipeline(
     val drawCorners = DrawCornersStage(
         context,
         pipeline,
-        switchablePointPipeline.pointsOutputStage
+        switchablePointPipeline.pointsOutputStage,
+        inputStage.frameBufferInfo.textureSize
     )
 
     // --------------- LINE DETECTION STUFF END
@@ -85,23 +90,37 @@ internal fun fullPipeline(
         pipeline
     )
 
+    GenerateMipmapStage(perspectiveCorrected.frameBufferInfo, false, pipeline)
+
     // ------------------ PERSPECTIVE CORRECTION END --------------
 
 
     // ------------------ POST PROCESSING START --------------
 
+    val downscaledForWhitebalance = ScaleToResolution(
+        context, perspectiveCorrected.frameBufferInfo,
+        Size(perspectiveCorrected.frameBufferInfo.textureSize.width / 32, perspectiveCorrected.frameBufferInfo.textureSize.height / 32),
+        pipeline
+    )
+    val downscaledForBinarization = ScaleToResolution(
+        context, perspectiveCorrected.frameBufferInfo,
+        Size(perspectiveCorrected.frameBufferInfo.textureSize.width / 8, perspectiveCorrected.frameBufferInfo.textureSize.height / 8),
+        pipeline
+    )
+
     val whitebalance = whiteBalance(
         context,
         perspectiveCorrected,
-        5,
+        downscaledForWhitebalance,
         pipeline
     )
+
 
     val binarized = binarize(
         context,
         perspectiveCorrected,
+        downscaledForBinarization,
         7.5f,
-        3,
         pipeline)
 
     val readdedColour = addColour(
@@ -120,7 +139,6 @@ internal fun fullPipeline(
         drawCorners.frameBufferInfo,
         pipeline
     )
-
 
     return Pair(switchablePointPipeline, overlay)
 }

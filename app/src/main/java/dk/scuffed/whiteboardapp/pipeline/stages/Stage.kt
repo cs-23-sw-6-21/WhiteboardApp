@@ -54,6 +54,13 @@ internal abstract class Stage(private val pipeline: IPipeline) {
             CSVWriter.MainWriter.write("$duration,")
             Log.d("Stages", "Stage: $name took $duration ms")
         }
+        if (this is GLOutputStage) {
+            Log.d("Stages", "Stage: $name is ${frameBufferInfo.textureSize} ms")
+        }
+        if (this is BitmapOutputStage) {
+            Log.d("Stages", "Stage: $name is ${Size(outputBitmap.width, outputBitmap.height)} ms")
+        }
+
     }
 
     fun performOnResolutionChanged(resolution: Size) {
