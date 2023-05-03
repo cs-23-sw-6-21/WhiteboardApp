@@ -11,11 +11,7 @@ import dk.scuffed.whiteboardapp.R
 import dk.scuffed.whiteboardapp.opengl.*
 import dk.scuffed.whiteboardapp.pipeline.stage_combinations.*
 import dk.scuffed.whiteboardapp.pipeline.stages.*
-import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.DumpToGalleryStage
-import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.FramebufferToBitmapStage
 import dk.scuffed.whiteboardapp.pipeline.stages.input_stages.CameraXStage
-import dk.scuffed.whiteboardapp.pipeline.stages.input_stages.TextureStage
-import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.*
 import dk.scuffed.whiteboardapp.pipeline.stages.output_stages.DrawFramebufferStage
 
 const val useDoubleBuffering = true
@@ -60,7 +56,7 @@ internal class Pipeline(private val context: Context, private val initialResolut
             this
         )
 
-        if (CSVWriter.recordTimings){
+        if (CSVWriter.recordOverallTimings){
             CSVWriter.MainWriter.write("Overall\n")
         }
     }
@@ -71,14 +67,18 @@ internal class Pipeline(private val context: Context, private val initialResolut
         val endTime = System.nanoTime()
         val duration = (endTime - startTime).toDouble() / 1000000.0
 
-        if (CSVWriter.recordTimings)
+        if (CSVWriter.recordOverallTimings || CSVWriter.recordStageTimings)
         {
-            CSVWriter.MainWriter.write("$duration\n")
+            if (CSVWriter.recordOverallTimings)
+            {
+                CSVWriter.MainWriter.write("$duration\n")
+            }
             CSVWriter.frameCounter += 1
             if (CSVWriter.frameCounter == CSVWriter.numberOfFrames)
             {
                 (context as MainActivity).findViewById<Button>(R.id.round_button).visibility = View.INVISIBLE
-                CSVWriter.recordTimings = false
+                CSVWriter.recordStageTimings = false
+                CSVWriter.recordOverallTimings = false
                 CSVWriter.MainWriter.flush()
                 CSVWriter.MainWriter.close()
             }

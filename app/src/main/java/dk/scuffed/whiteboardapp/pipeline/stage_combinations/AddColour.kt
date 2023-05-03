@@ -17,6 +17,7 @@ internal fun addColour(
     mask: GLOutputStage,
     pipeline: IPipeline
 ): GLOutputStage {
+
     val adjusted = HSVAdjustmentsStage(
         context,
         colours.frameBufferInfo,

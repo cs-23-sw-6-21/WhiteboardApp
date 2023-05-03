@@ -1,6 +1,5 @@
 package dk.scuffed.whiteboardapp.pipeline.stages
 
-import android.os.Looper
 import android.util.Log
 import android.util.Size
 import dk.scuffed.whiteboardapp.opengl.glFinish
@@ -22,8 +21,8 @@ internal abstract class Stage(private val pipeline: IPipeline) {
         pipeline.addStage(this)
         name = this.javaClass.name
         resolution = pipeline.getInitialResolution()
-        if (CSVWriter.recordTimings) {
-            CSVWriter.MainWriter.write("${name},")
+        if (CSVWriter.recordStageTimings) {
+            CSVWriter.MainWriter.write("$name,")
         }
     }
 
@@ -44,8 +43,9 @@ internal abstract class Stage(private val pipeline: IPipeline) {
         //Calculate duration and convert to ms
         val duration = (endTime - startTime).toDouble() / 1000000.0
 
-        if (CSVWriter.recordTimings) {
-                CSVWriter.MainWriter.write("$duration,")
+        if (CSVWriter.recordStageTimings) {
+            CSVWriter.MainWriter.write("$duration,")
+            Log.d("Stages", "Stage: $name took $duration ms")
         }
         if (BuildConfig.DEBUG) {
             if (this is GLOutputStage) {
