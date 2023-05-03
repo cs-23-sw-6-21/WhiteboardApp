@@ -51,13 +51,7 @@ internal abstract class Stage(private val pipeline: IPipeline) {
         val duration = (endTime - startTime).toDouble() / 1000000.0
 
         if (CSVWriter.recordTimings) {
-            if (CSVWriter.threadMain.isCurrentThread || )
-            {
-                CSVWriter.MainWriter.write("$duration,")
-            } else
-            {
-                CSVWriter.CornerDetectionWriter.write("$duration,")
-            }
+            CSVWriter.MainWriter.write("$duration,")
             Log.d("Stages", "Stage: $name took $duration ms")
         }
     }

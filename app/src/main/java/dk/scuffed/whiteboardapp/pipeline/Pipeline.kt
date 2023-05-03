@@ -1,9 +1,6 @@
 package dk.scuffed.whiteboardapp.pipeline
 
 import android.content.Context
-import android.content.res.Resources
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.opengl.GLES20
 import android.util.Log
 import android.util.Size
@@ -15,20 +12,12 @@ import dk.scuffed.whiteboardapp.opengl.*
 import dk.scuffed.whiteboardapp.pipeline.stage_combinations.*
 import dk.scuffed.whiteboardapp.pipeline.stages.*
 import dk.scuffed.whiteboardapp.pipeline.stages.input_stages.CameraXStage
-import dk.scuffed.whiteboardapp.pipeline.stages.input_stages.TextureStage
-import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.BinarizationFastStage
-import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.Downscale2xStage
-import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.GrayscaleStage
-import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.ScaleToResolution
 import dk.scuffed.whiteboardapp.pipeline.stages.output_stages.DrawFramebufferStage
-import dk.scuffed.whiteboardapp.pipeline.stages.pipeline_stages.SwitchablePointPipeline
-import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.DraggablePointsStage
 
 internal class Pipeline(private val context: Context, private val initialResolution: Size) : IPipeline {
 
     var stages = mutableListOf<Stage>()
     private var nextTextureUnit: Int = 0
-    private val switchablePointPipeline: SwitchablePointPipeline
 
     private val indexToTextureUnit = intArrayOf(
         GLES20.GL_TEXTURE0,
@@ -82,12 +71,11 @@ internal class Pipeline(private val context: Context, private val initialResolut
 
         val cameraXStage = CameraXStage(context, this)
 
-        val entirePipeline = fullPipeline(context, cameraXStage, this)
-        switchablePointPipeline = entirePipeline.first
+        val entirePipeline = mainThreadPipeline(context, cameraXStage, this)
 
         DrawFramebufferStage(
             context,
-            entirePipeline.second.frameBufferInfo,
+            entirePipeline.frameBufferInfo,
             this
         )
 
@@ -101,7 +89,6 @@ internal class Pipeline(private val context: Context, private val initialResolut
      * @param bool is a Boolean to changes the switches value.
      */
     fun switchStages(bool: Boolean){
-        switchablePointPipeline.setSwitch(bool)
     }
     override fun draw() {
         val startTime = System.nanoTime()
@@ -113,14 +100,12 @@ internal class Pipeline(private val context: Context, private val initialResolut
         {
             CSVWriter.MainWriter.write("$duration\n")
             CSVWriter.frameCounter += 1
-            if (CSVWriter.frameCounter == 100)
+            if (CSVWriter.frameCounter == CSVWriter.numberOfFrames)
             {
                 (context as MainActivity).findViewById<Button>(R.id.round_button).visibility = View.INVISIBLE
                 CSVWriter.recordTimings = false
                 CSVWriter.MainWriter.flush()
                 CSVWriter.MainWriter.close()
-                CSVWriter.CornerDetectionWriter.flush()
-                CSVWriter.CornerDetectionWriter.close()
             }
             Log.i("Pipeline", "Frame took ${duration}ms")
         }
