@@ -1,5 +1,6 @@
 package dk.scuffed.whiteboardapp.pipeline.stages.input_stages
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.SurfaceTexture
 import android.hardware.camera2.CameraMetadata
@@ -30,6 +31,7 @@ import java.util.concurrent.CompletableFuture
 /**
  * Outputs the camera onto a OpenGL framebuffer
  */
+@SuppressLint("UnsafeOptInUsageError")
 internal class CameraXStage(
     context: Context,
     pipeline: IPipeline,
