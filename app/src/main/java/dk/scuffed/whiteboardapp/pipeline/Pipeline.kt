@@ -35,23 +35,57 @@ internal class Pipeline(context: Context, private val initialResolution: Size) :
         glDisable(GLES20.GL_DEPTH_TEST)
         glClearColorError()
 
-        /*
         val opt = BitmapFactory.Options()
         opt.inScaled = false
         val textureStage = TextureStage(
             context,
-            BitmapFactory.decodeResource(context.resources, R.drawable.whiteboard, opt),
+            BitmapFactory.decodeResource(context.resources, R.drawable.dirty_whiteboard, opt),
             this
-        )*/
+        )
 
-        val cameraXStage = CameraXStage(context, this)
+        //val cameraXStage = CameraXStage(context, this)
+
+        val downscaledForWhitebalance = ScaleToResolution(
+            context, textureStage.frameBufferInfo,
+            Size(textureStage.frameBufferInfo.textureSize.width / 32, textureStage.frameBufferInfo.textureSize.height / 32),
+            this
+        )
+        val downscaledForBinarization = ScaleToResolution(
+            context, textureStage.frameBufferInfo,
+            Size(textureStage.frameBufferInfo.textureSize.width / 16, textureStage.frameBufferInfo.textureSize.height / 16),
+            this
+        )
+
+        val whitebalance = whiteBalance(
+            context,
+            textureStage,
+            downscaledForWhitebalance,
+            this
+        )
 
 
-        val entirePipeline = fullPipeline(context, cameraXStage, this)
+        val binarized = binarize(
+            context,
+            textureStage,
+            downscaledForBinarization,
+            7.5f,
+            this)
 
-        dumpToGalleryFull(context, entirePipeline.second.frameBufferInfo, this)
+        val readdedColour = addColour(
+            context,
+            whitebalance,
+            binarized,
+            this
+        )
 
-        val letterbox = LetterboxingStage(context, entirePipeline.second.frameBufferInfo, this)
+
+        dumpToGalleryFull(context, binarized.frameBufferInfo, this)
+        /*
+        val entirePipeline = fullPipeline(context, textureStage, this)
+
+         */
+
+        val letterbox = LetterboxingStage(context, binarized.frameBufferInfo, this)
 
         DrawFramebufferStage(
             context,

@@ -67,12 +67,14 @@ internal fun fullPipeline(
         pipeline
     )
 
+    /*
     val drawCorners = DrawCornersStage(
         context,
         pipeline,
         switchablePointPipeline.pointsOutputStage,
         inputStage.frameBufferInfo.textureSize
     )
+     */
 
     // --------------- LINE DETECTION STUFF END
 
@@ -133,12 +135,14 @@ internal fun fullPipeline(
     // ------------------ POST PROCESSING END --------------
 
 
+    /*
     val overlay = OverlayStage(
         context,
         readdedColour.frameBufferInfo,
         drawCorners.frameBufferInfo,
         pipeline
     )
+     */
 
-    return Pair(switchablePointPipeline, overlay)
+    return Pair(switchablePointPipeline, readdedColour)
 }
