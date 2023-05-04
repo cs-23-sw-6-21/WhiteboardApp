@@ -31,7 +31,7 @@ internal fun fullPipeline(
     // ------------------ SEGMENTATION STUFF START --------------
 
     val fullSegmentation = fullSegmentation(context, inputStage.frameBufferInfo, pipeline)
-
+    dumpToGalleryFull(context, fullSegmentation.frameBufferInfo, pipeline)
 
     val storedFramebuffer = pipeline.allocateFramebuffer(
         inputStage,
@@ -47,7 +47,8 @@ internal fun fullPipeline(
         fullSegmentation.frameBufferInfo,
         pipeline
     )
-
+    dumpToGalleryFull(context, storedFramebuffer, pipeline)
+    dumpToGalleryFull(context, maskStage.frameBufferInfo, pipeline)
     val storeStage = StoreStage(
         context,
         maskStage.frameBufferInfo,
@@ -73,6 +74,13 @@ internal fun fullPipeline(
         switchablePointPipeline.pointsOutputStage,
         inputStage.frameBufferInfo.textureSize
     )
+    val overlayStage = OverlayStage(
+        context,
+        inputStage.frameBufferInfo,
+        drawCorners.frameBufferInfo,
+        pipeline
+    )
+    dumpToGalleryFull(context, overlayStage.frameBufferInfo, pipeline)
 
     // --------------- LINE DETECTION STUFF END
 
@@ -89,6 +97,7 @@ internal fun fullPipeline(
         cameraPointsStage,
         pipeline
     )
+    dumpToGalleryFull(context, perspectiveCorrected.frameBufferInfo, pipeline)
 
     GenerateMipmapStage(perspectiveCorrected.frameBufferInfo, false, pipeline)
 
@@ -123,12 +132,16 @@ internal fun fullPipeline(
         7.5f,
         pipeline)
 
+    dumpToGalleryFull(context, binarized.frameBufferInfo, pipeline)
+
     val readdedColour = addColour(
         context,
         whitebalance,
         binarized,
         pipeline
     )
+    dumpToGalleryFull(context, readdedColour.frameBufferInfo, pipeline)
+
 
     // ------------------ POST PROCESSING END --------------
 
