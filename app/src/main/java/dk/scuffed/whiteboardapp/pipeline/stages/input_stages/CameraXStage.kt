@@ -2,11 +2,15 @@ package dk.scuffed.whiteboardapp.pipeline.stages.input_stages
 
 import android.content.Context
 import android.graphics.SurfaceTexture
+import android.hardware.camera2.CameraMetadata
+import android.hardware.camera2.CaptureRequest
 import android.opengl.GLES11Ext
 import android.opengl.GLES20
 import android.os.Handler
 import android.util.Size
 import android.view.Surface
+import androidx.camera.camera2.Camera2Config
+import androidx.camera.camera2.interop.Camera2Interop
 import androidx.camera.core.AspectRatio.RATIO_16_9
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.CameraSelector.LENS_FACING_BACK
@@ -55,9 +59,14 @@ internal class CameraXStage(
 
         mainThreadHandler.post {
             run {
-                val preview = Preview.Builder()
+                val previewBuilder = Preview.Builder()
                     .setTargetAspectRatio(RATIO_16_9)
-                    .build()
+
+
+                val camera2InterOp = Camera2Interop.Extender(previewBuilder)
+                camera2InterOp.setCaptureRequestOption(CaptureRequest.CONTROL_AWB_MODE, CameraMetadata.CONTROL_AWB_MODE_SHADE)
+
+                val preview = previewBuilder.build()
 
                 preview.setSurfaceProvider { request ->
                     val surface = Surface(cameraSurfaceTexture)
