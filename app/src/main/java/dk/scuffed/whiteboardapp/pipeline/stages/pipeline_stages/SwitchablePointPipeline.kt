@@ -2,7 +2,6 @@ package dk.scuffed.whiteboardapp.pipeline.stages.pipeline_stages
 
 import android.content.Context
 import android.util.Size
-import dk.scuffed.whiteboardapp.pipeline.CSVWriter
 import android.widget.Button
 import dk.scuffed.whiteboardapp.MainActivity
 import dk.scuffed.whiteboardapp.R
