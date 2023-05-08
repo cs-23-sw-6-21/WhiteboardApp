@@ -17,6 +17,7 @@ import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.CornersFromResolut
 import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.DraggablePointsStage
 import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.DrawCornersStage
 import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.ScreenCornerPointsStage
+import dk.scuffed.whiteboardapp.pipeline.useDoubleBuffering
 
 /**
  * Our canonical full pipeline that does everything except input/output
@@ -30,20 +31,31 @@ internal fun fullPipeline(
 
     // ------------------ SEGMENTATION STUFF START --------------
 
+    var oldInput = inputStage.frameBufferInfo
+
+    if (useDoubleBuffering) {
+        oldInput = pipeline.allocateFramebuffer(
+            inputStage,
+            GLES20.GL_RGBA,
+            inputStage.frameBufferInfo.textureSize
+        )
+    }
+
     val fullSegmentation = fullSegmentation(context, inputStage.frameBufferInfo, pipeline)
+
 
 
     val storedFramebuffer = pipeline.allocateFramebuffer(
         inputStage,
         GLES20.GL_RGBA,
-        inputStage.frameBufferInfo.textureSize
+        oldInput.textureSize
     )
 
 
     val maskStage = MaskingStage(
         context,
         storedFramebuffer,
-        inputStage.frameBufferInfo,
+        oldInput,
         fullSegmentation.frameBufferInfo,
         pipeline
     )
@@ -71,7 +83,7 @@ internal fun fullPipeline(
         context,
         pipeline,
         switchablePointPipeline.pointsOutputStage,
-        inputStage.frameBufferInfo.textureSize
+        oldInput.textureSize
     )
 
     // --------------- LINE DETECTION STUFF END
@@ -80,7 +92,7 @@ internal fun fullPipeline(
     // ------------------ PERSPECTIVE CORRECTION START --------------
 
     val cameraPointsStage =
-        CornersFromResolutionStage(inputStage.frameBufferInfo.textureSize, pipeline)
+        CornersFromResolutionStage(oldInput.textureSize, pipeline)
 
     val perspectiveCorrected = fullPerspectiveCorrection(
         context,
@@ -139,6 +151,10 @@ internal fun fullPipeline(
         drawCorners.frameBufferInfo,
         pipeline
     )
+    if (useDoubleBuffering) {
+        val store1 = StoreStage(context, inputStage.frameBufferInfo, oldInput, pipeline)
+    }
+
 
     return Pair(switchablePointPipeline, overlay)
 }

@@ -12,7 +12,10 @@ import dk.scuffed.whiteboardapp.opengl.*
 import dk.scuffed.whiteboardapp.pipeline.stage_combinations.*
 import dk.scuffed.whiteboardapp.pipeline.stages.*
 import dk.scuffed.whiteboardapp.pipeline.stages.input_stages.CameraXStage
+import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.LetterboxingStage
 import dk.scuffed.whiteboardapp.pipeline.stages.output_stages.DrawFramebufferStage
+
+const val useDoubleBuffering = true
 
 internal class Pipeline(private val context: Context, private val initialResolution: Size) : IPipeline {
 
@@ -43,6 +46,10 @@ internal class Pipeline(private val context: Context, private val initialResolut
 
         val entirePipeline = mainThreadPipeline(context, cameraXStage, this)
 
+        //dumpToGalleryFull(context, entirePipeline.second.frameBufferInfo, this)
+
+        val letterbox = LetterboxingStage(context, entirePipeline.frameBufferInfo, this)
+
         DrawFramebufferStage(
             context,
             entirePipeline.frameBufferInfo,
@@ -52,13 +59,6 @@ internal class Pipeline(private val context: Context, private val initialResolut
         if (CSVWriter.recordOverallTimings){
             CSVWriter.MainWriter.write("Overall\n")
         }
-    }
-
-    /**
-     * Sets the switch variable to the inputted boolean.
-     * @param bool is a Boolean to changes the switches value.
-     */
-    fun switchStages(bool: Boolean){
     }
 
     override fun draw() {
