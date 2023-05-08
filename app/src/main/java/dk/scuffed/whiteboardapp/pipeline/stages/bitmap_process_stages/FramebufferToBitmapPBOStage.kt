@@ -60,11 +60,8 @@ internal class FramebufferToBitmapPBOStage(
     }
 
     override fun update() {
-
         glBindFramebuffer(inputFramebufferInfo.fboHandle)
-        //glActiveTexture(inputFramebufferInfo.textureUnitPair.textureUnit)
         readPixelsFromPBO(outputBitmap)
-
     }
 
     /**
