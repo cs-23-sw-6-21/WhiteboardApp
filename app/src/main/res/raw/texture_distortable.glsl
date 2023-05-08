@@ -8,8 +8,6 @@ uniform sampler2D source_texture;
 varying vec3 v_TexCoordinate;
 
 void main() {
-    vec2 uv = v_TexCoordinate.xy / resolution;
-
     // Divides by Z to revert the multiplication of z done per vertex
     vec4 color = texture2D(source_texture, vec2(v_TexCoordinate.x / v_TexCoordinate.z, v_TexCoordinate.y / v_TexCoordinate.z));
 
