@@ -8,7 +8,7 @@ object CSVWriter {
 
     var recordStageTimings = true
 
-    var recordOverallTimings = true
+    var recordOverallTimings = false
 
     val useGlFinish = true
 
