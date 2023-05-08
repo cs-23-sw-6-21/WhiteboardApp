@@ -35,8 +35,7 @@ fun loadShader(shaderType: Int, shaderCode: String): Int {
  * @see glDisable
  */
 fun glEnable(cap: Int) {
-    GLES20
-        .glEnable(cap)
+    GLES20.glEnable(cap)
     logErrorIfAny("glEnable")
 }
 
@@ -47,8 +46,7 @@ fun glEnable(cap: Int) {
  * @see glEnable
  */
 fun glDisable(cap: Int) {
-    GLES20
-        .glDisable(cap)
+    GLES20.glDisable(cap)
     logErrorIfAny("glDisable")
 }
 
@@ -60,8 +58,7 @@ fun glDisable(cap: Int) {
  * @see glClearColor
  */
 fun glClear(mask: Int) {
-    GLES20
-        .glClear(mask)
+    GLES20.glClear(mask)
     logErrorIfAny("glClear")
 }
 
@@ -72,8 +69,7 @@ fun glClear(mask: Int) {
  * @see glClear
  */
 fun glClearColor(color: Color) {
-    GLES20
-        .glClearColor(color.r, color.g, color.b, color.a)
+    GLES20.glClearColor(color.r, color.g, color.b, color.a)
     logErrorIfAny("glClearColor")
 }
 
@@ -102,8 +98,7 @@ fun glClearColorError() {
  * @see <a href="https://docs.gl/es2/glViewport">docs.gl - glViewport</a>
  */
 fun glViewport(p: Vec2Int, size: Size) {
-    GLES20
-        .glViewport(p.x, p.y, size.width, size.height)
+    GLES20.glViewport(p.x, p.y, size.width, size.height)
     logErrorIfAny("glViewport")
 }
 
@@ -117,8 +112,7 @@ fun glViewport(p: Vec2Int, size: Size) {
  * @see glAttachShader
  */
 fun glCreateShader(shaderType: Int): Int {
-    val shader = GLES20
-        .glCreateShader(shaderType)
+    val shader = GLES20.glCreateShader(shaderType)
     logErrorIfAny("glCreateShader")
     return shader
 }
@@ -133,8 +127,7 @@ fun glCreateShader(shaderType: Int): Int {
  * @see glAttachShader
  */
 fun glShaderSource(shader: Int, shaderCode: String) {
-    GLES20
-        .glShaderSource(shader, shaderCode)
+    GLES20.glShaderSource(shader, shaderCode)
     logErrorIfAny("glShaderSource")
 }
 
@@ -148,24 +141,19 @@ fun glShaderSource(shader: Int, shaderCode: String) {
  * @see glAttachShader
  */
 fun glCompileShader(shader: Int) {
-    GLES20
-        .glCompileShader(shader)
+    GLES20.glCompileShader(shader)
     logErrorIfAny("glCompileShader")
 
     val compiled = IntArray(1)
-    GLES20
-        .glGetShaderiv(
+    GLES20.glGetShaderiv(
         shader,
-        GLES20
-            .GL_COMPILE_STATUS,
+        GLES20.GL_COMPILE_STATUS,
         compiled,
         0
     )
 
-    if (compiled[0] == GLES20
-            .GL_FALSE) {
-        throw Exception(GLES20
-            .glGetShaderInfoLog(shader))
+    if (compiled[0] == GLES20.GL_FALSE) {
+        throw Exception(GLES20.glGetShaderInfoLog(shader))
     }
 }
 
@@ -177,8 +165,7 @@ fun glCompileShader(shader: Int) {
  * @see glUseProgram
  */
 fun glCreateProgram(): Int {
-    val program = GLES20
-        .glCreateProgram()
+    val program = GLES20.glCreateProgram()
     logErrorIfAny("glCreateProgram")
     return program
 }
@@ -194,8 +181,7 @@ fun glCreateProgram(): Int {
  * @see glCreateProgram
  */
 fun glAttachShader(program: Int, shader: Int) {
-    GLES20
-        .glAttachShader(program, shader)
+    GLES20.glAttachShader(program, shader)
     logErrorIfAny("glAttachShader")
 }
 
@@ -208,13 +194,11 @@ fun glAttachShader(program: Int, shader: Int) {
  * @see glUseProgram
  */
 fun glLinkProgram(program: Int) {
-    GLES20
-        .glLinkProgram(program)
+    GLES20.glLinkProgram(program)
     logErrorIfAny("glLinkProgram")
 
     val linkStatus = IntArray(1)
-    GLES20
-        .glGetProgramiv(
+    GLES20.glGetProgramiv(
         program,
         GLES20
             .GL_LINK_STATUS,
@@ -222,10 +206,8 @@ fun glLinkProgram(program: Int) {
         0
     )
 
-    if (linkStatus[0] == GLES20
-            .GL_FALSE) {
-        throw Exception(GLES20
-            .glGetProgramInfoLog(program))
+    if (linkStatus[0] == GLES20.GL_FALSE) {
+        throw Exception(GLES20.glGetProgramInfoLog(program))
     }
 }
 
@@ -237,8 +219,7 @@ fun glLinkProgram(program: Int) {
  * @see glLinkProgram
  */
 fun glUseProgram(program: Int) {
-    GLES20
-        .glUseProgram(program)
+    GLES20.glUseProgram(program)
     logErrorIfAny("glUseProgram")
 }
 
@@ -250,8 +231,7 @@ fun glUseProgram(program: Int) {
  * @see <a href="https://docs.gl/es2/glGetAttribLocation">docs.gl - glGetAttribLocation</a>
  */
 fun glGetAttribLocation(program: Int, name: String): Int {
-    val location = GLES20
-        .glGetAttribLocation(program, name)
+    val location = GLES20.glGetAttribLocation(program, name)
     logErrorIfAny("glGetAttribLocation")
     return location
 }
@@ -262,8 +242,7 @@ fun glGetAttribLocation(program: Int, name: String): Int {
  * @see <a href="https://docs.gl/es2/glEnableVertexAttribArray">docs.gl - glEnableVertexAttribArray</a>
  */
 fun glEnableVertexAttribArray(index: Int) {
-    GLES20
-        .glEnableVertexAttribArray(index)
+    GLES20.glEnableVertexAttribArray(index)
     logErrorIfAny("glEnableVertexAttribArray")
 }
 
@@ -273,8 +252,7 @@ fun glEnableVertexAttribArray(index: Int) {
  * @see <a href="https://docs.gl/es2/glEnableVertexAttribArray">docs.gl - glEnableVertexAttribArray</a>
  */
 fun glDisableVertexAttribArray(index: Int) {
-    GLES20
-        .glDisableVertexAttribArray(index)
+    GLES20.glDisableVertexAttribArray(index)
     logErrorIfAny("glDisableVertexAttribArray")
 }
 
@@ -295,8 +273,7 @@ fun glVertexAttribPointer(
     stride: Int,
     ptr: Buffer
 ) {
-    GLES20
-        .glVertexAttribPointer(index, size, type, normalized, stride, ptr)
+    GLES20.glVertexAttribPointer(index, size, type, normalized, stride, ptr)
     logErrorIfAny("glVertexAttribPointer")
 }
 
@@ -308,8 +285,7 @@ fun glVertexAttribPointer(
  * @see <a href="https://docs.gl/es2/glGetUniformLocation">docs.gl - glGetUniformLocation</a>
  */
 fun glGetUniformLocation(program: Int, name: String): Int {
-    val location = GLES20
-        .glGetUniformLocation(program, name)
+    val location = GLES20.glGetUniformLocation(program, name)
     logErrorIfAny("glGetUniformLocation")
     return location
 }
@@ -323,8 +299,7 @@ fun glGetUniformLocation(program: Int, name: String): Int {
  * @see <a href="https://docs.gl/es2/glDrawElements">docs.gl - glDrawElements</a>
  */
 fun glDrawElements(mode: Int, count: Int, type: Int, buffer: Buffer) {
-    GLES20
-        .glDrawElements(mode, count, type, buffer)
+    GLES20.glDrawElements(mode, count, type, buffer)
     logErrorIfAny("glDrawElements")
 }
 
@@ -336,8 +311,7 @@ fun glDrawElements(mode: Int, count: Int, type: Int, buffer: Buffer) {
  * @see <a href="https://docs.gl/es2/glGenTextures">docs.gl - glGenTextures</a>
  */
 fun glGenTextures(n: Int, textures: IntArray, offset: Int) {
-    GLES20
-        .glGenTextures(n, textures, offset)
+    GLES20.glGenTextures(n, textures, offset)
     logErrorIfAny("glGenTextures")
 }
 
@@ -359,8 +333,7 @@ fun glGenTexture(): Int {
  * @see <a href="https://docs.gl/es2/glBindTexture">docs.gl - glBindTexture</a>
  */
 fun glBindTexture(target: Int, texture: Int) {
-    GLES20
-        .glBindTexture(target, texture)
+    GLES20.glBindTexture(target, texture)
     logErrorIfAny("glBindTexture")
 }
 
@@ -372,8 +345,7 @@ fun glBindTexture(target: Int, texture: Int) {
  * @see <a href="https://docs.gl/es2/glTexParameter">docs.gl - glTextParameter</a>
  */
 fun glTexParameteri(target: Int, pname: Int, param: Int) {
-    GLES20
-        .glTexParameteri(target, pname, param)
+    GLES20.glTexParameteri(target, pname, param)
     logErrorIfAny("glTexParameteri")
 }
 
@@ -383,8 +355,7 @@ fun glTexParameteri(target: Int, pname: Int, param: Int) {
  * @see <a href="https://docs.gl/es2/glActiveTexture">docs.gl - glActiveTexture</a>
  */
 fun glActiveTexture(texture: Int) {
-    GLES20
-        .glActiveTexture(texture)
+    GLES20.glActiveTexture(texture)
     logErrorIfAny("glActiveTexture")
 }
 
@@ -406,8 +377,7 @@ fun glTexImage2D(
     type: Int,
     data: ByteBuffer?
 ) {
-    GLES20
-        .glTexImage2D(target, level, format, size.width, size.height, 0, format, type, data)
+    GLES20.glTexImage2D(target, level, format, size.width, size.height, 0, format, type, data)
     logErrorIfAny("glTexImage2D")
 }
 
@@ -426,9 +396,7 @@ fun glReadPixels(
     data: ByteBuffer
 ) {
     assert(size.width * size.height * bytesPerPixel(format) <= data.capacity())
-    GLES20
-        .glReadPixels(p.x, p.y, size.width, size.height, format, GLES20
-            .GL_UNSIGNED_BYTE, data)
+    GLES20.glReadPixels(p.x, p.y, size.width, size.height, format, GLES20.GL_UNSIGNED_BYTE, data)
     logErrorIfAny("glReadPixels")
 }
 
@@ -441,8 +409,7 @@ fun glReadPixels(
  * @see glGenFramebuffer
  */
 fun glGenFramebuffers(n: Int, framebuffers: IntArray, offset: Int) {
-    GLES20
-        .glGenFramebuffers(n, framebuffers, offset)
+    GLES20.glGenFramebuffers(n, framebuffers, offset)
     logErrorIfAny("glGenFramebuffers")
 }
 
@@ -463,9 +430,7 @@ fun glGenFramebuffer(): Int {
  * @see <a href="https://docs.gl/es2/glBindFramebuffer">docs.gl - glBindFramebuffer</a>
  */
 fun glBindFramebuffer(framebuffer: Int) {
-    GLES20
-        .glBindFramebuffer(GLES20
-            .GL_FRAMEBUFFER, framebuffer)
+    GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, framebuffer)
     logErrorIfAny("glBindFramebuffer")
 }
 
@@ -477,9 +442,7 @@ fun glBindFramebuffer(framebuffer: Int) {
  * @see <a href="https://docs.gl/es2/glFramebufferTexture2D">docs.gl - glFramebufferTexture2D</a>
  */
 fun glFramebufferTexture2D(attachment: Int, textureTarget: Int, texture: Int) {
-    GLES20
-        .glFramebufferTexture2D(GLES20
-            .GL_FRAMEBUFFER, attachment, textureTarget, texture, 0)
+    GLES20.glFramebufferTexture2D(GLES20.GL_FRAMEBUFFER, attachment, textureTarget, texture, 0)
     logErrorIfAny("glFramebufferTexture")
 }
 
@@ -488,47 +451,41 @@ fun glFramebufferTexture2D(attachment: Int, textureTarget: Int, texture: Int) {
  * @see <a href="https://docs.gl/es2/glFinish">docs.gl - glFinish</a>
  */
 fun glFinish() {
-    GLES20
-        .glFinish()
+    GLES20.glFinish()
     logErrorIfAny("glFinish")
 }
 
 fun glUniform1f(location: Int, value: Float) {
-    GLES20
-        .glUniform1f(location, value)
+    GLES20.glUniform1f(location, value)
     logErrorIfAny("glUniform1f")
 }
 
 fun glUniform1fv(location: Int, count: Int, value: FloatArray, offset: Int) {
-    GLES20
-        .glUniform1fv(location, count, value, offset)
+    GLES20.glUniform1fv(location, count, value, offset)
     logErrorIfAny("glUniform1fv")
 }
 
 fun glUniform1i(location: Int, target: Int) {
-    GLES20
-        .glUniform1i(location, target)
+    GLES20.glUniform1i(location, target)
     logErrorIfAny("glUniform1i")
 }
 
 fun glUniform2f(location: Int, x: Float, y: Float) {
-    GLES20
-        .glUniform2f(location, x, y)
+    GLES20.glUniform2f(location, x, y)
     logErrorIfAny("glUniform2f")
 }
 
 fun glUniform4f(location: Int, r: Float, g: Float, b: Float, a: Float) {
-    GLES20
-        .glUniform4f(location, r, g, b, a)
+    GLES20.glUniform4f(location, r, g, b, a)
     logErrorIfAny("glUniform4f")
 }
 
 fun glUniform4fv(location: Int, count: Int, buffer: FloatArray, offset: Int) {
-    GLES20
-        .glUniform4fv(location, count, buffer, offset)
+    GLES20.glUniform4fv(location, count, buffer, offset)
     logErrorIfAny("glUniform4fv")
 }
 
+/* OpenGLES3.0 functionality */
 fun glBindBuffer(target: Int, buffer: Int) {
     GLES30.glBindBuffer(target, buffer)
     logErrorIfAny("glBindBuffer")
@@ -559,39 +516,29 @@ fun glUnmapBuffer(target: Int) {
  */
 fun bytesPerPixel(textureFormat: Int): Int {
     return when (textureFormat) {
-        GLES20
-            .GL_RGBA -> 4
-        GLES20
-            .GL_RGB -> 3
-        GLES20
-            .GL_ALPHA -> 1
+        GLES20.GL_RGBA -> 4
+        GLES20.GL_RGB -> 3
+        GLES20.GL_ALPHA -> 1
 
         else -> throw InvalidParameterException("textureFormat")
     }
 }
 
 private fun logErrorIfAny(funcname: String) {
-    var error = GLES20
-        .glGetError()
+    var error = GLES20.glGetError()
     while (error != 0) {
         Log.e("OpenGL", funcname + ": " + error + ": " + errorToString(error))
-        error = GLES20
-            .glGetError()
+        error = GLES20.glGetError()
     }
 }
 
 private fun errorToString(error: Int): String {
     return when (error) {
-        GLES20
-            .GL_INVALID_ENUM -> "GL_INVALID_ENUM"
-        GLES20
-            .GL_INVALID_VALUE -> "GL_INVALID_VALUE"
-        GLES20
-            .GL_INVALID_OPERATION -> "GL_INVALID_OPERATION"
-        GLES20
-            .GL_OUT_OF_MEMORY -> "GL_OUT_OF_MEMORY"
-        GLES20
-            .GL_INVALID_FRAMEBUFFER_OPERATION -> "GL_INVALID_FRAMEBUFFER_OPERATION"
+        GLES20.GL_INVALID_ENUM -> "GL_INVALID_ENUM"
+        GLES20.GL_INVALID_VALUE -> "GL_INVALID_VALUE"
+        GLES20.GL_INVALID_OPERATION -> "GL_INVALID_OPERATION"
+        GLES20.GL_OUT_OF_MEMORY -> "GL_OUT_OF_MEMORY"
+        GLES20.GL_INVALID_FRAMEBUFFER_OPERATION -> "GL_INVALID_FRAMEBUFFER_OPERATION"
         else -> "UNKNOWN ERROR"
     }
 }
