@@ -61,7 +61,6 @@ internal fun fullPipeline(
 
 
     // ------------------ LINE DETECTION STUFF START --------------
-
     val cornerDetection = fullCornerDetection(context, storeStage, pipeline)
 
     val drawCorners = DrawCornersStage(
@@ -79,6 +78,21 @@ internal fun fullPipeline(
         Color(1.0f, 0.0f, 0.0f, 1.0f),
         inputStage.frameBufferInfo.textureSize
     )
+    /*
+    val overlayStageCorners = OverlayStage(
+        context,
+        inputStage.frameBufferInfo,
+        drawHistoryCorners.frameBufferInfo,
+        pipeline
+    )
+    val overlayStage = OverlayStage(
+        context,
+        overlayStageCorners.frameBufferInfo,
+        drawCorners.frameBufferInfo,
+        pipeline
+    )
+    dumpToGalleryFull(context, overlayStage.frameBufferInfo, pipeline)
+     */
 
     // --------------- LINE DETECTION STUFF END
 
