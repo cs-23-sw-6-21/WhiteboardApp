@@ -23,6 +23,7 @@ import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.DraggablePointsSta
 import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.DrawCornersStage
 import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.ScreenCornerPointsStage
 import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.WeightedPointsStage
+import dk.scuffed.whiteboardapp.pipeline.useDoubleBuffering
 
 /**
  * Our canonical full pipeline that does everything except input/output
@@ -36,20 +37,31 @@ internal fun mainThreadPipeline(
 
     // ------------------ SEGMENTATION STUFF START --------------
 
+    var oldInput = inputStage.frameBufferInfo
+
+    if (useDoubleBuffering) {
+        oldInput = pipeline.allocateFramebuffer(
+            inputStage,
+            GLES20.GL_RGBA,
+            inputStage.frameBufferInfo.textureSize
+        )
+    }
+
     val fullSegmentation = fullSegmentation(context, inputStage.frameBufferInfo, pipeline)
+
 
 
     val storedFramebuffer = pipeline.allocateFramebuffer(
         inputStage,
         GLES20.GL_RGBA,
-        inputStage.frameBufferInfo.textureSize
+        oldInput.textureSize
     )
 
 
     val maskStage = MaskingStage(
         context,
         storedFramebuffer,
-        inputStage.frameBufferInfo,
+        oldInput,
         fullSegmentation.frameBufferInfo,
         pipeline
     )
