@@ -10,7 +10,7 @@ import dk.scuffed.whiteboardapp.utils.Vec2Int
 class OpenGLView(context: Context) : GLSurfaceView(context) {
     private val renderer: PipelinedOpenGLRenderer
     init {
-        setEGLContextClientVersion(2)
+        setEGLContextClientVersion(3)
 
         renderer = PipelinedOpenGLRenderer(context)
 

@@ -15,6 +15,15 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        externalNativeBuild {
+            // Encapsulates your CMake build configurations.
+            cmake {
+                // Provides a relative path to your CMake build script.
+                cppFlags "-std=c++11 -fexceptions"
+                arguments "-DANDROID_STL=c++_shared"
+            }
+        }
     }
 
     buildTypes {
@@ -32,6 +41,14 @@ android {
     }
     packagingOptions {
         pickFirst '**/*.so'
+    }
+    externalNativeBuild {
+        // Encapsulates your CMake build configurations.
+        cmake {
+
+            // Provides a relative path to your CMake build script.
+            path "CMakeLists.txt"
+        }
     }
 }
 

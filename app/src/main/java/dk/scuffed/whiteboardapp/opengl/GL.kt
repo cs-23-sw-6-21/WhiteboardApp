@@ -1,6 +1,8 @@
 package dk.scuffed.whiteboardapp.opengl
 
 import android.opengl.GLES20
+import android.opengl.GLES30
+
 import android.util.Log
 import android.util.Size
 import dk.scuffed.whiteboardapp.BuildConfig
@@ -199,7 +201,8 @@ fun glLinkProgram(program: Int) {
     val linkStatus = IntArray(1)
     GLES20.glGetProgramiv(
         program,
-        GLES20.GL_LINK_STATUS,
+        GLES20
+            .GL_LINK_STATUS,
         linkStatus,
         0
     )
@@ -483,6 +486,29 @@ fun glUniform4fv(location: Int, count: Int, buffer: FloatArray, offset: Int) {
     logErrorIfAny("glUniform4fv")
 }
 
+/* OpenGLES3.0 functionality */
+fun glBindBuffer(target: Int, buffer: Int) {
+    GLES30.glBindBuffer(target, buffer)
+    logErrorIfAny("glBindBuffer")
+}
+
+fun glMapBufferRange(target: Int, offset: Int, length: Int, access: Int): Buffer {
+    val a = GLES30.glMapBufferRange(
+        target,
+        offset,
+        length,
+        access
+    )
+    logErrorIfAny("glMapBufferRange")
+    return a
+}
+
+fun glUnmapBuffer(target: Int) {
+    GLES30.glUnmapBuffer(target)
+    logErrorIfAny("glUnmapBuffer")
+}
+
+
 /**
  * Get how many bytes it takes to represent a pixel given a texture format
  * @param textureFormat The texture format
@@ -494,6 +520,7 @@ fun bytesPerPixel(textureFormat: Int): Int {
         GLES20.GL_RGBA -> 4
         GLES20.GL_RGB -> 3
         GLES20.GL_ALPHA -> 1
+
         else -> throw InvalidParameterException("textureFormat")
     }
 }

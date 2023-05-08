@@ -5,12 +5,14 @@ import android.graphics.Bitmap
 import dk.scuffed.whiteboardapp.pipeline.IPipeline
 import dk.scuffed.whiteboardapp.pipeline.stages.GLOutputStage
 import dk.scuffed.whiteboardapp.pipeline.stages.PointsOutputStage
+import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.FramebufferToBitmapPBOStage
 import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.FramebufferToBitmapStage
 import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.OpenCVLineDetectionStage
 import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.BiggestQuadStage
 import dk.scuffed.whiteboardapp.pipeline.stages.lines_stages.LinesAngleDiscriminatorStage
 import dk.scuffed.whiteboardapp.pipeline.stages.pipeline_stages.ThreadedBitmapInputPointOutputStage
 import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.WeightedPointsStage
+import dk.scuffed.whiteboardapp.pipeline.useDoubleBuffering
 import dk.scuffed.whiteboardapp.utils.Vec2Int
 
 /**
@@ -32,11 +34,20 @@ internal fun fullCornerDetection(
                 pipeline
             )
 
-            val edgesBitmapStage = FramebufferToBitmapStage(
-                edges.frameBufferInfo,
-                Bitmap.Config.ARGB_8888,
-                pipeline
-            )
+            val edgesBitmapStage = if (useDoubleBuffering) {
+                FramebufferToBitmapPBOStage(
+                    edges.frameBufferInfo,
+                    Bitmap.Config.ARGB_8888,
+                    pipeline
+                )
+            }
+            else{
+                FramebufferToBitmapStage(
+                    edges.frameBufferInfo,
+                    Bitmap.Config.ARGB_8888,
+                    pipeline
+                )
+            }
         },
         { inputBitmapStage, pipeline ->
             val openCVLineDetectionStage = OpenCVLineDetectionStage(
