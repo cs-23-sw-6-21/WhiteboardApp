@@ -16,6 +16,7 @@ import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.Letterboxi
 import dk.scuffed.whiteboardapp.pipeline.stages.output_stages.DrawFramebufferStage
 
 const val useDoubleBuffering = true
+const val use4K = true
 
 internal class Pipeline(private val context: Context, private val initialResolution: Size) : IPipeline {
 
