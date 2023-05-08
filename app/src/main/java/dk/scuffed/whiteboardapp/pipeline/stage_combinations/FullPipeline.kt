@@ -68,14 +68,16 @@ internal fun fullPipeline(
         context,
         pipeline,
         cornerDetection,
-        Color(0.0f, 1.0f, 0.0f, 1.0f)
+        Color(0.0f, 1.0f, 0.0f, 1.0f),
+        inputStage.frameBufferInfo.textureSize
     )
 
     val drawHistoryCorners = DrawCornersStage(
         context,
         pipeline,
         (cornerDetection as WeightedPointsStage).historyPointsStage,
-        Color(1.0f, 0.0f, 0.0f, 1.0f)
+        Color(1.0f, 0.0f, 0.0f, 1.0f),
+        inputStage.frameBufferInfo.textureSize
     )
 
     // --------------- LINE DETECTION STUFF END
