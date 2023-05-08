@@ -2,6 +2,7 @@ package dk.scuffed.whiteboardapp.pipeline.stages
 
 import android.util.Log
 import android.util.Size
+import dk.scuffed.whiteboardapp.BuildConfig
 import dk.scuffed.whiteboardapp.opengl.glFinish
 import dk.scuffed.whiteboardapp.pipeline.IPipeline
 
@@ -42,6 +43,14 @@ internal abstract class Stage(pipeline: IPipeline) {
 
         if (recordTimings) {
             Log.d("Stages", "Stage: $name took $duration ms")
+        }
+        if (BuildConfig.DEBUG) {
+            if (this is GLOutputStage) {
+                Log.d("Stages", "Stage: $name is ${frameBufferInfo.textureSize} ms")
+            }
+            if (this is BitmapOutputStage) {
+                Log.d("Stages", "Stage: $name is ${Size(outputBitmap.width, outputBitmap.height)} ms")
+            }
         }
     }
 
