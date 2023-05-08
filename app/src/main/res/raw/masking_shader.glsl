@@ -2,7 +2,6 @@
 precision mediump float;
 
 uniform vec2 samplerResolution;
-uniform vec2 maskResolution;
 
 uniform sampler2D sampler1;
 uniform sampler2D sampler2;
