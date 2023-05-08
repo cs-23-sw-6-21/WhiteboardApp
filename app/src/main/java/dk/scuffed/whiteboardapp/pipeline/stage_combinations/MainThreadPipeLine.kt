@@ -116,13 +116,6 @@ internal fun mainThreadPipeline(
         pipeline
     )
 
-    val drawCorners = DrawCornersStage(
-        context,
-        pipeline,
-        weightedCornerStage,
-        inputStage.frameBufferInfo.textureSize
-    )
-
     // --------------- LINE DETECTION STUFF END
 
 
@@ -180,13 +173,5 @@ internal fun mainThreadPipeline(
 
     // ------------------ POST PROCESSING END --------------
 
-
-    val overlay = OverlayStage(
-        context,
-        readdedColour.frameBufferInfo,
-        drawCorners.frameBufferInfo,
-        pipeline
-    )
-
-    return overlay
+    return readdedColour
 }

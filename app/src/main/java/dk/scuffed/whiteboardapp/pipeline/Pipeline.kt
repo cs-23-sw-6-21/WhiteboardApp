@@ -16,7 +16,7 @@ import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.Letterboxi
 import dk.scuffed.whiteboardapp.pipeline.stages.output_stages.DrawFramebufferStage
 
 const val useDoubleBuffering = true
-const val use4K = true
+const val use4K = false
 
 internal class Pipeline(private val context: Context, private val initialResolution: Size) : IPipeline {
 
@@ -53,13 +53,14 @@ internal class Pipeline(private val context: Context, private val initialResolut
 
         DrawFramebufferStage(
             context,
-            entirePipeline.frameBufferInfo,
+            letterbox.frameBufferInfo,
             this
         )
 
         if (CSVWriter.recordOverallTimings){
-            CSVWriter.MainWriter.write("Overall\n")
+            CSVWriter.MainWriter.write("Overall")
         }
+        CSVWriter.MainWriter.write("\n")
     }
 
     override fun draw() {
@@ -72,8 +73,9 @@ internal class Pipeline(private val context: Context, private val initialResolut
         {
             if (CSVWriter.recordOverallTimings)
             {
-                CSVWriter.MainWriter.write("$duration\n")
+                CSVWriter.MainWriter.write("$duration")
             }
+            CSVWriter.MainWriter.write("\n")
             CSVWriter.frameCounter += 1
             if (CSVWriter.frameCounter == CSVWriter.numberOfFrames)
             {
