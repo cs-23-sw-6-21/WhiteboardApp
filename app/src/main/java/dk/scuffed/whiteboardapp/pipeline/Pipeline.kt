@@ -85,7 +85,6 @@ internal class Pipeline(private val context: Context, private val initialResolut
                 CSVWriter.MainWriter.flush()
                 CSVWriter.MainWriter.close()
             }
-            Log.i("Pipeline", "Frame took ${duration}ms")
         }
     }
 
