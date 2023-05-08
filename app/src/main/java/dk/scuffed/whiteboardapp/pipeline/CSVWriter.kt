@@ -14,7 +14,7 @@ object CSVWriter {
 
     var frameCounter = 0
 
-    val numberOfFrames = 1000
+    val numberOfFrames = 1100
 
     val MainWriter : OutputStreamWriter
 
