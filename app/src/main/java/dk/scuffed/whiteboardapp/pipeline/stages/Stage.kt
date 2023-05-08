@@ -22,13 +22,7 @@ internal abstract class Stage(private val pipeline: IPipeline) {
         name = this.javaClass.name
         resolution = pipeline.getInitialResolution()
         if (CSVWriter.recordStageTimings) {
-            if (pipeline is SwitchablePointPipeline)
-            {
-                CSVWriter.CornerDetectionWriter.write("$name,")
-            } else
-            {
-                CSVWriter.MainWriter.write("$name,")
-            }
+            CSVWriter.MainWriter.write("$name,")
         }
     }
 
