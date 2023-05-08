@@ -15,7 +15,7 @@ import dk.scuffed.whiteboardapp.pipeline.stages.input_stages.CameraXStage
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.LetterboxingStage
 import dk.scuffed.whiteboardapp.pipeline.stages.output_stages.DrawFramebufferStage
 
-const val useDoubleBuffering = true
+const val useDoubleBuffering = false
 const val use4K = false
 
 internal class Pipeline(private val context: Context, private val initialResolution: Size) : IPipeline {
