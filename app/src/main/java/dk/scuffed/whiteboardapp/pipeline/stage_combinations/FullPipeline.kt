@@ -94,7 +94,7 @@ internal fun fullPipeline(
     val cameraPointsStage =
         CornersFromResolutionStage(oldInput.textureSize, pipeline)
 
-    val perspectiveCorrected = fullPerspectiveCorrection(
+    val perspectiveCorrected = testPerspectiveCorrection(
         context,
         maskStage,
         switchablePointPipeline.pointsOutputStage,
@@ -156,5 +156,5 @@ internal fun fullPipeline(
     }
 
 
-    return Pair(switchablePointPipeline, overlay)
+    return Pair(switchablePointPipeline, perspectiveCorrected)
 }

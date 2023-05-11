@@ -20,7 +20,7 @@ import dk.scuffed.whiteboardapp.utils.*
 internal class PerspectiveCorrectionStage(
     context: Context,
     private val inputFramebufferInfo: FramebufferInfo,
-    private val inputVertices: PerspectiveTransformPointsStage,
+    private val inputVertices: PointsOutputStage,
     pipeline: IPipeline
 ) : GLOutputStage(
     context,
@@ -64,9 +64,9 @@ internal class PerspectiveCorrectionStage(
 
     override fun viewport() {
         // Calculate the bottom left corner so that the view is centralized.
-        val offsetX = (inputFramebufferInfo.textureSize.width - inputVertices.scaledResolution.width) / 2
-        val offsetY = (inputFramebufferInfo.textureSize.height - inputVertices.scaledResolution.height) / 2
-        glViewport(Vec2Int(offsetX, offsetY), Size(inputVertices.scaledResolution.width, inputVertices.scaledResolution.height))
+        val offsetX = (inputFramebufferInfo.textureSize.width - 2048) / 2
+        val offsetY = (inputFramebufferInfo.textureSize.height - 2048) / 2
+        glViewport(Vec2Int(offsetX, offsetY), Size(2048, 2048))
     }
 
     override fun clear() {
@@ -100,10 +100,10 @@ internal class PerspectiveCorrectionStage(
         )
 
         val texCoords = arrayListOf(
-            Vec3Float(0f, 1f, 1f) * zValues[0],
-            Vec3Float(0f, 0f, 1f) * zValues[1],
-            Vec3Float(1f, 0f, 1f) * zValues[2],
-            Vec3Float(1f, 1f, 1f) * zValues[3],
+            Vec3Float(0f, 1f, 1f) ,
+            Vec3Float(0f, 0f, 1f) ,
+            Vec3Float(1f, 0f, 1f) ,
+            Vec3Float(1f, 1f, 1f) ,
         )
 
         return texCoords

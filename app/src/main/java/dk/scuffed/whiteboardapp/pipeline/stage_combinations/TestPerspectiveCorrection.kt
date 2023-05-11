@@ -16,7 +16,7 @@ import dk.scuffed.whiteboardapp.utils.Vec2Int
 /**
  * Runs the entire perspective correction based on two sets of points and an input framebuffer
  */
-internal fun fullPerspectiveCorrection(
+internal fun testPerspectiveCorrection(
     context: Context,
     inputStage: GLOutputStage,
     pointsFrom: PointsOutputStage,
@@ -38,9 +38,17 @@ internal fun fullPerspectiveCorrection(
         pipeline
     )
 
-    val drawCorrectionStage = DrawCornersStage(context, pipeline, aa, Size(2048, 2048))
+    val perspectiveCorrectionStagea = PerspectiveCorrectionStage(
+        context,
+        inputStage.frameBufferInfo,
+        perspectiveTransformPointsStage,
+        pipeline
+    )
 
-    val overlay = OverlayStage(context, perspectiveCorrectionStage.frameBufferInfo, drawCorrectionStage.frameBufferInfo, pipeline)
+
+    val drawCorrectionStage = DrawCornersStage(context, pipeline, pointsTo, Size(2048, 2048))
+
+    val overlay = OverlayStage(context, inputStage.frameBufferInfo, drawCorrectionStage.frameBufferInfo, pipeline)
 
     return overlay
 }
