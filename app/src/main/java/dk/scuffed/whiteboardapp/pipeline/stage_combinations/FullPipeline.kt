@@ -156,5 +156,5 @@ internal fun fullPipeline(
     }
 
 
-    return Pair(switchablePointPipeline, overlay)
+    return Pair(switchablePointPipeline, maskStage)
 }

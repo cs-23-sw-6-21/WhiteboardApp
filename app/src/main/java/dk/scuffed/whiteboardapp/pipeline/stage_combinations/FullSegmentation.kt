@@ -69,7 +69,7 @@ internal fun fullSegmentation(
 
 
     val segFramebuffer = BitmapToFramebufferStage(
-        dilation,
+        seg,
         pipeline
     )
 
@@ -83,7 +83,7 @@ internal fun fullSegmentation(
         context,
         segFramebuffer.frameBufferInfo,
         lastAccumulator,
-        0.2f,
+        1f,
         pipeline
     )
 
