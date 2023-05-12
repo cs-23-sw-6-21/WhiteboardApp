@@ -75,82 +75,10 @@ internal fun fullPipeline(
     val switchablePointPipeline = SwitchablePointPipeline(
         context,
         { pipeline -> DraggablePointsStage(pipeline) },
-        { pipeline -> fullCornerDetection(context, storeStage, pipeline) },
+        { pipeline -> DraggablePointsStage(pipeline) },
         pipeline
     )
 
-    val drawCorners = DrawCornersStage(
-        context,
-        pipeline,
-        switchablePointPipeline.pointsOutputStage,
-        oldInput.textureSize
-    )
-
-    // --------------- LINE DETECTION STUFF END
-
-
-    // ------------------ PERSPECTIVE CORRECTION START --------------
-
-    val cameraPointsStage =
-        CornersFromResolutionStage(oldInput.textureSize, pipeline)
-
-    val perspectiveCorrected = fullPerspectiveCorrection(
-        context,
-        maskStage,
-        switchablePointPipeline.pointsOutputStage,
-        cameraPointsStage,
-        pipeline
-    )
-
-    GenerateMipmapStage(perspectiveCorrected.frameBufferInfo, false, pipeline)
-
-    // ------------------ PERSPECTIVE CORRECTION END --------------
-
-
-    // ------------------ POST PROCESSING START --------------
-
-    val downscaledForWhitebalance = ScaleToResolution(
-        context, perspectiveCorrected.frameBufferInfo,
-        Size(perspectiveCorrected.frameBufferInfo.textureSize.width / 32, perspectiveCorrected.frameBufferInfo.textureSize.height / 32),
-        pipeline
-    )
-    val downscaledForBinarization = ScaleToResolution(
-        context, perspectiveCorrected.frameBufferInfo,
-        Size(perspectiveCorrected.frameBufferInfo.textureSize.width / 8, perspectiveCorrected.frameBufferInfo.textureSize.height / 8),
-        pipeline
-    )
-
-    val whitebalance = whiteBalance(
-        context,
-        perspectiveCorrected,
-        downscaledForWhitebalance,
-        pipeline
-    )
-
-
-    val binarized = binarize(
-        context,
-        perspectiveCorrected,
-        downscaledForBinarization,
-        7.5f,
-        pipeline)
-
-    val readdedColour = addColour(
-        context,
-        whitebalance,
-        binarized,
-        pipeline
-    )
-
-    // ------------------ POST PROCESSING END --------------
-
-
-    val overlay = OverlayStage(
-        context,
-        readdedColour.frameBufferInfo,
-        drawCorners.frameBufferInfo,
-        pipeline
-    )
     if (useDoubleBuffering) {
         val store1 = StoreStage(context, inputStage.frameBufferInfo, oldInput, pipeline)
     }
