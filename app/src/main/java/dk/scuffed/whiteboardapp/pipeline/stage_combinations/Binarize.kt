@@ -31,6 +31,7 @@ internal fun binarize(
     )
 
     val binarizeFast = BinarizationFastStage(context, grayscaleStage.frameBufferInfo, grayscaleDownscaledStage.frameBufferInfo, threshold, pipeline)
+    dumpToGalleryFull(context, binarizeFast.frameBufferInfo, pipeline)
 
     return binarizeFast
 }

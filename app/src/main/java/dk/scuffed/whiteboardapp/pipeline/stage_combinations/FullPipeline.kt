@@ -128,6 +128,8 @@ internal fun fullPipeline(
     )
 
 
+    dumpToGalleryFull(context, perspectiveCorrected.frameBufferInfo, pipeline)
+
     val binarized = binarize(
         context,
         perspectiveCorrected,
@@ -141,6 +143,8 @@ internal fun fullPipeline(
         binarized,
         pipeline
     )
+
+
 
     // ------------------ POST PROCESSING END --------------
 

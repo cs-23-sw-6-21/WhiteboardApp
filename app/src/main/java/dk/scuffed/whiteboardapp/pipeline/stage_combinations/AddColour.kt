@@ -22,6 +22,8 @@ internal fun addColour(
         colours.frameBufferInfo,
         pipeline
     )
+    dumpToGalleryFull(context, adjusted.frameBufferInfo, pipeline)
+
 
     val colourApply = MaskingStage(
         context,
@@ -30,6 +32,7 @@ internal fun addColour(
         mask.frameBufferInfo,
         pipeline
     )
+    dumpToGalleryFull(context, colourApply.frameBufferInfo, pipeline)
 
     return colourApply
 }
