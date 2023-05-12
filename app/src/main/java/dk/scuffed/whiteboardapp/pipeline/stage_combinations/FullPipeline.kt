@@ -6,6 +6,7 @@ import android.opengl.GLES20
 import android.util.Size
 import dk.scuffed.whiteboardapp.pipeline.IPipeline
 import dk.scuffed.whiteboardapp.pipeline.stages.GLOutputStage
+import dk.scuffed.whiteboardapp.pipeline.stages.PointsOutputStage
 import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.DumpToGalleryStage
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.*
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.BinarizationStage
@@ -13,11 +14,11 @@ import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.MaskingSta
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.OverlayStage
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.StoreStage
 import dk.scuffed.whiteboardapp.pipeline.stages.pipeline_stages.SwitchablePointPipeline
+import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.*
 import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.CornersFromResolutionStage
 import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.DraggablePointsStage
 import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.DrawCornersStage
-import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.ScreenCornerPointsStage
-import dk.scuffed.whiteboardapp.pipeline.useDoubleBuffering
+import dk.scuffed.whiteboardapp.utils.Color
 
 /**
  * Our canonical full pipeline that does everything except input/output
@@ -26,36 +27,25 @@ internal fun fullPipeline(
     context: Context,
     inputStage: GLOutputStage,
     pipeline: IPipeline
-): Pair<SwitchablePointPipeline, GLOutputStage> {
+): Pair<PointsOutputStage, GLOutputStage> {
 
 
     // ------------------ SEGMENTATION STUFF START --------------
 
-    var oldInput = inputStage.frameBufferInfo
-
-    if (useDoubleBuffering) {
-        oldInput = pipeline.allocateFramebuffer(
-            inputStage,
-            GLES20.GL_RGBA,
-            inputStage.frameBufferInfo.textureSize
-        )
-    }
-
     val fullSegmentation = fullSegmentation(context, inputStage.frameBufferInfo, pipeline)
-
 
 
     val storedFramebuffer = pipeline.allocateFramebuffer(
         inputStage,
         GLES20.GL_RGBA,
-        oldInput.textureSize
+        inputStage.frameBufferInfo.textureSize
     )
 
 
     val maskStage = MaskingStage(
         context,
         storedFramebuffer,
-        oldInput,
+        inputStage.frameBufferInfo,
         fullSegmentation.frameBufferInfo,
         pipeline
     )
@@ -71,20 +61,38 @@ internal fun fullPipeline(
 
 
     // ------------------ LINE DETECTION STUFF START --------------
-
-    val switchablePointPipeline = SwitchablePointPipeline(
-        context,
-        { pipeline -> DraggablePointsStage(pipeline) },
-        { pipeline -> fullCornerDetection(context, storeStage, pipeline) },
-        pipeline
-    )
+    val cornerDetection = fullCornerDetection(context, storeStage, pipeline)
 
     val drawCorners = DrawCornersStage(
         context,
         pipeline,
-        switchablePointPipeline.pointsOutputStage,
-        oldInput.textureSize
+        cornerDetection,
+        Color(0.0f, 1.0f, 0.0f, 1.0f),
+        inputStage.frameBufferInfo.textureSize
     )
+
+    val drawHistoryCorners = DrawCornersStage(
+        context,
+        pipeline,
+        (cornerDetection as WeightedPointsStage).historyPointsStage,
+        Color(1.0f, 0.0f, 0.0f, 1.0f),
+        inputStage.frameBufferInfo.textureSize
+    )
+
+    val overlayStageCorners = OverlayStage(
+        context,
+        inputStage.frameBufferInfo,
+        drawHistoryCorners.frameBufferInfo,
+        pipeline
+    )
+    val overlayStage = OverlayStage(
+        context,
+        overlayStageCorners.frameBufferInfo,
+        drawCorners.frameBufferInfo,
+        pipeline
+    )
+    dumpToGalleryFull(context, overlayStage.frameBufferInfo, pipeline)
+
 
     // --------------- LINE DETECTION STUFF END
 
@@ -92,12 +100,12 @@ internal fun fullPipeline(
     // ------------------ PERSPECTIVE CORRECTION START --------------
 
     val cameraPointsStage =
-        CornersFromResolutionStage(oldInput.textureSize, pipeline)
+        CornersFromResolutionStage(inputStage.frameBufferInfo.textureSize, pipeline)
 
     val perspectiveCorrected = fullPerspectiveCorrection(
         context,
         maskStage,
-        switchablePointPipeline.pointsOutputStage,
+        cornerDetection,
         cameraPointsStage,
         pipeline
     )
@@ -148,13 +156,16 @@ internal fun fullPipeline(
     val overlay = OverlayStage(
         context,
         readdedColour.frameBufferInfo,
+        drawHistoryCorners.frameBufferInfo,
+        pipeline
+    )
+
+    val overlay2 = OverlayStage(
+        context,
+        overlay.frameBufferInfo,
         drawCorners.frameBufferInfo,
         pipeline
     )
-    if (useDoubleBuffering) {
-        val store1 = StoreStage(context, inputStage.frameBufferInfo, oldInput, pipeline)
-    }
 
-
-    return Pair(switchablePointPipeline, overlay)
+    return Pair(cornerDetection, overlay2)
 }

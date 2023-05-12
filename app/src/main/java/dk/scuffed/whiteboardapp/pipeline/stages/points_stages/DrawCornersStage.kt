@@ -10,6 +10,7 @@ import dk.scuffed.whiteboardapp.pipeline.IPipeline
 import dk.scuffed.whiteboardapp.pipeline.stages.Stage
 import dk.scuffed.whiteboardapp.pipeline.readRawResource
 import dk.scuffed.whiteboardapp.pipeline.stages.PointsOutputStage
+import dk.scuffed.whiteboardapp.utils.Color
 import dk.scuffed.whiteboardapp.utils.Vec2Int
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -26,6 +27,7 @@ internal class DrawCornersStage(
     private val context: Context,
     pipeline: IPipeline,
     private val pointsStage: PointsOutputStage,
+    private val color: Color,
     resolution: Size
 ) : Stage(pipeline) {
     //The radius of the circle
@@ -156,6 +158,15 @@ internal class DrawCornersStage(
             bottomLeftCorner.x.toFloat(),
             bottomLeftCorner.y.toFloat()
         )
+
+        val colorHandle = glGetUniformLocation(program, "color")
+        glUniform3f(
+            colorHandle,
+            color.r,
+            color.g,
+            color.b
+        )
+
         glDrawElements(
             GLES20.GL_TRIANGLES,
             drawOrder.size,

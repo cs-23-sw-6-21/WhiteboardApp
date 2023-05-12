@@ -44,6 +44,14 @@ internal class MaskingStage(
             inputFrameBufferInfo1.textureSize.height.toFloat()
         )
 
+        val maskResolutionHandle = glGetUniformLocation(program, "maskResolution")
+        glUniform2f(
+            maskResolutionHandle,
+            maskFrameBufferInfo.textureSize.width.toFloat(),
+            maskFrameBufferInfo.textureSize.height.toFloat()
+        )
+
+
         // Input framebuffer
         val framebufferTextureHandle1 = glGetUniformLocation(program, "sampler1")
         glUniform1i(

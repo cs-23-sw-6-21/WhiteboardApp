@@ -1,11 +1,8 @@
 package dk.scuffed.whiteboardapp.opengl
 
 import android.opengl.GLES20
-import android.opengl.GLES30
-
 import android.util.Log
 import android.util.Size
-import dk.scuffed.whiteboardapp.BuildConfig
 import dk.scuffed.whiteboardapp.utils.Color
 import dk.scuffed.whiteboardapp.utils.Vec2Int
 import java.nio.Buffer
@@ -201,8 +198,7 @@ fun glLinkProgram(program: Int) {
     val linkStatus = IntArray(1)
     GLES20.glGetProgramiv(
         program,
-        GLES20
-            .GL_LINK_STATUS,
+        GLES20.GL_LINK_STATUS,
         linkStatus,
         0
     )
@@ -476,6 +472,11 @@ fun glUniform2f(location: Int, x: Float, y: Float) {
     logErrorIfAny("glUniform2f")
 }
 
+fun glUniform3f(location: Int, x: Float, y: Float, z: Float) {
+    GLES20.glUniform3f(location, x, y, z)
+    logErrorIfAny("glUniform3f")
+}
+
 fun glUniform4f(location: Int, r: Float, g: Float, b: Float, a: Float) {
     GLES20.glUniform4f(location, r, g, b, a)
     logErrorIfAny("glUniform4f")
@@ -485,29 +486,6 @@ fun glUniform4fv(location: Int, count: Int, buffer: FloatArray, offset: Int) {
     GLES20.glUniform4fv(location, count, buffer, offset)
     logErrorIfAny("glUniform4fv")
 }
-
-/* OpenGLES3.0 functionality */
-fun glBindBuffer(target: Int, buffer: Int) {
-    GLES30.glBindBuffer(target, buffer)
-    logErrorIfAny("glBindBuffer")
-}
-
-fun glMapBufferRange(target: Int, offset: Int, length: Int, access: Int): Buffer {
-    val a = GLES30.glMapBufferRange(
-        target,
-        offset,
-        length,
-        access
-    )
-    logErrorIfAny("glMapBufferRange")
-    return a
-}
-
-fun glUnmapBuffer(target: Int) {
-    GLES30.glUnmapBuffer(target)
-    logErrorIfAny("glUnmapBuffer")
-}
-
 
 /**
  * Get how many bytes it takes to represent a pixel given a texture format
@@ -520,18 +498,15 @@ fun bytesPerPixel(textureFormat: Int): Int {
         GLES20.GL_RGBA -> 4
         GLES20.GL_RGB -> 3
         GLES20.GL_ALPHA -> 1
-
         else -> throw InvalidParameterException("textureFormat")
     }
 }
 
 private fun logErrorIfAny(funcname: String) {
-    if (BuildConfig.DEBUG) {
-        var error = GLES20.glGetError()
-        while (error != 0) {
-            Log.e("OpenGL", funcname + ": " + error + ": " + errorToString(error))
-            error = GLES20.glGetError()
-        }
+    var error = GLES20.glGetError()
+    while (error != 0) {
+        Log.e("OpenGL", funcname + ": " + error + ": " + errorToString(error))
+        error = GLES20.glGetError()
     }
 }
 
