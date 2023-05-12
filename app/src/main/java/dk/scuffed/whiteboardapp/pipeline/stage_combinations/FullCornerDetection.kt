@@ -84,7 +84,6 @@ internal fun fullCornerDetection(
             val weightedCornerStage = WeightedPointsStage(
                 biggestQuadStage,
                 20,
-                5.0f,
                 pipeline
             )
         },
