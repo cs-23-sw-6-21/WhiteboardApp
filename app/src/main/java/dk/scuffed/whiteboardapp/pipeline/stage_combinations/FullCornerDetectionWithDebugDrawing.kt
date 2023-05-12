@@ -78,16 +78,9 @@ internal fun fullCornerDetectionWithDebugDrawing(
         pipeline
     )
 
-    val letterboxedStage = LetterboxingStage(
-        context,
-        inputStage.frameBufferInfo,
-        pipeline
-    )
-
-
     val verticalOverlayStage = OverlayStage(
         context,
-        letterboxedStage.frameBufferInfo,
+        inputStage.frameBufferInfo,
         verticalDrawLinesStage.frameBufferInfo,
         pipeline
     )
