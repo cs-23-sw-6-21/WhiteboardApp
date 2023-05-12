@@ -9,7 +9,6 @@ import kotlin.math.round
 internal class WeightedPointsStage(
     private val inputPoints: PointsOutputStage,
     private val historySize: Int,
-    private val weightThreshold: Float,
     pipeline: IPipeline
 ) : PointsOutputStage(pipeline, inputPoints.points[0], inputPoints.points[1], inputPoints.points[2], inputPoints.points[3]) {
     private val pointHistories =
@@ -53,7 +52,7 @@ internal class WeightedPointsStage(
         // weighted-XY and total-weight values are summed to be used for calculating the new weighted average of all the points.
         for (point in pointHistory) {
             val distFromMean = point.toVec2Float().distance(mean)
-            val weight = if (distFromMean <= weightThreshold) 1.0f else 1.0f / distFromMean
+            val weight = if (distFromMean <= 0.01) 100f else 1.0f / distFromMean
             sum += point.toVec2Float() * weight
             weightSum += weight
         }
