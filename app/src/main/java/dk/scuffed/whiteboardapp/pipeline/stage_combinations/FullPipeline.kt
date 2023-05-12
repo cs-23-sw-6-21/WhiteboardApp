@@ -78,7 +78,7 @@ internal fun fullPipeline(
         Color(1.0f, 0.0f, 0.0f, 1.0f),
         inputStage.frameBufferInfo.textureSize
     )
-    /*
+
     val overlayStageCorners = OverlayStage(
         context,
         inputStage.frameBufferInfo,
@@ -92,7 +92,7 @@ internal fun fullPipeline(
         pipeline
     )
     dumpToGalleryFull(context, overlayStage.frameBufferInfo, pipeline)
-     */
+
 
     // --------------- LINE DETECTION STUFF END
 
