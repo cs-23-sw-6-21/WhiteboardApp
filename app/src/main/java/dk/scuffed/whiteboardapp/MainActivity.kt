@@ -27,10 +27,7 @@ class MainActivity : AppCompatActivity() {
             requestPermissions(arrayOf(android.Manifest.permission.CAMERA), CAMERA_PERMISSION_REQUEST_CODE)
         }
         else {
-            setContentView(R.layout.activity_main)
-            val buttonView = findViewById<ConstraintLayout>(R.id.button_view)
-            val openGLView = OpenGLView(this)
-            buttonView.addView(openGLView)
+            createStuff()
         }
     }
 
@@ -42,12 +39,19 @@ class MainActivity : AppCompatActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == CAMERA_PERMISSION_REQUEST_CODE) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                setContentView(OpenGLView(this))
+                createStuff()
             } else {
                 Toast.makeText(this, "This app requires camera permission!", Toast.LENGTH_LONG)
                     .show()
                 finish()
             }
         }
+    }
+
+    private fun createStuff() {
+        setContentView(R.layout.activity_main)
+        val buttonView = findViewById<ConstraintLayout>(R.id.button_view)
+        val openGLView = OpenGLView(this)
+        buttonView.addView(openGLView)
     }
 }
