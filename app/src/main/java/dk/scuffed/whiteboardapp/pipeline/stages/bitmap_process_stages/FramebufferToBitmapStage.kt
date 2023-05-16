@@ -33,6 +33,7 @@ internal class FramebufferToBitmapStage(
     }
 
     override fun update() {
+        outputBitmap.recycle()
         readFrameBuffer(outputBitmap, inputFramebufferInfo)
     }
 

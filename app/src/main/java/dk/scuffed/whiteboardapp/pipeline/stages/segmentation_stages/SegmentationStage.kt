@@ -19,7 +19,8 @@ internal class SegmentationStage(
 
     private val segmentor = PPSegmentation(context, segmentationModel)
 
+
     override fun update() {
-        outputBitmap = segmentor.segment(inputBitmap)
+        segmentor.segment(inputBitmap, outputBitmap)
     }
 }

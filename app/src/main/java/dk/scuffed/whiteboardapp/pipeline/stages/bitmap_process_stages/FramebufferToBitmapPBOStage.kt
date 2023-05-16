@@ -61,6 +61,7 @@ internal class FramebufferToBitmapPBOStage(
 
     override fun update() {
         glBindFramebuffer(inputFramebufferInfo.fboHandle)
+        outputBitmap.recycle()
         readPixelsFromPBO(outputBitmap)
     }
 
