@@ -1,14 +1,11 @@
 package dk.scuffed.whiteboardapp.pipeline.stage_combinations
 
 import android.content.Context
-import android.icu.number.Scale
 import android.opengl.GLES20
 import android.util.Size
 import dk.scuffed.whiteboardapp.pipeline.IPipeline
 import dk.scuffed.whiteboardapp.pipeline.stages.GLOutputStage
-import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.DumpToGalleryStage
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.*
-import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.BinarizationStage
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.MaskingStage
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.OverlayStage
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.StoreStage
@@ -16,7 +13,6 @@ import dk.scuffed.whiteboardapp.pipeline.stages.pipeline_stages.SwitchablePointP
 import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.CornersFromResolutionStage
 import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.DraggablePointsStage
 import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.DrawCornersStage
-import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.ScreenCornerPointsStage
 import dk.scuffed.whiteboardapp.pipeline.useDoubleBuffering
 
 /**
@@ -109,12 +105,12 @@ internal fun fullPipeline(
 
     // ------------------ POST PROCESSING START --------------
 
-    val downscaledForWhitebalance = ScaleToResolution(
+    val downscaledForWhitebalance = ScaleToResolutionStage(
         context, perspectiveCorrected.frameBufferInfo,
         Size(perspectiveCorrected.frameBufferInfo.textureSize.width / 32, perspectiveCorrected.frameBufferInfo.textureSize.height / 32),
         pipeline
     )
-    val downscaledForBinarization = ScaleToResolution(
+    val downscaledForBinarization = ScaleToResolutionStage(
         context, perspectiveCorrected.frameBufferInfo,
         Size(perspectiveCorrected.frameBufferInfo.textureSize.width / 8, perspectiveCorrected.frameBufferInfo.textureSize.height / 8),
         pipeline
