@@ -22,7 +22,7 @@ internal class WhitebalanceStage(
     }
 
     override fun setupFramebufferInfo() {
-        allocateFramebuffer(GLES20.GL_RGBA, backgroundColorFrameBuffer.textureSize)
+        allocateFramebuffer(GLES20.GL_RGBA, rawInputFrameBuffer.textureSize)
     }
 
     override fun setupUniforms(program: Int) {
