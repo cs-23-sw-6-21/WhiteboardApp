@@ -6,7 +6,7 @@ import dk.scuffed.whiteboardapp.utils.Vec2Float
 import dk.scuffed.whiteboardapp.utils.Vec2Int
 import kotlin.math.round
 
-internal class WeightedPointsStage(
+internal class WeightedMovingAveragePointsStage(
     private val inputPoints: PointsOutputStage,
     private val historySize: Int,
     pipeline: IPipeline
