@@ -3,7 +3,6 @@ package dk.scuffed.whiteboardapp
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
-import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -27,10 +26,7 @@ class MainActivity : AppCompatActivity() {
             requestPermissions(arrayOf(android.Manifest.permission.CAMERA), CAMERA_PERMISSION_REQUEST_CODE)
         }
         else {
-            setContentView(R.layout.activity_main)
-            val buttonView = findViewById<ConstraintLayout>(R.id.button_view)
-            val openGLView = OpenGLView(this)
-            buttonView.addView(openGLView)
+            createViews()
         }
     }
 
@@ -42,12 +38,19 @@ class MainActivity : AppCompatActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == CAMERA_PERMISSION_REQUEST_CODE) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                setContentView(OpenGLView(this))
+                createViews()
             } else {
                 Toast.makeText(this, "This app requires camera permission!", Toast.LENGTH_LONG)
                     .show()
                 finish()
             }
         }
+    }
+
+    private fun createViews() {
+        setContentView(R.layout.activity_main)
+        val buttonView = findViewById<ConstraintLayout>(R.id.button_view)
+        val openGLView = OpenGLView(this)
+        buttonView.addView(openGLView)
     }
 }
