@@ -63,7 +63,7 @@ internal class BiggestQuadStage(
             // biggest perspective correctable quad.
             // To fix this we would have to run fixupQuad and isPerspectiveCorrectable on all found
             // quads
-            if (isPerspectiveCorrectable(biggestQuad)) {
+            if (isQuadReasonable(biggestQuad)) {
                 points[0] = fixedQuad.a.toVec2Int()
                 points[1] = fixedQuad.b.toVec2Int()
                 points[2] = fixedQuad.c.toVec2Int()
@@ -76,7 +76,7 @@ internal class BiggestQuadStage(
     }
 
     // Expects a quad from fixupQuad
-    private fun isPerspectiveCorrectable(quad: QuadFloat): Boolean {
+    private fun isQuadReasonable(quad: QuadFloat): Boolean {
         val maxAngle = (130.0 * Math.PI) / 180.0
         val minAngle = (60.0 * Math.PI) / 180.0
 
