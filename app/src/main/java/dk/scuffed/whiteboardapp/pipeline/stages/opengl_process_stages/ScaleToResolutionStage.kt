@@ -13,7 +13,7 @@ import android.util.Size
  * Scales to target resolution. Beware that loss may occur if exceeding 2x downscaling.
  * Useful for debugging.
  */
-internal class ScaleToResolution(
+internal class ScaleToResolutionStage(
     context: Context,
     private val inputFramebufferInfo: FramebufferInfo,
     private val size: Size,
