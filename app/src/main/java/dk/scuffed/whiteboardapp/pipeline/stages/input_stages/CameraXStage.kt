@@ -5,6 +5,7 @@ import android.graphics.SurfaceTexture
 import android.opengl.GLES11Ext
 import android.opengl.GLES20
 import android.os.Handler
+import android.util.Log
 import android.util.Size
 import android.view.Surface
 import androidx.camera.core.AspectRatio.RATIO_16_9
@@ -21,6 +22,7 @@ import dk.scuffed.whiteboardapp.pipeline.IPipeline
 import dk.scuffed.whiteboardapp.pipeline.stages.GLOutputStage
 import dk.scuffed.whiteboardapp.pipeline.Pipeline
 import dk.scuffed.whiteboardapp.pipeline.TextureUnitPair
+import dk.scuffed.whiteboardapp.pipeline.use4K
 import java.util.concurrent.CompletableFuture
 
 /**
@@ -45,6 +47,7 @@ internal class CameraXStage(
         // We should probably get the biggest resolution
         cameraSurfaceTexture.setDefaultBufferSize(getResolution().height, getResolution().width)
 
+        Log.d("sdjf", "resolution is " + getResolution().height + "::::" + getResolution().width)
         val cameraSelector = CameraSelector.Builder()
             .requireLensFacing(LENS_FACING_BACK)
             .build()
@@ -76,7 +79,16 @@ internal class CameraXStage(
             }
         }
 
-        cameraResolution = cameraResolutionFuture.get()
+        val acameraResolution = cameraResolutionFuture.get()
+
+
+        var size = Size(acameraResolution.width, acameraResolution.height)
+        if (use4K){
+            size = Size(size.width * 2, size.height * 2)
+        }
+        cameraResolution = size
+        cameraSurfaceTexture.setDefaultBufferSize(size.width, size.height)
+
         setup()
     }
 

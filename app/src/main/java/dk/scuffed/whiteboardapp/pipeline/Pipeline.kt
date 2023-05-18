@@ -1,30 +1,26 @@
 package dk.scuffed.whiteboardapp.pipeline
 
 import android.content.Context
-import android.content.res.Resources
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.opengl.GLES20
 import android.util.Log
 import android.util.Size
+import android.view.View
+import android.widget.Button
+import dk.scuffed.whiteboardapp.MainActivity
 import dk.scuffed.whiteboardapp.R
 import dk.scuffed.whiteboardapp.opengl.*
 import dk.scuffed.whiteboardapp.pipeline.stage_combinations.*
 import dk.scuffed.whiteboardapp.pipeline.stages.*
-import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.DumpToGalleryStage
-import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.FramebufferToBitmapStage
 import dk.scuffed.whiteboardapp.pipeline.stages.input_stages.CameraXStage
-import dk.scuffed.whiteboardapp.pipeline.stages.input_stages.TextureStage
-import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.*
+import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.LetterboxingStage
 import dk.scuffed.whiteboardapp.pipeline.stages.output_stages.DrawFramebufferStage
-import dk.scuffed.whiteboardapp.pipeline.stages.pipeline_stages.SwitchablePointPipeline
-import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.DraggablePointsStage
 
-const val useDoubleBuffering = true
+const val useDoubleBuffering = false
+const val use4K = false
 
-internal class Pipeline(context: Context, private val initialResolution: Size) : IPipeline {
+internal class Pipeline(private val context: Context, private val initialResolution: Size) : IPipeline {
 
-    private var stages = mutableListOf<Stage>()
+    var stages = mutableListOf<Stage>()
     private var nextTextureUnit: Int = 0
 
     private fun indexToTextureUnit(i: Int): Int{
@@ -49,18 +45,22 @@ internal class Pipeline(context: Context, private val initialResolution: Size) :
         val cameraXStage = CameraXStage(context, this)
 
 
-        val entirePipeline = fullPipeline(context, cameraXStage, this)
+        val entirePipeline = mainThreadPipeline(context, cameraXStage, this)
 
         //dumpToGalleryFull(context, entirePipeline.second.frameBufferInfo, this)
 
-
-        val letterbox = LetterboxingStage(context, entirePipeline.second.frameBufferInfo, this)
+        val letterbox = LetterboxingStage(context, entirePipeline.frameBufferInfo, this)
 
         DrawFramebufferStage(
             context,
             letterbox.frameBufferInfo,
             this
         )
+
+        if (CSVWriter.recordOverallTimings){
+            CSVWriter.MainWriter.write("Overall")
+        }
+        CSVWriter.MainWriter.write("\n")
     }
 
     override fun draw() {
@@ -68,7 +68,24 @@ internal class Pipeline(context: Context, private val initialResolution: Size) :
         stages.forEach { stage -> stage.performUpdate() }
         val endTime = System.nanoTime()
         val duration = (endTime - startTime).toDouble() / 1000000.0
-        Log.i("Pipeline", "Frame took ${duration}ms")
+
+        if (CSVWriter.recordOverallTimings || CSVWriter.recordStageTimings)
+        {
+            if (CSVWriter.recordOverallTimings)
+            {
+                CSVWriter.MainWriter.write("$duration")
+            }
+            CSVWriter.MainWriter.write("\n")
+            CSVWriter.frameCounter += 1
+            if (CSVWriter.frameCounter == CSVWriter.numberOfFrames)
+            {
+                (context as MainActivity).findViewById<Button>(R.id.round_button).visibility = View.INVISIBLE
+                CSVWriter.recordStageTimings = false
+                CSVWriter.recordOverallTimings = false
+                CSVWriter.MainWriter.flush()
+                CSVWriter.MainWriter.close()
+            }
+        }
     }
 
     override fun onResolutionChanged(resolution: Size) {
