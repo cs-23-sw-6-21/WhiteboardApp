@@ -11,13 +11,16 @@ The final pipeline can be seen below.
 
 ![The final pipeline](https://github.com/cs-23-sw-6-21/WhiteboardApp/blob/main/images/image.jpg?raw=true)
 
-We first get the image from the camrea using the CameraXStage.
-Then we use the Paddle Paddle Segmenter to create a mask of where the human is and then remove the human from the image using a previous image where the human is not in the masked area.
+We first get the image from the camera using the CameraXStage.
+Then we use the Paddle Paddle Segmentor to create a mask of where the human is and then remove the human from the image using a previous image where the human is not in the masked area.
 Afterwards this is sent to corner detection to find the corners of the whiteboard.
-This is done in a seperate thread as it is by far the slowest part of the pipeline.
+This is done in a separate thread as it is by far the slowest part of the pipeline.
 This means that corner detection is not always completely up to date with the latest input image.
 The corners from corner detection and the image from the masking step is then used in perspective correction where the whiteboard is perspective corrected and cropped to only include the whiteboard.
 After the perspective correction step the image is binarized to remove smudges, glare, shadows and other unwanted stuff.
 This produces a black and white image, therefore we add colors back in by using the binarized image as a mask.
 
-Using a Samsung Galaxy S10 (2019) we get around 25 fps.
+The pipeline implementation can be found in the [fullPipeline file](https://github.com/cs-23-sw-6-21/WhiteboardApp/blob/main/app/src/main/java/dk/scuffed/whiteboardapp/pipeline/stage_combinations/FullPipeline.kt). 
+
+
+Latency test have been made in pullrequest [#78](https://github.com/cs-23-sw-6-21/WhiteboardApp/pull/78) and while using a Samsung Galaxy S10 (2019) we got around 25 fps. 
