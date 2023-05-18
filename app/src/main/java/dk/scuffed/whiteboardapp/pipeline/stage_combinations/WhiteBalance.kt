@@ -14,11 +14,11 @@ internal fun whiteBalance(
     downscaledInput: GLOutputStage,
     pipeline: IPipeline
 ): GLOutputStage {
-    val whiteBalanceFastStage = WhitebalanceStage(context, input.frameBufferInfo, downscaledInput.frameBufferInfo, pipeline)
 
-
-    val hsvAdjustmentsStage = HSVAdjustmentsStage(context, whiteBalanceFastStage.frameBufferInfo, pipeline)
-
-
-    return hsvAdjustmentsStage
+    return WhitebalanceStage(
+        context,
+        input.frameBufferInfo,
+        downscaledInput.frameBufferInfo,
+        pipeline
+    )
 }
