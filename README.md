@@ -43,6 +43,9 @@ The app requires an arm device, it cannot run in the emulator as that is x86.
 
 ## Instructions
 
+Point the camera at a whiteboard with at least 3 corners visible.
+The app has issues if the background is too busy or the edges of the whiteboard is not visible.
+If corner detection fails you can switch to manual corner setup:
 The looped square icon switches between letting the user drag the corners manually and automatic corner detection.
 The "full screen" button activates any `dumpToGalleryFull` in the pipeline. This saves them to the `/sdcard/Pictures/WhiteboardApp` folder.
 There are no `dumpToGalleryFull` by default in the main branch.
