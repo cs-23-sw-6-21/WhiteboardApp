@@ -23,4 +23,13 @@ This produces a black and white image, therefore we add colors back in by using 
 The pipeline implementation can be found in the [fullPipeline file](https://github.com/cs-23-sw-6-21/WhiteboardApp/blob/main/app/src/main/java/dk/scuffed/whiteboardapp/pipeline/stage_combinations/FullPipeline.kt). 
 
 
-Latency test have been made in pullrequest [#78](https://github.com/cs-23-sw-6-21/WhiteboardApp/pull/78) and while using a Samsung Galaxy S10 (2019) we got around 25 fps. 
+Latency test have been made in pullrequest [#78](https://github.com/cs-23-sw-6-21/WhiteboardApp/pull/78) and while using a Samsung Galaxy S10 (2019) we got around 25 fps on the full pipeline with 1920x1080 resolution and doublebuffering enabled. 
+
+To do the testing we recommend adjusting the pipeline to whatever stages you are interested in testing. Furthermore it may be beneficial to use the [MainThreadPipeline.kt](https://github.com/cs-23-sw-6-21/WhiteboardApp/blob/csv-timing-output/app/src/main/java/dk/scuffed/whiteboardapp/pipeline/stage_combinations/MainThreadPipeLine.kt) file, as this will run all of the stages on a single thread, which makes it easier to test.
+Its all important to set the variables in the [CSVWriter.kt](https://github.com/cs-23-sw-6-21/WhiteboardApp/blob/csv-timing-output/app/src/main/java/dk/scuffed/whiteboardapp/pipeline/CSVWriter.kt) file.
+These variables will allow you to set whether you're recording frame time for the stage or the overall program, if you want to run with glFinish (recommended only getting accurate frame time for the individual stages) and lastly for how many frames you want to record the data.
+The double buffering and 4k parameters can also be set at the top of the [Pipeline.kt](https://github.com/cs-23-sw-6-21/WhiteboardApp/blob/csv-timing-output/app/src/main/java/dk/scuffed/whiteboardapp/pipeline/Pipeline.kt).
+
+The middle button in the app will dissapear once the app is done with writing to the csv file.
+
+All of the data is written to a CSV file called "Latency-Data.csv" that will be placed in the phones root folder.
