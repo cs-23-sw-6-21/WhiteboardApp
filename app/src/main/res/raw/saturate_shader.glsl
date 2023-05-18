@@ -32,7 +32,7 @@ void main() {
 
     vec3 hsv = rgb2hsv(color.xyz);
 
-    hsv.y *= 3.0;
+    hsv.y *= 4.5;
     
     vec3 back = hsv2rgb(hsv);
 
