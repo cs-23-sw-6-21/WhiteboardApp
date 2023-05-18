@@ -20,10 +20,12 @@ The corners from corner detection and the image from the masking step is then us
 After the perspective correction step the image is binarized to remove smudges, glare, shadows and other unwanted stuff.
 This produces a black and white image, therefore we add colors back in by using the binarized image as a mask.
 
-The pipeline implementation can be found in the [fullPipeline file](https://github.com/cs-23-sw-6-21/WhiteboardApp/blob/main/app/src/main/java/dk/scuffed/whiteboardapp/pipeline/stage_combinations/FullPipeline.kt). 
+The pipeline implementation can be found in the [Pipeline file](https://github.com/cs-23-sw-6-21/WhiteboardApp/blob/main/app/src/main/java/dk/scuffed/whiteboardapp/pipeline/Pipeline.kt). 
 
 
 Latency test have been made in pullrequest [#78](https://github.com/cs-23-sw-6-21/WhiteboardApp/pull/78) and while using a Samsung Galaxy S10 (2019) we got around 25 fps on the full pipeline with 1920x1080 resolution and doublebuffering enabled. 
+The init function sets up the whole pipeline and if changes needs to be done to the pipeline it is also in the init function.
+
 
 To do the testing we recommend adjusting the pipeline to whatever stages you are interested in testing. Furthermore it may be beneficial to use the [MainThreadPipeline.kt](https://github.com/cs-23-sw-6-21/WhiteboardApp/blob/csv-timing-output/app/src/main/java/dk/scuffed/whiteboardapp/pipeline/stage_combinations/MainThreadPipeLine.kt) file, as this will run all of the stages on a single thread, which makes it easier to test.
 Its all important to set the variables in the [CSVWriter.kt](https://github.com/cs-23-sw-6-21/WhiteboardApp/blob/csv-timing-output/app/src/main/java/dk/scuffed/whiteboardapp/pipeline/CSVWriter.kt) file.
