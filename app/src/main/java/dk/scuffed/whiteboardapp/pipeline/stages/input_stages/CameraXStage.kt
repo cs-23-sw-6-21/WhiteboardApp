@@ -40,9 +40,6 @@ internal class CameraXStage(
         cameraTextureUnitPair = pipeline.allocateTextureUnit(this)
         cameraTextureHandle = createExternalOESTexture()
         cameraSurfaceTexture = SurfaceTexture(cameraTextureHandle)
-
-        // We definitely should not specify the resolution here
-        // We should probably get the biggest resolution
         cameraSurfaceTexture.setDefaultBufferSize(getResolution().height, getResolution().width)
 
         val cameraSelector = CameraSelector.Builder()

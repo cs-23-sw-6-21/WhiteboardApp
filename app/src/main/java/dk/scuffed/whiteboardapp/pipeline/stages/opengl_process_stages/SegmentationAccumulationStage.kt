@@ -15,7 +15,6 @@ import dk.scuffed.whiteboardapp.pipeline.stages.GLOutputStage
 internal class SegmentationAccumulationStage(
     context: Context,
     private val segmentationFramebuffer: FramebufferInfo,
-    private val oldAccumulator: FramebufferInfo,
     private val accumulationFactor: Float,
     pipeline: IPipeline
 ) : GLOutputStage(context, R.raw.vertex_shader, R.raw.segmentation_accumulation_shader, pipeline) {
@@ -39,9 +38,9 @@ internal class SegmentationAccumulationStage(
 
         // Input old accumulator framebuffer
         val oldAccumulatorHandle = glGetUniformLocation(program, "oldAccumulator")
-        glUniform1i(oldAccumulatorHandle, oldAccumulator.textureUnitPair.textureUnitIndex)
-        glActiveTexture(oldAccumulator.textureUnitPair.textureUnit)
-        glBindTexture(GLES20.GL_TEXTURE_2D, oldAccumulator.textureHandle)
+        glUniform1i(oldAccumulatorHandle, frameBufferInfo.textureUnitPair.textureUnitIndex)
+        glActiveTexture(frameBufferInfo.textureUnitPair.textureUnit)
+        glBindTexture(GLES20.GL_TEXTURE_2D, frameBufferInfo.textureHandle)
 
         // Input old accumulator framebuffer
         val accumulationFactorHandle = glGetUniformLocation(program, "accumulation_factor")

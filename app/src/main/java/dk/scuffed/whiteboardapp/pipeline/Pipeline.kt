@@ -38,6 +38,7 @@ internal class Pipeline(context: Context, private val initialResolution: Size) :
         glClearColorError()
 
         /*
+        // use this code instead of cameraXStage when having static pictures.
         val opt = BitmapFactory.Options()
         opt.inScaled = false
         val textureStage = TextureStage(
@@ -47,12 +48,10 @@ internal class Pipeline(context: Context, private val initialResolution: Size) :
         )*/
 
         val cameraXStage = CameraXStage(context, this)
-
-
         val entirePipeline = fullPipeline(context, cameraXStage, this)
 
+        // Use this dumpToGalleryFull function to save the result to the smartphones gallary.
         //dumpToGalleryFull(context, entirePipeline.second.frameBufferInfo, this)
-
 
         val letterbox = LetterboxingStage(context, entirePipeline.second.frameBufferInfo, this)
 

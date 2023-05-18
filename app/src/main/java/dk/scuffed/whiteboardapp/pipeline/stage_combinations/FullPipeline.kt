@@ -23,134 +23,31 @@ internal fun fullPipeline(
     inputStage: GLOutputStage,
     pipeline: IPipeline
 ): Pair<SwitchablePointPipeline, GLOutputStage> {
+    val fullSegmentation = fullSegmentation(context, inputStage, pipeline)
 
-
-    // ------------------ SEGMENTATION STUFF START --------------
-
-    var oldInput = inputStage.frameBufferInfo
-
-    if (useDoubleBuffering) {
-        oldInput = pipeline.allocateFramebuffer(
-            inputStage,
-            GLES20.GL_RGBA,
-            inputStage.frameBufferInfo.textureSize
-        )
-    }
-
-    val fullSegmentation = fullSegmentation(context, inputStage.frameBufferInfo, pipeline)
-
-
-
-    val storedFramebuffer = pipeline.allocateFramebuffer(
-        inputStage,
-        GLES20.GL_RGBA,
-        oldInput.textureSize
-    )
-
-
-    val maskStage = MaskingStage(
-        context,
-        storedFramebuffer,
-        oldInput,
-        fullSegmentation.frameBufferInfo,
-        pipeline
-    )
-
-    val storeStage = StoreStage(
-        context,
-        maskStage.frameBufferInfo,
-        storedFramebuffer,
-        pipeline
-    )
-
-    // ------------------ SEGMENTATION STUFF END --------------
-
-
-    // ------------------ LINE DETECTION STUFF START --------------
-
+    // Get location of the whiteboard's corners, either manually or automatic
     val switchablePointPipeline = SwitchablePointPipeline(
         context,
         { pipeline -> DraggablePointsStage(pipeline) },
-        { pipeline -> fullCornerDetection(context, storeStage, pipeline) },
+        { pipeline -> fullCornerDetection(context, fullSegmentation, pipeline) },
         pipeline
     )
 
-    val drawCorners = DrawCornersStage(
-        context,
-        pipeline,
-        switchablePointPipeline.pointsOutputStage,
-        oldInput.textureSize
-    )
-
-    // --------------- LINE DETECTION STUFF END
-
-
-    // ------------------ PERSPECTIVE CORRECTION START --------------
 
     val cameraPointsStage =
-        CornersFromResolutionStage(oldInput.textureSize, pipeline)
+        CornersFromResolutionStage(inputStage.frameBufferInfo.textureSize, pipeline)
 
     val perspectiveCorrected = fullPerspectiveCorrection(
         context,
-        maskStage,
+        fullSegmentation,
         switchablePointPipeline.pointsOutputStage,
         cameraPointsStage,
         pipeline
     )
 
-    GenerateMipmapStage(perspectiveCorrected.frameBufferInfo, false, pipeline)
 
-    // ------------------ PERSPECTIVE CORRECTION END --------------
-
-
-    // ------------------ POST PROCESSING START --------------
-
-    val downscaledForWhitebalance = ScaleToResolutionStage(
-        context, perspectiveCorrected.frameBufferInfo,
-        Size(perspectiveCorrected.frameBufferInfo.textureSize.width / 32, perspectiveCorrected.frameBufferInfo.textureSize.height / 32),
-        pipeline
-    )
-    val downscaledForBinarization = ScaleToResolutionStage(
-        context, perspectiveCorrected.frameBufferInfo,
-        Size(perspectiveCorrected.frameBufferInfo.textureSize.width / 8, perspectiveCorrected.frameBufferInfo.textureSize.height / 8),
-        pipeline
-    )
-
-    val whitebalance = whiteBalance(
-        context,
-        perspectiveCorrected,
-        downscaledForWhitebalance,
-        pipeline
-    )
+    val imageEnhancement = fullImageEnhancement(context, perspectiveCorrected, pipeline)
 
 
-    val binarized = binarize(
-        context,
-        perspectiveCorrected,
-        downscaledForBinarization,
-        7.5f,
-        pipeline)
-
-    val readdedColour = addColour(
-        context,
-        whitebalance,
-        binarized,
-        pipeline
-    )
-
-    // ------------------ POST PROCESSING END --------------
-
-
-    val overlay = OverlayStage(
-        context,
-        readdedColour.frameBufferInfo,
-        drawCorners.frameBufferInfo,
-        pipeline
-    )
-    if (useDoubleBuffering) {
-        val store1 = StoreStage(context, inputStage.frameBufferInfo, oldInput, pipeline)
-    }
-
-
-    return Pair(switchablePointPipeline, overlay)
+    return Pair(switchablePointPipeline, imageEnhancement)
 }
