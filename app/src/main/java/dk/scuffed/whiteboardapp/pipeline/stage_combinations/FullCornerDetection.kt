@@ -11,7 +11,7 @@ import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.OpenCVLine
 import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.BiggestQuadStage
 import dk.scuffed.whiteboardapp.pipeline.stages.lines_stages.LinesAngleDiscriminatorStage
 import dk.scuffed.whiteboardapp.pipeline.stages.pipeline_stages.ThreadedBitmapInputPointOutputStage
-import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.WeightedPointsStage
+import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.WeightedMovingAveragePointsStage
 import dk.scuffed.whiteboardapp.pipeline.useDoubleBuffering
 import dk.scuffed.whiteboardapp.utils.Vec2Int
 
@@ -81,7 +81,7 @@ internal fun fullCornerDetection(
                 pipeline
             )
 
-            val weightedCornerStage = WeightedPointsStage(
+            val weightedCornerStage = WeightedMovingAveragePointsStage(
                 biggestQuadStage,
                 20,
                 pipeline
