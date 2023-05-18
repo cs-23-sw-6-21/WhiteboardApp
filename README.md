@@ -33,3 +33,8 @@ The double buffering and 4k parameters can also be set at the top of the [Pipeli
 The middle button in the app will dissapear once the app is done with writing to the csv file.
 
 All of the data is written to a CSV file called "Latency-Data.csv" that will be placed in the phones root folder.
+
+
+## Building
+
+Download the project and open it in android studio.
