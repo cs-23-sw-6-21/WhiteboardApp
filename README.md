@@ -38,3 +38,11 @@ All of the data is written to a CSV file called "Latency-Data.csv" that will be 
 ## Building
 
 Download the project and open it in android studio.
+The app requires an arm device, it cannot run in the emulator as that is x86.
+
+
+## Instructions
+
+The looped square icon switches between letting the user drag the corners manually and automatic corner detection.
+The "full screen" button activates any `dumpToGalleryFull` in the pipeline. This saves them to the `/sdcard/Pictures/WhiteboardApp` folder.
+There are no `dumpToGalleryFull` by default in the main branch.
