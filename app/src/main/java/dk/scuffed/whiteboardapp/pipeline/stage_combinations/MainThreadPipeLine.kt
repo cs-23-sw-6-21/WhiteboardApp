@@ -185,5 +185,9 @@ internal fun mainThreadPipeline(
 
     // ------------------ POST PROCESSING END --------------
 
+    if (useDoubleBuffering) {
+        val store1 = StoreStage(context, inputStage.frameBufferInfo, oldInput, pipeline)
+    }
+
     return readdedColour
 }
