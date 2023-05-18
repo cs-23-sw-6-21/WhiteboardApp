@@ -1,7 +1,7 @@
 # WhiteboardApp
 
-This app has been developed as a part of our bachellor project.
 
+This app has been developed as a part of our bachelor project.
 The goal of this app is to digitize a whiteboard in real-time using a smartphone camera.
 This has been accomplished using OpenGL ES 2.0 and 3.0, the Paddle Paddle v2 Human Segmentor and OpenCV.
 
