@@ -9,7 +9,7 @@ The app has been written using a pipeline that uses stages to accomplish these g
 This is to make the pipeline highly reconfigurable to quickly test new changes.
 The final pipeline can be seen below.
 
-![The final pipeline](https://github.com/cs-23-sw-6-21/WhiteboardApp/blob/main/images/image.jpg?raw=true)
+![The final pipeline](https://github.com/cs-23-sw-6-21/WhiteboardApp/blob/main/images/pipeline.png?raw=true)
 
 We first get the image from the camera using the CameraXStage.
 Then we use the Paddle Paddle Segmentor to create a mask of where the human is and then remove the human from the image using a previous image where the human is not in the masked area.
