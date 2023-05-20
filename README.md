@@ -51,6 +51,7 @@ Compile it and launch on an Android device. It should work on any modern Android
 The app requires an arm device, it cannot run in the emulator as that is x86.
 
 !!IMPORTANT: if there is an android resource linking exception, you must COMPLETELY rebuild the project!!
+Building the project normally again is not enough, it must be a complete rebuild.
 We are not sure why this happens, but "build>rebuild project" should fix it.
 
 ## Instructions
