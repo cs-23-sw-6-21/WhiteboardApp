@@ -36,7 +36,7 @@ The middle button in the app will dissapear once the app is done with writing to
 
 All of the data is written to a CSV file called "Latency-Data.csv" that will be placed in the phones root folder.
 
-# Structure
+## Structure
 Almost everything that is interesting happens in [Pipeline file](https://github.com/cs-23-sw-6-21/WhiteboardApp/blob/main/app/src/main/java/dk/scuffed/whiteboardapp/pipeline/Pipeline.kt).
 Here, fullPipeline is called by default, which constructs all stages the entire system.
 You can explore all stages and groups of stages by simply following the calls made in fullPipeline.
