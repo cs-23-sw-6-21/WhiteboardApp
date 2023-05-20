@@ -15,7 +15,9 @@ import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.FloatBuffer
 import java.nio.ShortBuffer
-
+/**
+ * This stage is used to scale the end result to the screens resolution while preserving the correct aspect ratio.
+ */
 internal class LetterboxingStage(
     private val context: Context,
     private val inputFramebufferInfo: FramebufferInfo,

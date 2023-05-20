@@ -4,7 +4,9 @@ import android.util.Size
 import dk.scuffed.whiteboardapp.pipeline.IPipeline
 import dk.scuffed.whiteboardapp.pipeline.stages.PointsOutputStage
 import dk.scuffed.whiteboardapp.utils.Vec2Int
-
+/**
+ * The stages instantiate the corners location as the location of the resolution.
+ */
 internal class CornersFromResolutionStage(
     resolution: Size,
     pipeline: IPipeline

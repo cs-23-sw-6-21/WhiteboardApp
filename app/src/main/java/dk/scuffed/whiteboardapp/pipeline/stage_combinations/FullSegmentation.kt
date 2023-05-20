@@ -12,6 +12,7 @@ import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.Framebuffe
 import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.FramebufferToBitmapStage
 import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.OpenCVDilateStage
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.GrayscaleStage
+import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.MaskingStage
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.SegmentationAccumulationStage
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.StoreStage
 import dk.scuffed.whiteboardapp.pipeline.stages.segmentation_stages.SegmentationPostProcessingStage
@@ -25,33 +26,42 @@ import dk.scuffed.whiteboardapp.segmentation.PPSegmentation
  */
 internal fun fullSegmentation(
     context: Context,
-    inputFramebufferInfo: FramebufferInfo,
+    inputStage: GLOutputStage,
     pipeline: IPipeline
 ): GLOutputStage {
+    val oldInput = if (useDoubleBuffering) {
+        pipeline.allocateFramebuffer(
+            inputStage,
+            GLES20.GL_RGBA,
+            inputStage.frameBufferInfo.textureSize
+        )
+    } else {
+        inputStage.frameBufferInfo
+    }
+
     val segPre = SegmentationPreProcessingStage(
         context,
-        inputFramebufferInfo,
+        inputStage.frameBufferInfo,
         PPSegmentation.Model.PORTRAIT,
         pipeline
     )
 
 
-    var segBitmap =
-    if (useDoubleBuffering) {
-        FramebufferToBitmapPBOStage(
-            segPre.frameBufferInfo,
-            Bitmap.Config.ARGB_8888,
-            pipeline
-        )
-    }
-    else{
-        FramebufferToBitmapStage(
-            segPre.frameBufferInfo,
-            Bitmap.Config.ARGB_8888,
-            pipeline
-        )
+    val segBitmap =
+        if (useDoubleBuffering) {
+            FramebufferToBitmapPBOStage(
+                segPre.frameBufferInfo,
+                Bitmap.Config.ARGB_8888,
+                pipeline
+            )
+        } else {
+            FramebufferToBitmapStage(
+                segPre.frameBufferInfo,
+                Bitmap.Config.ARGB_8888,
+                pipeline
+            )
 
-    }
+        }
 
     val seg = SegmentationStage(
         context,
@@ -73,33 +83,45 @@ internal fun fullSegmentation(
         pipeline
     )
 
-    val lastAccumulator = pipeline.allocateFramebuffer(
-        segFramebuffer,
-        GLES20.GL_RGBA,
-        segFramebuffer.frameBufferInfo.textureSize
-    )
-
     val accumulationStage = SegmentationAccumulationStage(
         context,
         segFramebuffer.frameBufferInfo,
-        lastAccumulator,
         0.2f,
-        pipeline
-    )
-
-    val storeAccumulatorStage = StoreStage(
-        context,
-        accumulationStage.frameBufferInfo,
-        lastAccumulator,
         pipeline
     )
 
     val segPost = SegmentationPostProcessingStage(
         context,
-        storeAccumulatorStage.frameBufferInfo,
-        inputFramebufferInfo.textureSize,
+        accumulationStage.frameBufferInfo,
+        inputStage.frameBufferInfo.textureSize,
         pipeline
     )
 
-    return segPost
+    val storedFramebuffer = pipeline.allocateFramebuffer(
+        inputStage,
+        GLES20.GL_RGBA,
+        oldInput.textureSize
+    )
+
+
+    val maskStage = MaskingStage(
+        context,
+        storedFramebuffer,
+        oldInput,
+        segPost.frameBufferInfo,
+        pipeline
+    )
+
+    val storeStage = StoreStage(
+        context,
+        maskStage.frameBufferInfo,
+        storedFramebuffer,
+        pipeline
+    )
+
+    if (useDoubleBuffering) {
+        val store1 = StoreStage(context, inputStage.frameBufferInfo, oldInput, pipeline)
+    }
+
+    return maskStage
 }

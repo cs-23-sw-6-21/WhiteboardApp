@@ -8,6 +8,9 @@ import com.baidu.paddle.fastdeploy.vision.SegmentationResult
 import com.baidu.paddle.fastdeploy.vision.Visualize
 import com.baidu.paddle.fastdeploy.vision.segmentation.PaddleSegModel
 
+/**
+ * The Paddle Paddle segmentation
+ */
 class PPSegmentation(context: Context, private val model: Model) {
     enum class Model(val modelName: String, val width: Int, val height: Int) {
         PORTRAIT("humansegv2portrait", 256, 144),
