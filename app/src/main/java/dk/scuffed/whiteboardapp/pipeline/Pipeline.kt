@@ -17,6 +17,7 @@ import dk.scuffed.whiteboardapp.pipeline.stages.input_stages.CameraXStage
 import dk.scuffed.whiteboardapp.pipeline.stages.input_stages.TextureStage
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.*
 import dk.scuffed.whiteboardapp.pipeline.stages.output_stages.DrawFramebufferStage
+import dk.scuffed.whiteboardapp.pipeline.stages.output_stages.DrawPipelineStage
 import dk.scuffed.whiteboardapp.pipeline.stages.pipeline_stages.SwitchablePointPipeline
 import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.DraggablePointsStage
 
@@ -50,16 +51,21 @@ internal class Pipeline(context: Context, private val initialResolution: Size) :
         val cameraXStage = CameraXStage(context, this)
         val entirePipeline = fullPipeline(context, cameraXStage, this)
 
+
         // Use this dumpToGalleryFull function to save the result to the smartphones gallary.
         //dumpToGalleryFull(context, entirePipeline.second.frameBufferInfo, this)
 
         val letterbox = LetterboxingStage(context, entirePipeline.second.frameBufferInfo, this)
+        DrawPipelineStage(context,
+            this.stages,
+            this)
 
-        DrawFramebufferStage(
+        /*DrawFramebufferStage(
             context,
             letterbox.frameBufferInfo,
             this
         )
+         */
     }
 
     override fun draw() {
