@@ -32,6 +32,19 @@ internal fun fullPipeline(
         { pipeline -> fullCornerDetection(context, fullSegmentation, pipeline) },
         pipeline
     )
+    val drawCornersStage = DrawCornersStage(
+        context,
+        pipeline,
+        switchablePointPipeline.pointsOutputStage,
+        inputStage.frameBufferInfo.textureSize
+    )
+
+    val cornerOverlay = OverlayStage(
+        context,
+        inputStage.frameBufferInfo,
+        drawCornersStage.frameBufferInfo,
+        pipeline
+    )
 
 
     val cameraPointsStage =

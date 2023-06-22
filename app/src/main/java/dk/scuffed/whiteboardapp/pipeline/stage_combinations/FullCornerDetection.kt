@@ -10,7 +10,9 @@ import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.Framebuffe
 import dk.scuffed.whiteboardapp.pipeline.stages.bitmap_process_stages.OpenCVLineDetectionStage
 import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.BiggestQuadStage
 import dk.scuffed.whiteboardapp.pipeline.stages.lines_stages.LinesAngleDiscriminatorStage
+import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.OverlayStage
 import dk.scuffed.whiteboardapp.pipeline.stages.pipeline_stages.ThreadedBitmapInputPointOutputStage
+import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.DrawCornersStage
 import dk.scuffed.whiteboardapp.pipeline.stages.points_stages.WeightedMovingAveragePointsStage
 import dk.scuffed.whiteboardapp.pipeline.useDoubleBuffering
 import dk.scuffed.whiteboardapp.utils.Vec2Int
