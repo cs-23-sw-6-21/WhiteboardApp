@@ -5,6 +5,9 @@ import android.opengl.GLES20
 import android.opengl.GLUtils
 import android.util.Log
 import android.util.Size
+import android.widget.Button
+import android.widget.TextView
+import dk.scuffed.whiteboardapp.MainActivity
 import dk.scuffed.whiteboardapp.R
 import dk.scuffed.whiteboardapp.opengl.*
 import dk.scuffed.whiteboardapp.pipeline.*
@@ -18,7 +21,7 @@ import dk.scuffed.whiteboardapp.pipeline.stages.Stage
  * Draws any stage to tbe screen, allowing switching between stages.
  */
 internal class DrawPipelineStage(
-    context: Context,
+    private val context: Context,
     private val stages: MutableList<Stage>,
     private val pipeline: IPipeline
 ) : GLOutputStage(context, R.raw.vertex_shader, R.raw.passthrough_shader, pipeline) {
@@ -66,6 +69,8 @@ internal class DrawPipelineStage(
         if (stages[currentStageIndex] == this) {
             nextStage()
         }
+
+        updateStageName()
     }
 
     /// Go to the previous stage in the pipeline, looping if reaching the end.
@@ -78,6 +83,12 @@ internal class DrawPipelineStage(
         if (stages[currentStageIndex] == this) {
             prevStage()
         }
+
+        updateStageName()
+    }
+
+    private fun updateStageName(){
+        (pipelinestage?.context as MainActivity).findViewById<Button>(R.id.stagename).text = stages[currentStageIndex]::class.simpleName
     }
 
     override fun setupUniforms(program: Int) {
