@@ -11,11 +11,13 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import dk.scuffed.whiteboardapp.opengl.OpenGLView
+import dk.scuffed.whiteboardapp.pipeline.CSVWriter
 import org.opencv.android.OpenCVLoader
 
 
 class MainActivity : AppCompatActivity() {
     private val CAMERA_PERMISSION_REQUEST_CODE = 100
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -47,6 +49,7 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION)
             startActivity(intent)
         }
+        CSVWriter.programStartTime = System.nanoTime()
     }
 
     override fun onRequestPermissionsResult(

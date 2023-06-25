@@ -58,7 +58,8 @@ internal class Pipeline(private val context: Context, private val initialResolut
         )
 
         if (CSVWriter.recordOverallTimings){
-            CSVWriter.MainWriter.write("Overall")
+            CSVWriter.MainWriter.write("Overall;")
+            CSVWriter.MainWriter.write("Time")
         }
         CSVWriter.MainWriter.write("\n")
     }
@@ -73,7 +74,7 @@ internal class Pipeline(private val context: Context, private val initialResolut
         {
             if (CSVWriter.recordOverallTimings)
             {
-                CSVWriter.MainWriter.write("$duration")
+                CSVWriter.MainWriter.write("$duration;${(System.nanoTime() - CSVWriter.programStartTime).toDouble() / 1000000.0}")
             }
             CSVWriter.MainWriter.write("\n")
             CSVWriter.frameCounter += 1

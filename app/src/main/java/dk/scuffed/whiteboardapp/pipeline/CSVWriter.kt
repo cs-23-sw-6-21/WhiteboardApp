@@ -6,9 +6,11 @@ import java.io.OutputStreamWriter
 
 object CSVWriter {
 
-    var recordStageTimings = true
+    var recordStageTimings = false
 
-    var recordOverallTimings = false
+    var programStartTime : Long = 1
+
+    var recordOverallTimings = true
 
     val useGlFinish = true
 
