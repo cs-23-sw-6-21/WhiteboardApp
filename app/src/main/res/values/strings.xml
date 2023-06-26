@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Whiteboard</string>
+    <string name="app_name">Whiteboard - Pipeline Overview</string>
     <string name="toggle_corner_detection">Toggle Corner Detection</string>
     <string name="capture">Capture</string>
 
