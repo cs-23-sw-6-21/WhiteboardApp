@@ -110,6 +110,8 @@ internal class DrawPipelineStage(
             else -> {
                 inputFrameBufferInfo = null
                 Log.d("dsf", "This stage does not support debug viewing")
+                nextStage()
+
             }
         }
 
