@@ -41,7 +41,7 @@ internal fun fullPipeline(
 
     val cornerOverlay = OverlayStage(
         context,
-        inputStage.frameBufferInfo,
+        fullSegmentation.frameBufferInfo,
         drawCornersStage.frameBufferInfo,
         pipeline
     )

@@ -17,11 +17,11 @@ internal fun addColour(
     mask: GLOutputStage,
     pipeline: IPipeline
 ): GLOutputStage {
-    val hsvAdjustmentsStage = HSVAdjustmentsStage(context, colours.frameBufferInfo, pipeline)
+
 
     val colourApply = MaskingStage(
         context,
-        hsvAdjustmentsStage.frameBufferInfo,
+        colours.frameBufferInfo,
         mask.frameBufferInfo,
         mask.frameBufferInfo,
         pipeline

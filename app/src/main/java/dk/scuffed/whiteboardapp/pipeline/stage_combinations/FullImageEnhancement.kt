@@ -7,6 +7,7 @@ import dk.scuffed.whiteboardapp.pipeline.Pipeline
 import dk.scuffed.whiteboardapp.pipeline.stages.GLOutputStage
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.GaussianBlurStage
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.GenerateMipmapStage
+import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.HSVAdjustmentsStage
 import dk.scuffed.whiteboardapp.pipeline.stages.opengl_process_stages.ScaleToResolutionStage
 
 /**
@@ -31,6 +32,7 @@ internal fun fullImageEnhancement(
         downscaledForWhitebalance,
         pipeline
     )
+    val hsvAdjustmentsStage = HSVAdjustmentsStage(context, whitebalance.frameBufferInfo, pipeline)
 
 
     val downscaledForBinarization = ScaleToResolutionStage(
@@ -49,7 +51,7 @@ internal fun fullImageEnhancement(
     
     val readdedColour = addColour(
         context,
-        whitebalance,
+        hsvAdjustmentsStage,
         binarized,
         pipeline
     )
